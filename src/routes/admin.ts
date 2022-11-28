@@ -10,7 +10,7 @@ adminRouter.get("/add-product", (req, res, next) => {
   res.sendFile(path.join(rootDirectory, "views", "add-product.html"));
 });
 
-adminRouter.post("/product", (req, res, next) => {
+adminRouter.post("/add-product", (req, res, next) => {
   console.log(req.body);
   res.redirect("/");
 });
