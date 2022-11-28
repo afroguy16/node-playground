@@ -1,11 +1,13 @@
+import path from "path";
+
 import express from "express";
+
+import rootDirectory from "../utils/path";
 
 const adminRouter = express.Router();
 
 adminRouter.get("/add-product", (req, res, next) => {
-  res.send(
-    '<form action="/admin/product" method="POST"><input type="text" name="title"><button>Submit</button></form>'
-  );
+  res.sendFile(path.join(rootDirectory, "views", "add-product.html"));
 });
 
 adminRouter.post("/product", (req, res, next) => {
