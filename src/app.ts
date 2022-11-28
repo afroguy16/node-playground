@@ -1,6 +1,6 @@
 import http from "http";
-import routes from "./routes";
+import express from "express";
 
-const server = http.createServer((req, res) => routes(req, res));
+const server = http.createServer();
 
 server.listen(4000);
