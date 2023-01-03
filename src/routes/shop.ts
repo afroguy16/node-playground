@@ -1,13 +1,14 @@
-import path from "path";
-
 import express from "express";
 
-import rootDirectory from "../utils/path";
+import { products } from "./admin";
 
 const shopRouter = express.Router();
 
+const pathName = "/";
+const pageTitle = "My Products";
+
 shopRouter.get("/", (req, res, next) => {
-  res.sendFile(path.join(rootDirectory, "views", "shop.html"));
+  res.render("shop", { pageTitle, pathName, products });
 });
 
 export default shopRouter;

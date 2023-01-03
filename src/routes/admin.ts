@@ -1,18 +1,16 @@
-import path from "path";
-
 import express from "express";
 
-import rootDirectory from "../utils/path";
+export const adminRouter = express.Router();
 
-const adminRouter = express.Router();
+const pageTitle = "Add Product";
+const pathName = "/admin/add-product";
+export const products: Array<{ title: string }> = [];
 
 adminRouter.get("/add-product", (req, res, next) => {
-  res.sendFile(path.join(rootDirectory, "views", "add-product.html"));
+  res.render("add-product", { pageTitle, pathName });
 });
 
 adminRouter.post("/add-product", (req, res, next) => {
-  console.log(req.body);
+  products.push({ title: req.body.title });
   res.redirect("/");
 });
-
-export default adminRouter;
