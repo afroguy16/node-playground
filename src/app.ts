@@ -6,9 +6,8 @@ import bodyParser from "body-parser";
 import rootDirectory from "./utils/path";
 import { adminRouter as adminRoutes } from "./routes/admin";
 import shopRoutes from "./routes/shop";
+import { get404 } from "./controllers/error";
 
-var pathName: string;
-const pageTitle = "Page not found";
 const app = express();
 
 app.set("view engine", "ejs");
@@ -20,8 +19,6 @@ app.use(express.static(path.join(rootDirectory, "public")));
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
-app.use((req, res, next) => {
-  res.status(404).render("404", { pageTitle, pathName });
-});
+app.use(get404);
 
 app.listen(4000);
