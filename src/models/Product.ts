@@ -5,22 +5,51 @@ import rootDirectory from "../utils/path";
 
 const FILE_PATH = path.join(rootDirectory, "data", "products.json");
 
-export default class Product {
-  title: string;
+const getProductsFromFile = (callback) => {
+  fs.readFile(FILE_PATH, (err, fileContent) => {
+    if (err) {
+      callback([]);
+    } else {
+      callback(JSON.parse(fileContent.toString()));
+    }
+  });
+};
 
-  constructor(title: string) {
-    this.title = title;
+export interface ProductState {
+  title: string;
+  imageUrl: string;
+  description: string;
+  price: number;
+}
+
+export default class Product {
+  state: ProductState = {
+    title: "",
+    imageUrl: "",
+    description: "",
+    price: 0,
+  };
+
+  constructor(
+    title: string,
+    imageUrl: string,
+    description: string,
+    price: number
+  ) {
+    this.state.title = title;
+    this.state.imageUrl = imageUrl;
+    this.state.description = description;
+    this.state.price = price;
   }
 
   save() {
-    fs.readFile(FILE_PATH, (err, fileContent) => {
-      let products: Array<{ title: string }> = [];
-
-      if (!err) {
-        products = JSON.parse(fileContent.toString());
-      }
-
-      products.push({ title: this.title });
+    getProductsFromFile((products: Array<ProductState>) => {
+      products.push({
+        title: this.state.title,
+        imageUrl: this.state.imageUrl,
+        description: this.state.description,
+        price: this.state.price,
+      });
 
       fs.writeFile(FILE_PATH, JSON.stringify(products), (err) =>
         console.log(err)
@@ -29,12 +58,6 @@ export default class Product {
   }
 
   static async fetchAll(callback) {
-    fs.readFile(FILE_PATH, (err, fileContent) => {
-      if (err) {
-        callback([]);
-      }
-
-      callback(JSON.parse(fileContent.toString()));
-    });
+    getProductsFromFile(callback);
   }
 }

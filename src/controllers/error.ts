@@ -1,4 +1,4 @@
-var pathName: string;
+const pathName = "/404";
 const pageTitle = "Page not found";
 
 export const get404 = (req, res, next) => {
