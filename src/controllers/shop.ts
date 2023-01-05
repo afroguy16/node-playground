@@ -36,34 +36,41 @@ export const pagesData = {
 };
 
 export const getHome = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render("shop/index", {
-      pageTitle: pagesData.shop.title,
-      pathName: pagesData.shop.pathName,
-      products,
-    });
-  });
+  Product.fetchAll()
+    .then(([products]) => {
+      res.render("shop/index", {
+        pageTitle: pagesData.shop.title,
+        pathName: pagesData.shop.pathName,
+        products,
+      });
+    })
+    .catch();
 };
 
 export const getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render("shop/product-list", {
-      pageTitle: pagesData.myProducts.title,
-      pathName: pagesData.myProducts.pathName,
-      products,
-    });
-  });
+  Product.fetchAll()
+    .then(([products]) => {
+      res.render("shop/product-list", {
+        pageTitle: pagesData.myProducts.title,
+        pathName: pagesData.myProducts.pathName,
+        products,
+      });
+    })
+    .catch();
 };
 
 export const getProduct = (req, res, next) => {
   const { productId } = req.params;
-  Product.fetchProduct((product) => {
-    res.render("shop/product-detail", {
-      pageTitle: product?.title,
-      pathName: pagesData.myProducts.pathName,
-      product,
-    });
-  }, productId);
+  Product.fetchProduct(productId)
+    .then(([wrappedProduct]) => {
+      const product: ProductState = wrappedProduct[0];
+      res.render("shop/product-detail", {
+        pageTitle: product?.title,
+        pathName: pagesData.myProducts.pathName,
+        product,
+      });
+    })
+    .catch();
 };
 
 export const getCart = (req, res, next) => {
@@ -72,43 +79,50 @@ export const getCart = (req, res, next) => {
     let cartTotalPrice = 0;
     const cartProductIdsAndQuantities: { [key: string]: number } = {};
 
+    // console.log(cart)
+
     cart.products.forEach((product) => {
       cartProductIdsAndQuantities[product.id] = product.quantity;
     });
 
-    Product.fetchAll((products) => {
-      // Move logic out
-      if (!isEmpty(products)) {
-        products.forEach((product) => {
-          if (cartProductIdsAndQuantities[product.id] > 0) {
-            const totalPrice =
-              product.price * cartProductIdsAndQuantities[product.id];
-            cartProducts.push({
-              product,
-              quantity: cartProductIdsAndQuantities[product.id],
-              totalPrice,
-            });
-            cartTotalPrice += totalPrice;
-          }
-        });
-      }
+    Product.fetchAll()
+      .then(([products]) => {
+        // Move logic out
+        if (!isEmpty(products as any)) {
+          (products as any).forEach((product) => {
+            if (cartProductIdsAndQuantities[product.id] > 0) {
+              const totalPrice =
+                product.price * cartProductIdsAndQuantities[product.id];
+              cartProducts.push({
+                product,
+                quantity: cartProductIdsAndQuantities[product.id],
+                totalPrice,
+              });
+              cartTotalPrice += totalPrice;
+            }
+          });
+        }
 
-      res.render("shop/cart", {
-        pageTitle: pagesData.cart.title,
-        pathName: pagesData.cart.pathName,
-        cart: { products: cartProducts, totalPrice: cartTotalPrice },
-      });
-    });
+        res.render("shop/cart", {
+          pageTitle: pagesData.cart.title,
+          pathName: pagesData.cart.pathName,
+          cart: { products: cartProducts, totalPrice: cartTotalPrice },
+        });
+      })
+      .catch();
   });
 };
 
 export const postAddProductToCart = (req, res, next) => {
   const { productId } = req.body;
-  Product.fetchProduct((product) => {
-    Cart.add(product?.id || "", product?.price || 0, () => {
-      res.redirect("/cart");
-    });
-  }, productId);
+  Product.fetchProduct(productId)
+    .then(([wrappedProduct]) => {
+      const product: ProductState = wrappedProduct[0];
+      Cart.add(product?.id || "", product?.price || 0, () => {
+        res.redirect("/cart");
+      });
+    })
+    .catch();
 };
 
 export const postRemoveProductFromCart = (req, res, next) => {

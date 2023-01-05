@@ -66,6 +66,8 @@ export const getSelectedCartProduct = (
     (product) => product.id === id
   );
 
+  console.log(cart.products[existingProductIndex], existingProductIndex);
+
   callback(cart.products[existingProductIndex], existingProductIndex);
 };
 

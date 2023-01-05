@@ -6,7 +6,7 @@ import {
   getSelectedCartProduct,
   rootDirectory,
 } from "../utils";
-import Product from "./Product";
+import Product, { ProductState } from "./Product";
 
 const FILE_PATH = path.join(rootDirectory, "data", "cart.json");
 
@@ -69,20 +69,24 @@ class Cart {
         this.getProduct(cart, id, (existingProduct, index) => {
           let updatedCart = { ...cart };
 
-          Product.fetchProduct((product) => {
-            const productPrice = product?.price || 0;
+          Product.fetchProduct(id)
+            .then(([wrappedProduct]) => {
+              const product: ProductState = wrappedProduct[0];
+              const productPrice = product?.price || 0;
 
-            if (existingProduct) {
-              const priceToBeDeducted = existingProduct.quantity * productPrice;
-              updatedCart.products.splice(index, 1);
-              updatedCart.totalPrice -= Number(priceToBeDeducted);
-            }
+              if (existingProduct) {
+                const priceToBeDeducted =
+                  existingProduct.quantity * productPrice;
+                updatedCart.products.splice(index, 1);
+                updatedCart.totalPrice -= Number(priceToBeDeducted);
+              }
 
-            fs.writeFile(FILE_PATH, JSON.stringify(updatedCart), (error) => {
-              error && console.log(error);
-              callback();
-            });
-          }, id);
+              fs.writeFile(FILE_PATH, JSON.stringify(updatedCart), (error) => {
+                error && console.log(error);
+                callback();
+              });
+            })
+            .catch();
         });
       } else {
         callback();

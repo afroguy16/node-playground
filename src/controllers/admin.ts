@@ -1,4 +1,4 @@
-import Product from "../models/Product";
+import Product, { ProductState } from "../models/Product";
 
 export const pagesData = {
   addProduct: {
@@ -24,31 +24,38 @@ export const getAddProduct = (req, res, next) => {
 
 export const getEditProduct = (req, res, next) => {
   const { productId } = req.params;
-  Product.fetchProduct((product) => {
-    res.render("admin/update-product", {
-      pageTitle: `Edit ${product?.title}`,
-      pathName: pagesData.editProduct.pathName,
-      editing: true,
-      product,
-    });
-  }, productId);
+  Product.fetchProduct(productId)
+    .then(([wrappedProduct]) => {
+      const product: ProductState = wrappedProduct[0];
+      res.render("admin/update-product", {
+        pageTitle: `Edit ${product?.title}`,
+        pathName: pagesData.editProduct.pathName,
+        editing: true,
+        product,
+      });
+    })
+    .catch();
 };
 
 export const getProducts = (req, res, next) => {
-  Product.fetchAll((products) => {
-    res.render("admin/products", {
-      pageTitle: pagesData.getProducts.title,
-      pathName: pagesData.getProducts.pathName,
-      products,
-    });
-  });
+  Product.fetchAll()
+    .then(([products]) => {
+      res.render("admin/products", {
+        pageTitle: pagesData.getProducts.title,
+        pathName: pagesData.getProducts.pathName,
+        products,
+      });
+    })
+    .catch();
 };
 
 export const postUpdateProduct = (req, res, next) => {
   const { id, title, imageUrl, description, price } = req.body;
   const product = new Product(id, title, imageUrl, description, price);
-  product.save();
-  res.redirect("products");
+  product
+    .save()
+    .then(() => res.redirect("products"))
+    .catch((err) => console.log(err));
 };
 
 export const postDeleteProduct = (req, res, next) => {

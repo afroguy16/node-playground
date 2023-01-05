@@ -6,6 +6,8 @@ import {
   getSelectedProduct,
   rootDirectory,
 } from "../utils";
+import db from "../utils/database";
+
 import Cart from "./Cart";
 
 export interface ProductState {
@@ -49,58 +51,41 @@ export default class Product {
     this.state.price = price;
   }
 
-  static fetchAll(callback: GetProductsCallback) {
-    getProductsFromFile(FILE_PATH, callback);
+  static fetchAll() {
+    return db.execute("SELECT * FROM products");
   }
 
-  static fetchProduct(callback: GetProductCallback, productId: string) {
-    getSelectedProduct(FILE_PATH, productId, callback);
-  }
-
-  private createPackagedProductData(id: string) {
-    return {
-      id,
-      title: this.state.title,
-      imageUrl: this.state.imageUrl,
-      description: this.state.description,
-      price: this.state.price,
-    };
+  static fetchProduct(id: string) {
+    return db.execute("SELECT * FROM products WHERE products.id = ?", [id]);
   }
 
   save() {
-    Product.fetchAll((products) => {
-      const updatedProducts = [...products];
-
-      Product.fetchProduct((product, index) => {
-        if (!product) {
-          const generatedId = Math.random().toString();
-          updatedProducts.push(this.createPackagedProductData(generatedId));
-        } else {
-          updatedProducts[index] = this.createPackagedProductData(product.id);
-        }
-
-        fs.writeFile(
-          FILE_PATH,
-          JSON.stringify(updatedProducts),
-          (err) => err && console.log(err)
-        );
-      }, this.state.id);
-    });
+    return db.execute(
+      "INSERT INTO products (title, price, imageUrl, description) VALUES(?, ?, ?, ?)",
+      [
+        this.state.title,
+        this.state.price,
+        this.state.imageUrl,
+        this.state.description,
+      ]
+    );
   }
 
   static delete(id: string) {
-    Product.fetchAll((products) => {
-      const updatedProducts = [...products].filter(
-        (product) => product.id !== id
-      );
+    Product.fetchAll()
+      .then(([products]) => {
+        const updatedProducts = [...(products as any)].filter(
+          (product) => product.id !== id
+        );
 
-      fs.writeFile(FILE_PATH, JSON.stringify(updatedProducts), (err) => {
-        if (!err) {
-          Cart.remove(id, () => {});
-        } else {
-          console.log(err);
-        }
-      });
-    });
+        fs.writeFile(FILE_PATH, JSON.stringify(updatedProducts), (err) => {
+          if (!err) {
+            Cart.remove(id, () => {});
+          } else {
+            console.log(err);
+          }
+        });
+      })
+      .catch();
   }
 }
