@@ -1,5 +1,5 @@
 import Cart from "../models/Cart";
-import Product, { ProductState } from "../models/Product";
+import Product from "../models/Product";
 
 export const pagesData = {
   shop: {
@@ -45,9 +45,9 @@ export const getProducts = (req, res, next) => {
 
 export const getProduct = (req, res, next) => {
   const { productId } = req.params;
-  Product.fetchProduct((product: ProductState) => {
+  Product.fetchProduct((product) => {
     res.render("shop/product-detail", {
-      pageTitle: product.title,
+      pageTitle: product?.title,
       pathName: pagesData.myProducts.pathName,
       product,
     });
@@ -63,8 +63,8 @@ export const getCart = (req, res, next) => {
 
 export const postCart = (req, res, next) => {
   const { productId } = req.body;
-  Product.fetchProduct((product: ProductState) => {
-    Cart.addProduct(product.id, product.price);
+  Product.fetchProduct((product) => {
+    Cart.addProduct(product?.id || "", product?.price || 0);
     // res.render("shop/product-detail", {
     //   pageTitle: product.title,
     //   pathName: pagesData.myProducts.pathName,

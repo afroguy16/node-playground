@@ -11,6 +11,13 @@ export interface ProductState {
   price: number;
 }
 
+export type GetProductCallback = (
+  product: ProductState | undefined,
+  index: number
+) => void;
+
+export type GetProductsCallback = (product: Array<ProductState>) => void;
+
 const FILE_PATH = path.join(rootDirectory, "data", "products.json");
 
 const getProductsFromFile = (callback) => {
@@ -33,43 +40,60 @@ export default class Product {
   };
 
   constructor(
+    id: string,
     title: string,
     imageUrl: string,
     description: string,
     price: number
   ) {
+    this.state.id = id;
     this.state.title = title;
     this.state.imageUrl = imageUrl;
     this.state.description = description;
     this.state.price = price;
   }
 
-  save() {
-    getProductsFromFile((products: Array<ProductState>) => {
-      products.push({
-        id: Math.random().toString(),
-        title: this.state.title,
-        imageUrl: this.state.imageUrl,
-        description: this.state.description,
-        price: this.state.price,
-      });
-
-      fs.writeFile(FILE_PATH, JSON.stringify(products), (err) =>
-        console.log(err)
-      );
-    });
-  }
-
-  static fetchAll(callback) {
+  static fetchAll(callback: GetProductsCallback) {
     getProductsFromFile(callback);
   }
 
-  static fetchProduct(callback, productId) {
+  static fetchProduct(callback: GetProductCallback, productId: string) {
     getProductsFromFile((products: Array<ProductState>) => {
-      const selectedProduct = products.find(
+      const selectedProductIndex = products.findIndex(
         (product: ProductState) => product.id === productId
       );
-      callback(selectedProduct);
+      console.log({ productId }, { selectedProductIndex });
+      const selectedProduct = products[selectedProductIndex];
+      callback(selectedProduct, selectedProductIndex);
+    });
+  }
+
+  private createPackagedProductData(id: string) {
+    return {
+      id,
+      title: this.state.title,
+      imageUrl: this.state.imageUrl,
+      description: this.state.description,
+      price: this.state.price,
+    };
+  }
+
+  save() {
+    Product.fetchAll((products) => {
+      const updatedProducts = [...products];
+
+      Product.fetchProduct((product, index) => {
+        if (!product) {
+          const generatedId = Math.random().toString();
+          updatedProducts.push(this.createPackagedProductData(generatedId));
+        } else {
+          updatedProducts[index] = this.createPackagedProductData(product.id);
+        }
+
+        fs.writeFile(FILE_PATH, JSON.stringify(updatedProducts), (err) =>
+          console.log(err)
+        );
+      }, this.state.id);
     });
   }
 }

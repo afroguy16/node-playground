@@ -1,7 +1,7 @@
 {
   "products": [
-    { "id": "2832", "quantity": 2 },
+    { "id": "2832", "quantity": 3 },
     { "id": "0.23493218354764545", "quantity": 1 }
   ],
-  "totalPrice": 42
+  "totalPrice": 62
 }
