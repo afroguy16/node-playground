@@ -1,54 +1,92 @@
 import fs from "fs";
 import path from "path";
 
-import rootDirectory from "../utils/path";
+import {
+  getCartFromFile,
+  getSelectedCartProduct,
+  rootDirectory,
+} from "../utils";
+import Product from "./Product";
 
 const FILE_PATH = path.join(rootDirectory, "data", "cart.json");
 
-interface Product {
+interface CartProduct {
   id: string;
   quantity: number;
 }
 
-interface CartState {
-  products: Array<Product>;
+export interface CartState {
+  products: Array<CartProduct>;
   totalPrice: number;
 }
 
+export type GetCartProductCallback = (
+  product: CartProduct | undefined,
+  index: number
+) => void;
+
+export type GetCartCallback = (cart: CartState) => void;
+
 class Cart {
-  addProduct(id: string, productPrice: number) {
-    fs.readFile(FILE_PATH, (err, fileContent) => {
-      let cart: CartState = {
-        products: [],
-        totalPrice: 0,
-      };
+  getCart(callback: GetCartCallback) {
+    getCartFromFile(FILE_PATH, callback);
+  }
 
-      if (!err) {
-        cart = JSON.parse(fileContent.toString());
-      }
+  getProduct(cart: CartState, id: string, callback: GetCartProductCallback) {
+    getSelectedCartProduct(cart, id, callback);
+  }
 
-      const existingProductIndex = cart.products.findIndex(
-        (product) => product.id === id
-      );
-      const existingProduct = cart.products[existingProductIndex];
-      let updatedProduct: Product;
+  add(id: string, productPrice: number, callback) {
+    this.getCart((cart) => {
+      this.getProduct(cart, id, (existingProduct, index) => {
+        let updatedCart = { ...cart };
+        let updatedProduct: CartProduct;
 
-      if (existingProduct) {
-        updatedProduct = {
-          ...existingProduct,
-          quantity: existingProduct.quantity + 1,
-        };
-        cart.products[existingProductIndex] = updatedProduct;
-      } else {
-        updatedProduct = { id, quantity: 1 };
-        cart.products = [...cart.products, updatedProduct];
-      }
+        if (existingProduct) {
+          updatedProduct = {
+            ...existingProduct,
+            quantity: existingProduct.quantity + 1,
+          };
+          updatedCart.products[index] = updatedProduct;
+        } else {
+          updatedProduct = { id, quantity: 1 };
+          updatedCart.products = [...updatedCart.products, updatedProduct];
+        }
 
-      cart.totalPrice += Number(productPrice);
+        updatedCart.totalPrice += Number(productPrice);
 
-      fs.writeFile(FILE_PATH, JSON.stringify(cart), (error) => {
-        console.log(error);
+        fs.writeFile(FILE_PATH, JSON.stringify(updatedCart), (error) => {
+          error && console.log(error);
+          callback();
+        });
       });
+    });
+  }
+
+  remove(id: string, callback) {
+    this.getCart((cart) => {
+      if (cart.products.length > 0) {
+        this.getProduct(cart, id, (existingProduct, index) => {
+          let updatedCart = { ...cart };
+
+          Product.fetchProduct((product) => {
+            const productPrice = product?.price || 0;
+
+            if (existingProduct) {
+              const priceToBeDeducted = existingProduct.quantity * productPrice;
+              updatedCart.products.splice(index, 1);
+              updatedCart.totalPrice -= Number(priceToBeDeducted);
+            }
+
+            fs.writeFile(FILE_PATH, JSON.stringify(updatedCart), (error) => {
+              error && console.log(error);
+              callback();
+            });
+          }, id);
+        });
+      } else {
+        callback();
+      }
     });
   }
 }

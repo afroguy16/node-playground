@@ -23,6 +23,7 @@
                   <button class="btn">Edit</button>
                 </form>
                 <form action="/admin/delete-product" method="POST">
+                  <input type="hidden" name="id" value="<%= product.id %>">
                   <button class="btn">Delete</button>
                 </form>
               </div>

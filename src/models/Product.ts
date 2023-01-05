@@ -1,7 +1,12 @@
 import fs from "fs";
 import path from "path";
 
-import rootDirectory from "../utils/path";
+import {
+  getProductsFromFile,
+  getSelectedProduct,
+  rootDirectory,
+} from "../utils";
+import Cart from "./Cart";
 
 export interface ProductState {
   id: string;
@@ -19,16 +24,7 @@ export type GetProductCallback = (
 export type GetProductsCallback = (product: Array<ProductState>) => void;
 
 const FILE_PATH = path.join(rootDirectory, "data", "products.json");
-
-const getProductsFromFile = (callback) => {
-  fs.readFile(FILE_PATH, (err, fileContent) => {
-    if (err) {
-      callback([]);
-    } else {
-      callback(JSON.parse(fileContent.toString()));
-    }
-  });
-};
+const CART_FILE_PATH = path.join(rootDirectory, "data", "cart.json");
 
 export default class Product {
   state: ProductState = {
@@ -54,18 +50,11 @@ export default class Product {
   }
 
   static fetchAll(callback: GetProductsCallback) {
-    getProductsFromFile(callback);
+    getProductsFromFile(FILE_PATH, callback);
   }
 
   static fetchProduct(callback: GetProductCallback, productId: string) {
-    getProductsFromFile((products: Array<ProductState>) => {
-      const selectedProductIndex = products.findIndex(
-        (product: ProductState) => product.id === productId
-      );
-      console.log({ productId }, { selectedProductIndex });
-      const selectedProduct = products[selectedProductIndex];
-      callback(selectedProduct, selectedProductIndex);
-    });
+    getSelectedProduct(FILE_PATH, productId, callback);
   }
 
   private createPackagedProductData(id: string) {
@@ -90,10 +79,28 @@ export default class Product {
           updatedProducts[index] = this.createPackagedProductData(product.id);
         }
 
-        fs.writeFile(FILE_PATH, JSON.stringify(updatedProducts), (err) =>
-          console.log(err)
+        fs.writeFile(
+          FILE_PATH,
+          JSON.stringify(updatedProducts),
+          (err) => err && console.log(err)
         );
       }, this.state.id);
+    });
+  }
+
+  static delete(id: string) {
+    Product.fetchAll((products) => {
+      const updatedProducts = [...products].filter(
+        (product) => product.id !== id
+      );
+
+      fs.writeFile(FILE_PATH, JSON.stringify(updatedProducts), (err) => {
+        if (!err) {
+          Cart.remove(id, () => {});
+        } else {
+          console.log(err);
+        }
+      });
     });
   }
 }

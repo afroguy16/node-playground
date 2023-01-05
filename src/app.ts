@@ -3,7 +3,7 @@ import path from "path";
 import express from "express";
 import bodyParser from "body-parser";
 
-import rootDirectory from "./utils/path";
+import { rootDirectory } from "./utils";
 import { adminRouter as adminRoutes } from "./routes/admin";
 import shopRoutes from "./routes/shop";
 import { get404 } from "./controllers/error";

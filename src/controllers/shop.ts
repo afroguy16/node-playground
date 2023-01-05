@@ -1,5 +1,17 @@
 import Cart from "../models/Cart";
-import Product from "../models/Product";
+import Product, { ProductState } from "../models/Product";
+import { isEmpty } from "../utils";
+
+interface CartProduct {
+  product: ProductState;
+  quantity: number;
+  totalPrice: number;
+}
+
+interface Cart {
+  products: Array<CartProduct>;
+  totalPrice: number;
+}
 
 export const pagesData = {
   shop: {
@@ -55,22 +67,55 @@ export const getProduct = (req, res, next) => {
 };
 
 export const getCart = (req, res, next) => {
-  res.render("shop/cart", {
-    pageTitle: pagesData.cart.title,
-    pathName: pagesData.cart.pathName,
+  Cart.getCart((cart) => {
+    const cartProducts: Array<CartProduct> = [];
+    let cartTotalPrice = 0;
+    const cartProductIdsAndQuantities: { [key: string]: number } = {};
+
+    cart.products.forEach((product) => {
+      cartProductIdsAndQuantities[product.id] = product.quantity;
+    });
+
+    Product.fetchAll((products) => {
+      // Move logic out
+      if (!isEmpty(products)) {
+        products.forEach((product) => {
+          if (cartProductIdsAndQuantities[product.id] > 0) {
+            const totalPrice =
+              product.price * cartProductIdsAndQuantities[product.id];
+            cartProducts.push({
+              product,
+              quantity: cartProductIdsAndQuantities[product.id],
+              totalPrice,
+            });
+            cartTotalPrice += totalPrice;
+          }
+        });
+      }
+
+      res.render("shop/cart", {
+        pageTitle: pagesData.cart.title,
+        pathName: pagesData.cart.pathName,
+        cart: { products: cartProducts, totalPrice: cartTotalPrice },
+      });
+    });
   });
 };
 
-export const postCart = (req, res, next) => {
+export const postAddProductToCart = (req, res, next) => {
   const { productId } = req.body;
   Product.fetchProduct((product) => {
-    Cart.addProduct(product?.id || "", product?.price || 0);
-    // res.render("shop/product-detail", {
-    //   pageTitle: product.title,
-    //   pathName: pagesData.myProducts.pathName,
-    //   product,
-    // });
+    Cart.add(product?.id || "", product?.price || 0, () => {
+      res.redirect("/cart");
+    });
   }, productId);
+};
+
+export const postRemoveProductFromCart = (req, res, next) => {
+  const { id } = req.body;
+  Cart.remove(id, () => {
+    res.redirect("/cart");
+  });
 };
 
 export const getCheckout = (req, res, next) => {
