@@ -1,11 +1,7 @@
 import fs from "fs";
 import path from "path";
 
-import {
-  getProductsFromFile,
-  getSelectedProduct,
-  rootDirectory,
-} from "../utils";
+import { rootDirectory } from "../utils";
 import db from "../utils/database";
 
 import Cart from "./Cart";
