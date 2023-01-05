@@ -1,4 +1,5 @@
-import Product from "../models/Product";
+import Cart from "../models/Cart";
+import Product, { ProductState } from "../models/Product";
 
 export const pagesData = {
   shop: {
@@ -19,7 +20,6 @@ export const pagesData = {
   },
   productDetails: {
     title: "Product Details",
-    pathName: "shop/product/:id",
   },
 };
 
@@ -43,11 +43,34 @@ export const getProducts = (req, res, next) => {
   });
 };
 
+export const getProduct = (req, res, next) => {
+  const { productId } = req.params;
+  Product.fetchProduct((product: ProductState) => {
+    res.render("shop/product-detail", {
+      pageTitle: product.title,
+      pathName: pagesData.myProducts.pathName,
+      product,
+    });
+  }, productId);
+};
+
 export const getCart = (req, res, next) => {
   res.render("shop/cart", {
     pageTitle: pagesData.cart.title,
     pathName: pagesData.cart.pathName,
   });
+};
+
+export const postCart = (req, res, next) => {
+  const { productId } = req.body;
+  Product.fetchProduct((product: ProductState) => {
+    Cart.addProduct(product.id, product.price);
+    // res.render("shop/product-detail", {
+    //   pageTitle: product.title,
+    //   pathName: pagesData.myProducts.pathName,
+    //   product,
+    // });
+  }, productId);
 };
 
 export const getCheckout = (req, res, next) => {
@@ -56,10 +79,3 @@ export const getCheckout = (req, res, next) => {
     pathName: pagesData.checkout.pathName,
   });
 };
-
-// export const getProductDetail = (req, res, next) => {
-//   res.render('shop/product-details', {
-//     pageTitle: pagesData.productDetails.title,
-//     pathName: pagesData.productDetails.pathName
-//   });
-// };

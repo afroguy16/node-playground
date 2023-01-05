@@ -3,6 +3,14 @@ import path from "path";
 
 import rootDirectory from "../utils/path";
 
+export interface ProductState {
+  id: string;
+  title: string;
+  imageUrl: string;
+  description: string;
+  price: number;
+}
+
 const FILE_PATH = path.join(rootDirectory, "data", "products.json");
 
 const getProductsFromFile = (callback) => {
@@ -15,15 +23,9 @@ const getProductsFromFile = (callback) => {
   });
 };
 
-export interface ProductState {
-  title: string;
-  imageUrl: string;
-  description: string;
-  price: number;
-}
-
 export default class Product {
   state: ProductState = {
+    id: "",
     title: "",
     imageUrl: "",
     description: "",
@@ -45,6 +47,7 @@ export default class Product {
   save() {
     getProductsFromFile((products: Array<ProductState>) => {
       products.push({
+        id: Math.random().toString(),
         title: this.state.title,
         imageUrl: this.state.imageUrl,
         description: this.state.description,
@@ -57,7 +60,16 @@ export default class Product {
     });
   }
 
-  static async fetchAll(callback) {
+  static fetchAll(callback) {
     getProductsFromFile(callback);
+  }
+
+  static fetchProduct(callback, productId) {
+    getProductsFromFile((products: Array<ProductState>) => {
+      const selectedProduct = products.find(
+        (product: ProductState) => product.id === productId
+      );
+      callback(selectedProduct);
+    });
   }
 }
