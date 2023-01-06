@@ -71,21 +71,6 @@ class Product {
   }
 
   delete(id: number, callback) {
-    // Product.fetchAll()
-    //   .then(([products]) => {
-    //     const updatedProducts = [...(products as any)].filter(
-    //       (product) => product.id !== id
-    //     );
-
-    //     fs.writeFile(FILE_PATH, JSON.stringify(updatedProducts), (err) => {
-    //       if (!err) {
-    //         Cart.remove(id, () => { });
-    //       } else {
-    //         console.log(err);
-    //       }
-    //     });
-    //   })
-    //   .catch();
     this.fetchWrappedProduct(id)
       .then((product) => product?.destroy())
       .then((data) => {
