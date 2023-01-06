@@ -4,6 +4,7 @@ import {
   getAddProduct,
   getEditProduct,
   getProducts,
+  postCreateProduct,
   postDeleteProduct,
   postUpdateProduct,
 } from "../controllers/admin";
@@ -14,7 +15,7 @@ adminRouter.get("/add-product", getAddProduct);
 
 adminRouter.get("/products", getProducts);
 
-adminRouter.post("/add-product", postUpdateProduct);
+adminRouter.post("/add-product", postCreateProduct);
 
 adminRouter.get("/edit-product/:productId", getEditProduct);
 

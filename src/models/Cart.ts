@@ -11,7 +11,7 @@ import Product, { ProductState } from "./Product";
 const FILE_PATH = path.join(rootDirectory, "data", "cart.json");
 
 interface CartProduct {
-  id: string;
+  id: number;
   quantity: number;
 }
 
@@ -32,11 +32,11 @@ class Cart {
     getCartFromFile(FILE_PATH, callback);
   }
 
-  getProduct(cart: CartState, id: string, callback: GetCartProductCallback) {
+  getProduct(cart: CartState, id: number, callback: GetCartProductCallback) {
     getSelectedCartProduct(cart, id, callback);
   }
 
-  add(id: string, productPrice: number, callback) {
+  add(id: number, productPrice: number, callback) {
     this.getCart((cart) => {
       this.getProduct(cart, id, (existingProduct, index) => {
         let updatedCart = { ...cart };
@@ -63,16 +63,16 @@ class Cart {
     });
   }
 
-  remove(id: string, callback) {
+  remove(id: number, callback) {
     this.getCart((cart) => {
       if (cart.products.length > 0) {
         this.getProduct(cart, id, (existingProduct, index) => {
           let updatedCart = { ...cart };
 
           Product.fetchProduct(id)
-            .then(([wrappedProduct]) => {
-              const product: ProductState = wrappedProduct[0];
-              const productPrice = product?.price || 0;
+            .then((product) => {
+              const productPrice =
+                (product as unknown as ProductState)?.price || 0;
 
               if (existingProduct) {
                 const priceToBeDeducted =

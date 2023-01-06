@@ -6,6 +6,7 @@ import { rootDirectory } from "./utils";
 import { adminRouter as adminRoutes } from "./routes/admin";
 import shopRoutes from "./routes/shop";
 import { get404 } from "./controllers/error";
+import sequelize from "./utils/database";
 
 const app = express();
 
@@ -20,4 +21,9 @@ app.use(shopRoutes);
 
 app.use(get404);
 
-app.listen(4000);
+sequelize
+  .sync()
+  .then((data) => {
+    app.listen(4000);
+  })
+  .catch((err) => console.log(err));

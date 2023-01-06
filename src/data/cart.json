@@ -1,8 +1,8 @@
 {
   "products": [
-    { "id": "", "quantity": 3 },
-    { "id": 1, "quantity": 3 },
-    { "id": 2, "quantity": 1 }
+    { "id": "", "quantity": 6 },
+    { "id": 1, "quantity": 4 },
+    { "id": 2, "quantity": 2 }
   ],
-  "totalPrice": 62
+  "totalPrice": 90
 }

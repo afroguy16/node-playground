@@ -27,7 +27,7 @@ export const getCartFromFile = (path: string, callback: GetCartCallback) => {
 
 export const getSelectedCartProduct = (
   cart: CartState,
-  id: string,
+  id: number,
   callback: GetCartProductCallback
 ) => {
   const existingProductIndex = cart.products.findIndex(

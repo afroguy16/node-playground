@@ -37,35 +37,35 @@ export const pagesData = {
 
 export const getHome = (req, res, next) => {
   Product.fetchAll()
-    .then(([products]) => {
+    .then((products) => {
       res.render("shop/index", {
         pageTitle: pagesData.shop.title,
         pathName: pagesData.shop.pathName,
         products,
       });
     })
-    .catch();
+    .catch((error) => console.log(error));
 };
 
 export const getProducts = (req, res, next) => {
   Product.fetchAll()
-    .then(([products]) => {
+    .then((products) => {
+      console.log(products);
       res.render("shop/product-list", {
         pageTitle: pagesData.myProducts.title,
         pathName: pagesData.myProducts.pathName,
         products,
       });
     })
-    .catch();
+    .catch((error) => console.log(error));
 };
 
 export const getProduct = (req, res, next) => {
   const { productId } = req.params;
   Product.fetchProduct(productId)
-    .then(([wrappedProduct]) => {
-      const product: ProductState = wrappedProduct[0];
+    .then((product) => {
       res.render("shop/product-detail", {
-        pageTitle: product?.title,
+        pageTitle: (product as unknown as ProductState)?.title,
         pathName: pagesData.myProducts.pathName,
         product,
       });
@@ -86,10 +86,10 @@ export const getCart = (req, res, next) => {
     });
 
     Product.fetchAll()
-      .then(([products]) => {
+      .then((products) => {
         // Move logic out
-        if (!isEmpty(products as any)) {
-          (products as any).forEach((product) => {
+        if (!isEmpty(products)) {
+          (products as unknown as Array<ProductState>).forEach((product) => {
             if (cartProductIdsAndQuantities[product.id] > 0) {
               const totalPrice =
                 product.price * cartProductIdsAndQuantities[product.id];
@@ -109,18 +109,21 @@ export const getCart = (req, res, next) => {
           cart: { products: cartProducts, totalPrice: cartTotalPrice },
         });
       })
-      .catch();
+      .catch((error) => console.log(error));
   });
 };
 
 export const postAddProductToCart = (req, res, next) => {
   const { productId } = req.body;
   Product.fetchProduct(productId)
-    .then(([wrappedProduct]) => {
-      const product: ProductState = wrappedProduct[0];
-      Cart.add(product?.id || "", product?.price || 0, () => {
-        res.redirect("/cart");
-      });
+    .then((product) => {
+      Cart.add(
+        (product as unknown as ProductState)?.id || 0,
+        (product as unknown as ProductState)?.price || 0,
+        () => {
+          res.redirect("/cart");
+        }
+      );
     })
     .catch();
 };
