@@ -9,6 +9,8 @@ import { get404 } from "./controllers/error";
 import sequelize from "./utils/database";
 import SequelizedProduct from "./services/database/Product";
 import SequelizedUser from "./services/database/User";
+import SequelizedCart from "./services/database/Cart";
+import SequelizedCartsProducts from "./services/database/CartsProducts";
 
 const app = express();
 
@@ -37,6 +39,14 @@ SequelizedProduct.belongsTo(SequelizedUser, {
   onDelete: "CASCADE",
 });
 SequelizedUser.hasMany(SequelizedProduct);
+SequelizedUser.hasOne(SequelizedCart);
+SequelizedCart.belongsTo(SequelizedUser);
+SequelizedCart.belongsToMany(SequelizedProduct, {
+  through: SequelizedCartsProducts,
+});
+SequelizedProduct.belongsToMany(SequelizedCart, {
+  through: SequelizedCartsProducts,
+});
 
 sequelize
   .sync()
@@ -50,7 +60,12 @@ sequelize
     return user;
   })
   .then((user) => {
-    // console.log(user)
-    app.listen(4000);
+    (user as any).getSequelizedCart().then((cart) => {
+      if (!cart) {
+        return (user as any).createSequelizedCart();
+      }
+      return cart;
+    });
   })
+  .then((cart) => app.listen(4000))
   .catch((err) => console.log(err));

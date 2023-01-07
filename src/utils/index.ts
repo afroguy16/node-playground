@@ -25,7 +25,7 @@ export const getCartFromFile = (path: string, callback: GetCartCallback) => {
   });
 };
 
-export const getSelectedCartProduct = (
+export const getSelectedCartItem = (
   cart: CartState,
   id: number,
   callback: GetCartProductCallback

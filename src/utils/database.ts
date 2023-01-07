@@ -6,6 +6,10 @@ const user = "root";
 const password = "12345678";
 const dialect = "mysql";
 
-const sequelize = new Sequelize(name, user, password, { dialect, host });
+const sequelize = new Sequelize(name, user, password, {
+  dialect,
+  host,
+  logging: false,
+});
 
 export default sequelize;

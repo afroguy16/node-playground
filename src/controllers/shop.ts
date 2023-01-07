@@ -1,6 +1,5 @@
 import Cart from "../models/Cart";
 import Product, { ProductState } from "../models/Product";
-import { isEmpty } from "../utils";
 
 interface CartProduct {
   product: ProductState;
@@ -72,64 +71,39 @@ export const getProduct = (req, res, next) => {
     .catch();
 };
 
-export const getCart = (req, res, next) => {
-  Cart.getCart((cart) => {
-    const cartProducts: Array<CartProduct> = [];
-    let cartTotalPrice = 0;
-    const cartProductIdsAndQuantities: { [key: string]: number } = {};
+export const getCart = async (req, res, next) => {
+  const cart = await Cart.getCart(req.user);
+  const productsInCart = await cart?.getSequelizedProducts();
 
-    cart.products.forEach((product) => {
-      cartProductIdsAndQuantities[product.id] = product.quantity;
+  try {
+    res.render("shop/cart", {
+      pageTitle: pagesData.cart.title,
+      pathName: pagesData.cart.pathName,
+      cart: { id: cart.id, products: productsInCart, totalPrice: 0 },
     });
-
-    Product.fetchAll()
-      .then((products) => {
-        // Move logic out
-        if (!isEmpty(products)) {
-          (products as unknown as Array<ProductState>).forEach((product) => {
-            if (cartProductIdsAndQuantities[product.id] > 0) {
-              const totalPrice =
-                product.price * cartProductIdsAndQuantities[product.id];
-              cartProducts.push({
-                product,
-                quantity: cartProductIdsAndQuantities[product.id],
-                totalPrice,
-              });
-              cartTotalPrice += totalPrice;
-            }
-          });
-        }
-
-        res.render("shop/cart", {
-          pageTitle: pagesData.cart.title,
-          pathName: pagesData.cart.pathName,
-          cart: { products: cartProducts, totalPrice: cartTotalPrice },
-        });
-      })
-      .catch((error) => console.log(error));
-  });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
-export const postAddProductToCart = (req, res, next) => {
+export const postAddProductToCart = async (req, res, next) => {
   const { productId } = req.body;
-  Product.fetchProduct(productId)
-    .then((product) => {
-      Cart.add(
-        (product as unknown as ProductState)?.id || 0,
-        (product as unknown as ProductState)?.price || 0,
-        () => {
-          res.redirect("/cart");
-        }
-      );
-    })
-    .catch();
+  try {
+    await Cart.add(req.user, productId);
+    res.redirect("/cart");
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-export const postRemoveProductFromCart = (req, res, next) => {
+export const postRemoveProductFromCart = async (req, res, next) => {
   const { id } = req.body;
-  Cart.remove(id, () => {
+  try {
+    await Cart.remove(req.user, id);
     res.redirect("/cart");
-  });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const getCheckout = (req, res, next) => {

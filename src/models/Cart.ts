@@ -1,97 +1,63 @@
-import fs from "fs";
-import path from "path";
+import SequelizedProduct from "../services/database/Product";
 
-import {
-  getCartFromFile,
-  getSelectedCartProduct,
-  rootDirectory,
-} from "../utils";
-import Product, { ProductState } from "./Product";
+export interface CartAttributes {
+  id: number;
+}
 
-const FILE_PATH = path.join(rootDirectory, "data", "cart.json");
-
-interface CartProduct {
+export interface CartsProductsAttributes {
   id: number;
   quantity: number;
 }
 
 export interface CartState {
-  products: Array<CartProduct>;
+  products: Array<CartsProductsAttributes>;
   totalPrice: number;
 }
 
 export type GetCartProductCallback = (
-  product: CartProduct | undefined,
+  product: CartsProductsAttributes | undefined,
   index: number
 ) => void;
 
 export type GetCartCallback = (cart: CartState) => void;
 
 class Cart {
-  getCart(callback: GetCartCallback) {
-    getCartFromFile(FILE_PATH, callback);
+  async getCart(user) {
+    return await user.getSequelizedCart();
   }
 
-  getProduct(cart: CartState, id: number, callback: GetCartProductCallback) {
-    getSelectedCartProduct(cart, id, callback);
+  async getProduct(cart, productId: number) {
+    const products = await cart.getSequelizedProducts({
+      where: {
+        id: productId,
+      },
+    });
+    return products[0];
   }
 
-  add(id: number, productPrice: number, callback) {
-    this.getCart((cart) => {
-      this.getProduct(cart, id, (existingProduct, index) => {
-        let updatedCart = { ...cart };
-        let updatedProduct: CartProduct;
+  async add(user, productId: number) {
+    const cart = await this.getCart(user);
+    let product = await this.getProduct(cart, productId);
+    let quantity: number;
 
-        if (existingProduct) {
-          updatedProduct = {
-            ...existingProduct,
-            quantity: existingProduct.quantity + 1,
-          };
-          updatedCart.products[index] = updatedProduct;
-        } else {
-          updatedProduct = { id, quantity: 1 };
-          updatedCart.products = [...updatedCart.products, updatedProduct];
-        }
+    if (product) {
+      quantity = product.SequelizedCartsProducts.quantity + 1;
+    } else {
+      product = await SequelizedProduct.findByPk(productId);
+      quantity = 1;
+    }
 
-        updatedCart.totalPrice += Number(productPrice);
-
-        fs.writeFile(FILE_PATH, JSON.stringify(updatedCart), (error) => {
-          error && console.log(error);
-          callback();
-        });
-      });
+    return await cart.addSequelizedProduct(product, {
+      through: {
+        quantity,
+      },
     });
   }
 
-  remove(id: number, callback) {
-    this.getCart((cart) => {
-      if (cart.products.length > 0) {
-        this.getProduct(cart, id, (existingProduct, index) => {
-          let updatedCart = { ...cart };
-
-          Product.fetchProduct(id)
-            .then((product) => {
-              const productPrice =
-                (product as unknown as ProductState)?.price || 0;
-
-              if (existingProduct) {
-                const priceToBeDeducted =
-                  existingProduct.quantity * productPrice;
-                updatedCart.products.splice(index, 1);
-                updatedCart.totalPrice -= Number(priceToBeDeducted);
-              }
-
-              fs.writeFile(FILE_PATH, JSON.stringify(updatedCart), (error) => {
-                error && console.log(error);
-                callback();
-              });
-            })
-            .catch();
-        });
-      } else {
-        callback();
-      }
-    });
+  async remove(user, productId: number) {
+    const cart = await this.getCart(user);
+    const product = await this.getProduct(cart, productId);
+    return product.SequelizedCartsProducts.destroy();
   }
 }
 
