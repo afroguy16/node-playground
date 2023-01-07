@@ -50,7 +50,7 @@ export const getProducts = (req, res, next) => {
 
 export const postCreateProduct = (req, res, next) => {
   const { title, imageUrl, description, price } = req.body;
-  Product.create({ title, imageUrl, description, price }, (err) => {
+  Product.create(req, { title, imageUrl, description, price }, (err) => {
     if (!err) {
       res.redirect("products");
     } else {

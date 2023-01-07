@@ -50,7 +50,6 @@ export const getHome = (req, res, next) => {
 export const getProducts = (req, res, next) => {
   Product.fetchAll()
     .then((products) => {
-      console.log(products);
       res.render("shop/product-list", {
         pageTitle: pagesData.myProducts.title,
         pathName: pagesData.myProducts.pathName,
@@ -78,8 +77,6 @@ export const getCart = (req, res, next) => {
     const cartProducts: Array<CartProduct> = [];
     let cartTotalPrice = 0;
     const cartProductIdsAndQuantities: { [key: string]: number } = {};
-
-    // console.log(cart)
 
     cart.products.forEach((product) => {
       cartProductIdsAndQuantities[product.id] = product.quantity;

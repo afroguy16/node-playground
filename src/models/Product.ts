@@ -25,8 +25,6 @@ export type GetProductCallback = (
 
 export type GetProductsCallback = (product: Array<ProductState>) => void;
 
-const FILE_PATH = path.join(rootDirectory, "data", "products.json");
-
 class Product {
   fetchAll() {
     return SequelizedProduct.findAll({ raw: true });
@@ -40,14 +38,15 @@ class Product {
     return SequelizedProduct.findByPk(id);
   }
 
-  create(payload: Omit<ProductState, "id">, callback: GetProductCallback) {
+  create(req, payload: Omit<ProductState, "id">, callback: GetProductCallback) {
     const { title, description, price, imageUrl } = payload;
-    SequelizedProduct.create({
-      title,
-      description,
-      price,
-      imageUrl,
-    })
+    req.user
+      .createSequelizedProduct({
+        title,
+        description,
+        price,
+        imageUrl,
+      })
       .then((data) => callback(undefined, data))
       .catch((err) => callback(new Error(err)));
   }
