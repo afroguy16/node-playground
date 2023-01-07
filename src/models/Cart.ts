@@ -26,6 +26,10 @@ class Cart {
     return await user.getSequelizedCart();
   }
 
+  async getAllProducts(cart) {
+    return await cart.getSequelizedProducts();
+  }
+
   async getProduct(cart, productId: number) {
     const products = await cart.getSequelizedProducts({
       where: {

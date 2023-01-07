@@ -1,4 +1,5 @@
 import Cart from "../models/Cart";
+import Order from "../models/Order";
 import Product, { ProductState } from "../models/Product";
 
 interface CartProduct {
@@ -101,6 +102,29 @@ export const postRemoveProductFromCart = async (req, res, next) => {
   try {
     await Cart.remove(req.user, id);
     res.redirect("/cart");
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const postCreateOrder = async (req, res, next) => {
+  const cart = await Cart.getCart(req.user);
+  try {
+    await Order.createOrder(req.user, cart);
+    res.redirect("/order");
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const getOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.getAllOrders(req.user);
+    res.render("shop/orders", {
+      pageTitle: "My orders",
+      pathName: "/orders",
+      orders,
+    });
   } catch (e) {
     console.log(e);
   }

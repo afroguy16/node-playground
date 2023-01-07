@@ -4,10 +4,12 @@ import {
   getCart,
   getCheckout,
   getHome,
+  getOrders,
   getProduct,
   getProducts,
   pagesData,
   postAddProductToCart,
+  postCreateOrder,
   postRemoveProductFromCart,
 } from "../controllers/shop";
 
@@ -23,8 +25,12 @@ shopRouter.get(pagesData.cart.pathName, getCart);
 
 shopRouter.post(pagesData.cart.pathName, postAddProductToCart);
 
-shopRouter.get(pagesData.checkout.pathName, getCheckout);
-
 shopRouter.post("/cart-delete-item", postRemoveProductFromCart);
+
+shopRouter.post("/create-order", postCreateOrder);
+
+shopRouter.get("/orders", getOrders);
+
+shopRouter.get(pagesData.checkout.pathName, getCheckout);
 
 export default shopRouter;

@@ -11,6 +11,8 @@ import SequelizedProduct from "./services/database/Product";
 import SequelizedUser from "./services/database/User";
 import SequelizedCart from "./services/database/Cart";
 import SequelizedCartsProducts from "./services/database/CartsProducts";
+import SequelizedOrder from "./services/database/Order";
+import SequelizedOrdersProducts from "./services/database/OrdersProducts";
 
 const app = express();
 
@@ -46,6 +48,14 @@ SequelizedCart.belongsToMany(SequelizedProduct, {
 });
 SequelizedProduct.belongsToMany(SequelizedCart, {
   through: SequelizedCartsProducts,
+});
+SequelizedUser.hasMany(SequelizedOrder);
+SequelizedOrder.belongsTo(SequelizedUser);
+SequelizedOrder.belongsToMany(SequelizedProduct, {
+  through: SequelizedOrdersProducts,
+});
+SequelizedProduct.belongsToMany(SequelizedOrder, {
+  through: SequelizedOrdersProducts,
 });
 
 sequelize

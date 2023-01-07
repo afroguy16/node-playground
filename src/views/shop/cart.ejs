@@ -18,6 +18,9 @@
             </li>
           <% }) %>
         </ul>
+        <form action="/create-order" method="POST">
+          <button class="btn">Place order</button>
+        </form>
         <h2>Total price: <%= cart.totalPrice %></h2>
       <% } %> 
     </main>
