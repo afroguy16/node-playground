@@ -1,7 +1,10 @@
 import Sequelize, { Model, Optional } from "sequelize";
 
-import { OrderAttributes } from "../../models/Order";
 import sequelize from "../../utils/database";
+
+interface OrderAttributes {
+  id: number;
+}
 
 class SequelizedOrder extends Model<
   OrderAttributes,

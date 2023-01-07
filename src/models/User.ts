@@ -6,8 +6,6 @@ export interface UserAttributes {
   email: string;
 }
 
-export type GetUserDataCallback = (err?: Error, data?: UserAttributes) => void;
-
 class User {
   async getWrappedUser(id: number) {
     return await SequelizedUser.findByPk(id);

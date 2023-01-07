@@ -1,9 +1,5 @@
 import Cart from "./Cart";
 
-export interface OrderAttributes {
-  id: number;
-}
-
 class Order {
   async createOrder(user, cart) {
     const cartProducts = await Cart.getAllProducts(cart);

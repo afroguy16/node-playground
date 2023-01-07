@@ -1,7 +1,11 @@
 import Sequelize, { Model, Optional } from "sequelize";
 
-import { CartsProductsAttributes } from "../../models/Cart";
 import sequelize from "../../utils/database";
+
+interface CartsProductsAttributes {
+  id: number;
+  quantity: number;
+}
 
 class SequelizedCartsProducts extends Model<
   CartsProductsAttributes,

@@ -1,26 +1,5 @@
 import SequelizedProduct from "../services/database/Product";
 
-export interface CartAttributes {
-  id: number;
-}
-
-export interface CartsProductsAttributes {
-  id: number;
-  quantity: number;
-}
-
-export interface CartState {
-  products: Array<CartsProductsAttributes>;
-  totalPrice: number;
-}
-
-export type GetCartProductCallback = (
-  product: CartsProductsAttributes | undefined,
-  index: number
-) => void;
-
-export type GetCartCallback = (cart: CartState) => void;
-
 class Cart {
   async getCart(user) {
     return await user.getSequelizedCart();

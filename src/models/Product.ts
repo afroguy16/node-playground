@@ -1,10 +1,6 @@
-import fs from "fs";
-import path from "path";
-
 import SequelizedProduct from "../services/database/Product";
-import { rootDirectory } from "../utils";
 
-import Cart from "./Cart";
+// TODO - Replace Callbacks with Async
 
 export interface ProductState {
   id: number;
