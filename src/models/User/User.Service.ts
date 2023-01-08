@@ -1,15 +1,14 @@
 const mongodb = require("mongodb");
 
 import { getDb } from "../../utils/database";
+import { UserAttributes, UserModel } from "./interfaces";
 
-import { ProductAttributes, ProductModel } from "./interfaces";
-
-class ProductService implements ProductModel {
+class UserService implements UserModel {
   private getCollection() {
-    return getDb().collection("products");
+    return getDb().collection("users");
   }
 
-  async create(payload: Omit<ProductAttributes, "_id">) {
+  async create(payload: Omit<UserAttributes, "_id">) {
     return this.getCollection().insertOne(payload);
   }
 
@@ -22,13 +21,7 @@ class ProductService implements ProductModel {
     return this.getCollection().findOne({ _id });
   }
 
-  async getMultiple(ids: Array<string>) {
-    return this.getCollection()
-      .find({ _id: { $in: ids } })
-      .toArray();
-  }
-
-  async update(payload: ProductAttributes) {
+  async update(payload: UserAttributes) {
     const { _id, ...restPayload } = payload;
 
     return this.getCollection().updateOne(
@@ -36,10 +29,6 @@ class ProductService implements ProductModel {
       { $set: restPayload }
     );
   }
-
-  async delete(id: string) {
-    return this.getCollection().deleteOne({ _id: new mongodb.ObjectId(id) });
-  }
 }
 
-export default new ProductService();
+export default new UserService();

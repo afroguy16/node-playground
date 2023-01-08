@@ -1,5 +1,5 @@
 import { ProductAttributes } from "../models/Product/interfaces";
-import Product from "../models/Product/Product";
+import Product from "../models/Product";
 
 export const pagesData = {
   editProduct: {
@@ -31,6 +31,7 @@ export const getCreateProduct = (req, res, next) => {
 export const postCreateProduct = async (req, res, next) => {
   const { title, imageUrl, description, price } = req.body;
   const payload: Omit<ProductAttributes, "_id"> = {
+    userId: req.user._id,
     title,
     imageUrl,
     description,
@@ -62,7 +63,14 @@ export const getEditProduct = async (req, res, next) => {
 export const postUpdateProduct = async (req, res, next) => {
   const { _id, title, imageUrl, description, price } = req.body;
   try {
-    await Product.update({ _id, title, imageUrl, description, price });
+    await Product.update({
+      _id,
+      userId: req.user._id,
+      title,
+      imageUrl,
+      description,
+      price,
+    });
     res.redirect("products");
   } catch (e) {
     console.log(e);

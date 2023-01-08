@@ -1,18 +1,16 @@
 <%- include('../includes/head.ejs') %> 
 </head>
-
 <body>
   <%- include('../includes/navigation.ejs') %> 
     <main>
-      <% if (cart.products.length < 1) { %>
-        <h1>No product in cart!</h1>
-      <% } else {  %>
+      <% if (cart?.products?.length > 0) { %>
         <ul>
           <% cart.products.forEach((product) => { %> 
             <li>
-              <p><%= product.title %> (<%= product.SequelizedCartsProducts.quantity %>) </p>
+              <p><%= product.title %> (<%= product.quantity %>) </p>
+              <h3>$<%= product.totalPrice %> </h2>
               <form action="/cart-delete-item" method="POST">
-                <input type="hidden" name="id" value="<%= product.id %>">
+                <input type="hidden" name="id" value="<%= product._id %>">
                 <button class="btn">Delete</button>
               </form>
             </li>
@@ -21,7 +19,9 @@
         <form action="/create-order" method="POST">
           <button class="btn">Place order</button>
         </form>
-        <h2>Total price: <%= cart.totalPrice %></h2>
+        <h2>Total price: $<%= cart.totalPrice %></h2>
+      <% } else {  %>
+        <h1>No product in cart!</h1>
       <% } %> 
     </main>
   <%- include('../includes/tail.ejs') %> 

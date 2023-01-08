@@ -16,6 +16,10 @@ class Product implements ProductModel {
     return ProductService.get(id);
   }
 
+  getMultiple(ids: Array<string>): Promise<Array<ProductAttributes>> {
+    return ProductService.getMultiple(ids);
+  }
+
   update(payload: ProductAttributes) {
     return ProductService.update(payload);
   }
