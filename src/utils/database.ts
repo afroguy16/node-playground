@@ -1,15 +1,21 @@
-import { Sequelize } from "sequelize";
+const MONGO_DB_URL =
+  "mongodb+srv://afroguy16:_cNtka5miKjv.3s@cluster0.7l9wyuh.mongodb.net/?retryWrites=true&w=majority";
+const mongodb = require("mongodb");
 
-const host = "localhost";
-const name = "node_playground";
-const user = "root";
-const password = "12345678";
-const dialect = "mysql";
+const MongoClient = mongodb.MongoClient;
+let _db;
 
-const sequelize = new Sequelize(name, user, password, {
-  dialect,
-  host,
-  logging: false,
-});
+export const connection = async () => {
+  const client = await MongoClient.connect(MONGO_DB_URL);
+  console.log("connected");
+  _db = client.db("shop");
+  return client;
+};
 
-export default sequelize;
+export const getDb = () => {
+  if (_db) {
+    return _db;
+  } else {
+    throw new Error("No database found");
+  }
+};

@@ -19,11 +19,11 @@
                   <p class="product__description"><%= product.description %></p>
               </div>
               <div class="card__actions">
-                <form action="/admin/edit-product/<%= product.id %>">
+                <form action="/admin/edit-product/<%= product._id %>">
                   <button class="btn">Edit</button>
                 </form>
                 <form action="/admin/delete-product" method="POST">
-                  <input type="hidden" name="id" value="<%= product.id %>">
+                  <input type="hidden" name="id" value="<%= product._id %>">
                   <button class="btn">Delete</button>
                 </form>
               </div>

@@ -1,7 +1,7 @@
 import express from "express";
 
 import {
-  getAddProduct,
+  getCreateProduct,
   getEditProduct,
   getProducts,
   postCreateProduct,
@@ -11,7 +11,7 @@ import {
 
 export const adminRouter = express.Router();
 
-adminRouter.get("/add-product", getAddProduct);
+adminRouter.get("/add-product", getCreateProduct);
 
 adminRouter.get("/products", getProducts);
 

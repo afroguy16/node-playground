@@ -1,76 +1,80 @@
-import Product, { ProductState } from "../models/Product";
+import { ProductAttributes } from "../models/Product/interfaces";
+import Product from "../models/Product/Product";
 
 export const pagesData = {
-  addProduct: {
-    title: "Add Product",
-    pathName: "admin/add-product",
-  },
   editProduct: {
     pathName: "admin/edit-product/:productId",
   },
-  getProducts: {
-    title: "Admin Products",
-    pathName: "admin/products",
-  },
 };
 
-export const getAddProduct = (req, res, next) => {
+export const getProducts = async (req, res, next) => {
+  try {
+    const products = await Product.getAll();
+    res.render("admin/products", {
+      pageTitle: "Admin Products",
+      pathName: "admin/products",
+      products,
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const getCreateProduct = (req, res, next) => {
   res.render("admin/update-product", {
-    pageTitle: pagesData.addProduct.title,
-    pathName: pagesData.addProduct.pathName,
+    pageTitle: "Add Product",
+    pathName: "admin/add-product",
     editing: false,
   });
 };
 
-export const getEditProduct = (req, res, next) => {
-  const { productId } = req.params;
-  Product.fetchProduct(productId)
-    .then((product) => {
-      res.render("admin/update-product", {
-        pageTitle: `Edit ${(product as unknown as ProductState)?.title}`,
-        pathName: pagesData.editProduct.pathName,
-        editing: true,
-        product,
-      });
-    })
-    .catch();
-};
-
-export const getProducts = (req, res, next) => {
-  Product.fetchAll()
-    .then((products) => {
-      res.render("admin/products", {
-        pageTitle: pagesData.getProducts.title,
-        pathName: pagesData.getProducts.pathName,
-        products,
-      });
-    })
-    .catch((error) => console.log(error));
-};
-
-export const postCreateProduct = (req, res, next) => {
+export const postCreateProduct = async (req, res, next) => {
   const { title, imageUrl, description, price } = req.body;
-  Product.create(req, { title, imageUrl, description, price }, (err) => {
-    if (!err) {
-      res.redirect("products");
-    } else {
-      console.log(err);
-    }
-  });
+  const payload: Omit<ProductAttributes, "_id"> = {
+    title,
+    imageUrl,
+    description,
+    price,
+  };
+  try {
+    await Product.create(payload);
+    res.redirect("products");
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-export const postUpdateProduct = (req, res, next) => {
-  const { id, title, imageUrl, description, price } = req.body;
-  Product.update({ id, title, imageUrl, description, price }, (err) => {
-    if (!err) {
-      res.redirect("products");
-    } else {
-      console.log(err);
-    }
-  });
+export const getEditProduct = async (req, res, next) => {
+  const { productId } = req.params;
+  try {
+    const product = await Product.get(productId);
+    res.render("admin/update-product", {
+      pageTitle: `Edit ${product.title}`,
+      pathName: pagesData.editProduct.pathName,
+      editing: true,
+      product,
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
-export const postDeleteProduct = (req, res, next) => {
+export const postUpdateProduct = async (req, res, next) => {
+  const { _id, title, imageUrl, description, price } = req.body;
+  try {
+    await Product.update({ _id, title, imageUrl, description, price });
+    res.redirect("products");
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const postDeleteProduct = async (req, res, next) => {
   const { id } = req.body;
-  Product.delete(id, () => res.redirect("products"));
+  try {
+    await Product.delete(id);
+    res.redirect("products");
+  } catch (e) {
+    console.log(e);
+  }
 };

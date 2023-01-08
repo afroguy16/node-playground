@@ -1,36 +1,33 @@
 import express from "express";
 
 import {
-  getCart,
-  getCheckout,
+  // getCart,
   getHome,
-  getOrders,
+  // getOrders,
   getProduct,
   getProducts,
   pagesData,
-  postAddProductToCart,
-  postCreateOrder,
-  postRemoveProductFromCart,
+  // postAddProductToCart,
+  // postCreateOrder,
+  // postRemoveProductFromCart,
 } from "../controllers/shop";
 
 const shopRouter = express.Router();
 
 shopRouter.get("/", getHome);
 
-shopRouter.get(pagesData.myProducts.pathName, getProducts);
+shopRouter.get("/products", getProducts);
 
-shopRouter.get(`${pagesData.myProducts.pathName}/:productId`, getProduct);
+shopRouter.get(`/products/:productId`, getProduct);
 
-shopRouter.get(pagesData.cart.pathName, getCart);
+// shopRouter.get(pagesData.cart.pathName, getCart);
 
-shopRouter.post(pagesData.cart.pathName, postAddProductToCart);
+// shopRouter.post(pagesData.cart.pathName, postAddProductToCart);
 
-shopRouter.post("/cart-delete-item", postRemoveProductFromCart);
+// shopRouter.post("/cart-delete-item", postRemoveProductFromCart);
 
-shopRouter.post("/create-order", postCreateOrder);
+// shopRouter.post("/create-order", postCreateOrder);
 
-shopRouter.get("/orders", getOrders);
-
-shopRouter.get(pagesData.checkout.pathName, getCheckout);
+// shopRouter.get("/orders", getOrders);
 
 export default shopRouter;
