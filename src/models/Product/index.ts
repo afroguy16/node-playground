@@ -27,8 +27,6 @@ class Product implements ProductModel {
   delete(id: string) {
     return ProductService.delete(id);
   }
-
-  // create a delete multiple
 }
 
 export default new Product();

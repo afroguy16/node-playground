@@ -18,6 +18,10 @@ class Cart implements CartModel {
     return CartService.delete(userId, productId);
   }
 
+  async deleteMultiple(userId: string, ids: Array<string>) {
+    return CartService.deleteMultiple(userId, ids);
+  }
+
   async clear(userId: string) {
     return CartService.clear(userId);
   }

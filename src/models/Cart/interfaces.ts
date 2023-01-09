@@ -32,4 +32,5 @@ export interface CartModel {
   getProductIds: (userId: string) => Promise<any>;
   clear: (userId: string) => Promise<any>;
   delete: (userId: string, productId: string) => Promise<any>;
+  deleteMultiple: (userId: string, productIds: Array<string>) => Promise<any>;
 }

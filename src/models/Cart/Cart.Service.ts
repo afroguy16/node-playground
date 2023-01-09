@@ -65,8 +65,25 @@ class CartService implements CartModel {
     const productIds = user.cart?.products?.map((product) => product.productId);
 
     if (productIds?.length > 0) {
-      // TODO - delete product from the user cart that are no longer available (e.g. deleted by the admin)
       const products = await Product.getMultiple(productIds);
+
+      // TODO - delete product from the user cart that are no longer available (e.g. deleted by the admin)- done
+      // TODO - move to its own function
+      if (products.length > 0) {
+        const memToCompare: { [key: string]: boolean } = {};
+
+        // insert the products to be compared into a temporary memory
+        products.forEach((product) => {
+          memToCompare[product._id] = true;
+        });
+
+        const filteredIds = productIds.filter((id) =>
+          Boolean(!memToCompare[id])
+        );
+        await this.deleteMultiple(userId, filteredIds);
+      } else {
+        await this.deleteMultiple(userId, productIds);
+      }
 
       const updatedProducts: Array<CartWithCompleteProductAttributes> = [];
       let index = 0;
@@ -106,6 +123,24 @@ class CartService implements CartModel {
         product.productId.toString() !==
         new mongodb.ObjectId(productId).toString()
     );
+    return this.replace({ userId, cart: { products: filteredCartProducts } });
+  }
+
+  async deleteMultiple(userId: string, ids: Array<string>) {
+    const cart = await this.getProductIds(userId);
+    const memToCompare: { [key: string]: boolean } = {};
+
+    // insert the products to be compared into a temporary memory
+    ids.forEach((id) => {
+      memToCompare[id] = true;
+    });
+
+    // filter out any product which is part of the ids past to the function to be deleted
+    const filteredCartProducts = cart.products.filter(
+      (product) => !Boolean(memToCompare[product.productId])
+    );
+
+    // build a new cart from the filtered products, then replace it with the user existing cart
     return this.replace({ userId, cart: { products: filteredCartProducts } });
   }
 
