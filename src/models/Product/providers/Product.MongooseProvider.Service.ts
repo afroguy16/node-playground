@@ -4,9 +4,14 @@ import { WriteResponse } from "../../../utils/interfaces";
 
 import { ProductAttributes, ProductModel } from "../interfaces";
 
-const productSchema = new Schema<ProductAttributes>({
+interface ProductAttributesSchema extends Omit<ProductAttributes, "userId"> {
+  userId: Schema.Types.ObjectId;
+}
+
+const productSchema = new Schema<ProductAttributesSchema>({
   userId: {
-    type: String,
+    type: Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
   title: {
@@ -27,7 +32,7 @@ const productSchema = new Schema<ProductAttributes>({
   },
 });
 
-const Product = model<ProductAttributes>("Product", productSchema);
+const Product = model<ProductAttributesSchema>("Product", productSchema);
 
 export default class ProductMongooseProviderService implements ProductModel {
   async create(

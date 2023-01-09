@@ -20,6 +20,7 @@ const userSchema = new Schema<UserAttributes & { cart: CartAttributes }>({
         {
           productId: {
             type: Schema.Types.ObjectId,
+            ref: "Product",
             required: true,
           },
           quantity: {

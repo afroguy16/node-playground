@@ -1,4 +1,4 @@
-import { WriteResponse } from "../Order/interfaces";
+import { WriteResponse } from "../../utils/interfaces";
 
 export interface ProductAttributes {
   _id: string;
