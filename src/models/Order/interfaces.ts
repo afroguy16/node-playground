@@ -1,3 +1,4 @@
+import { WriteResponse } from "../../utils/interfaces";
 import { CartWithCompleteProductAttributes } from "../Cart/interfaces";
 import { Status } from "./enums";
 
@@ -8,11 +9,6 @@ export interface OrderAttributes {
   totalPrice: number;
   status: Status;
   createdAt: number;
-}
-
-export interface WriteResponse {
-  status: boolean;
-  message?: unknown;
 }
 
 export interface OrderModel {

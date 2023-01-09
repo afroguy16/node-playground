@@ -1,3 +1,5 @@
+import { WriteResponse } from "../../utils/interfaces";
+
 export interface UserAttributes {
   _id: string;
   name: string;
@@ -5,8 +7,8 @@ export interface UserAttributes {
 }
 
 export interface UserModel {
-  create: (payload: Omit<UserAttributes, "_id">) => Promise<any>;
-  getAll: () => Promise<any>;
-  get: (id: string) => Promise<any>;
-  update: (payload: UserAttributes) => Promise<any>;
+  create: (payload: Omit<UserAttributes, "_id">) => Promise<WriteResponse>;
+  getAll: () => Promise<Array<UserAttributes>>;
+  get: (id: string) => Promise<UserAttributes | null>;
+  update: (payload: UserAttributes) => Promise<WriteResponse>;
 }

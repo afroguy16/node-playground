@@ -1,5 +1,7 @@
 import { model, Schema } from "mongoose";
-import { WriteResponse } from "../../Order/interfaces";
+
+import { WriteResponse } from "../../../utils/interfaces";
+
 import { ProductAttributes, ProductModel } from "../interfaces";
 
 const productSchema = new Schema<ProductAttributes>({

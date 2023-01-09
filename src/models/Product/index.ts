@@ -1,5 +1,4 @@
-import { WriteResponse } from "../Order/interfaces";
-
+import { WriteResponse } from "../../utils/interfaces";
 import { ProductAttributes, ProductModel } from "./interfaces";
 import ProductService from "./Product.Service";
 

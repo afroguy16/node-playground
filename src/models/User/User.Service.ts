@@ -1,34 +1,5 @@
-const mongodb = require("mongodb");
+import UserMongooseProviderService from "./providers/User.MongooseProvider.Service";
 
-import { getDb } from "../../utils/database";
-import { UserAttributes, UserModel } from "./interfaces";
+class User extends UserMongooseProviderService {}
 
-class UserService implements UserModel {
-  private getCollection() {
-    return getDb().collection("users");
-  }
-
-  async create(payload: Omit<UserAttributes, "_id">) {
-    return this.getCollection().insertOne(payload);
-  }
-
-  async getAll() {
-    return this.getCollection().find().toArray();
-  }
-
-  async get(id: string) {
-    const _id = new mongodb.ObjectId(id);
-    return this.getCollection().findOne({ _id });
-  }
-
-  async update(payload: UserAttributes) {
-    const { _id, ...restPayload } = payload;
-
-    return this.getCollection().updateOne(
-      { _id: new mongodb.ObjectId(_id) },
-      { $set: restPayload }
-    );
-  }
-}
-
-export default new UserService();
+export default new User();
