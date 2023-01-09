@@ -87,25 +87,36 @@ export const postRemoveProductFromCart = async (req, res, next) => {
   }
 };
 
-// export const postCreateOrder = async (req, res, next) => {
-//   const cart = await Cart.getCart(req.user);
-//   try {
-//     await Order.createOrder(req.user, cart);
-//     res.redirect("/order");
-//   } catch (e) {
-//     console.log(e);
-//   }
-// };
+export const postCreateOrder = async (req, res, next) => {
+  const { _id: userId } = req.user;
+  try {
+    const cart = await Cart.get(userId);
+    const response = await Order.add({
+      userId,
+      products: cart.products,
+      totalPrice: cart.totalPrice,
+    });
 
-// export const getOrders = async (req, res, next) => {
-//   try {
-//     const orders = await Order.getAllOrders(req.user);
-//     res.render("shop/orders", {
-//       pageTitle: "My orders",
-//       pathName: "/orders",
-//       orders,
-//     });
-//   } catch (e) {
-//     console.log(e);
-//   }
-// };
+    // This if check only makes sense with the assumption that mongodb fail the operation without throwing an error
+    if (response.status) {
+      await Cart.clear(userId);
+    }
+
+    res.redirect("/orders");
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const getOrders = async (req, res, next) => {
+  try {
+    const orders = await Order.get(req.user._id);
+    res.render("shop/orders", {
+      pageTitle: "My orders",
+      pathName: "/orders",
+      orders,
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};

@@ -1,3 +1,5 @@
+import { ProductAttributes } from "../Product/interfaces";
+
 export interface CartProductAttributes {
   productId: string;
   quantity: number;
@@ -15,6 +17,13 @@ export interface ReplaceCartPayload {
 export interface AddToCartPayload {
   userId: string;
   productId: string;
+}
+
+export interface CartWithCompleteProductAttributes
+  extends Omit<ProductAttributes, "userId"> {
+  authorId: string;
+  quantity: number;
+  totalPrice: number;
 }
 
 export interface CartModel {

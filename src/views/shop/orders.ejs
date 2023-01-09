@@ -12,12 +12,13 @@
             <li>
               <h1><%= order.id %> </h1>
               <ul>
-                <% order.SequelizedProducts.forEach(product => { %>
+                <% order.products.forEach(product => { %>
                  <li>
-                  <p><%= product.title %> (<%= product.SequelizedOrdersProducts?.quantity %>)</p>
+                  <p><%= product.title %> (<%= product?.quantity %>)</p>
                  </li>
                 <% }) %>
               </ul>
+              <%= order.totalPrice %> 
             </li>
           <% }) %>
         </ul>

@@ -2,19 +2,13 @@ const mongodb = require("mongodb");
 
 import { getDb } from "../../utils/database";
 import Product from "../Product";
-import { ProductAttributes } from "../Product/interfaces";
 import {
   AddToCartPayload,
   CartAttributes,
   CartModel,
+  CartWithCompleteProductAttributes,
   ReplaceCartPayload,
 } from "./interfaces";
-
-type CartProduct = Omit<ProductAttributes, "userId"> & {
-  authorId: string;
-  quantity: number;
-  totalPrice: number;
-};
 
 const COLLECTION = "users";
 
@@ -51,7 +45,7 @@ class CartService implements CartModel {
 
     if (exisingProductIndex >= 0) {
       cart.products[exisingProductIndex] = {
-        productId: parsedProductId,
+        productId: cart.products[exisingProductIndex].productId,
         quantity: cart.products[exisingProductIndex].quantity + 1,
       };
     } else {
@@ -71,9 +65,10 @@ class CartService implements CartModel {
     const productIds = user.cart?.products?.map((product) => product.productId);
 
     if (productIds?.length > 0) {
+      // TODO - delete product from the user cart that are no longer available (e.g. deleted by the admin)
       const products = await Product.getMultiple(productIds);
 
-      const updatedProducts: Array<CartProduct> = [];
+      const updatedProducts: Array<CartWithCompleteProductAttributes> = [];
       let index = 0;
       let totalPrice = 0;
 
