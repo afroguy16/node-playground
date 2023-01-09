@@ -31,7 +31,7 @@ export const getCreateProduct = (req, res, next) => {
 export const postCreateProduct = async (req, res, next) => {
   const { title, imageUrl, description, price } = req.body;
   const payload: Omit<ProductAttributes, "_id"> = {
-    userId: req.user._id,
+    userId: "req.user._id",
     title,
     imageUrl,
     description,
@@ -50,7 +50,7 @@ export const getEditProduct = async (req, res, next) => {
   try {
     const product = await Product.get(productId);
     res.render("admin/update-product", {
-      pageTitle: `Edit ${product.title}`,
+      pageTitle: `Edit ${product?.title}`,
       pathName: pagesData.editProduct.pathName,
       editing: true,
       product,
@@ -65,7 +65,7 @@ export const postUpdateProduct = async (req, res, next) => {
   try {
     await Product.update({
       _id,
-      userId: req.user._id,
+      userId: "req.user._id",
       title,
       imageUrl,
       description,

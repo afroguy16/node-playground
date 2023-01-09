@@ -13,9 +13,9 @@ export const adminRouter = express.Router();
 
 adminRouter.get("/add-product", getCreateProduct);
 
-adminRouter.get("/products", getProducts);
-
 adminRouter.post("/add-product", postCreateProduct);
+
+adminRouter.get("/products", getProducts);
 
 adminRouter.get("/edit-product/:productId", getEditProduct);
 

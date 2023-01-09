@@ -1,14 +1,14 @@
 import express from "express";
 
 import {
-  getCart,
+  // getCart,
   getHome,
-  getOrders,
+  // getOrders,
   getProduct,
   getProducts,
-  postAddProductToCart,
-  postCreateOrder,
-  postRemoveProductFromCart,
+  // postAddProductToCart,
+  // postCreateOrder,
+  // postRemoveProductFromCart,
 } from "../controllers/shop";
 
 const shopRouter = express.Router();
@@ -19,14 +19,14 @@ shopRouter.get("/products", getProducts);
 
 shopRouter.get(`/products/:productId`, getProduct);
 
-shopRouter.get("/cart", getCart);
+// shopRouter.get("/cart", getCart);
 
-shopRouter.post("/cart", postAddProductToCart);
+// shopRouter.post("/cart", postAddProductToCart);
 
-shopRouter.post("/cart-delete-item", postRemoveProductFromCart);
+// shopRouter.post("/cart-delete-item", postRemoveProductFromCart);
 
-shopRouter.post("/create-order", postCreateOrder);
+// shopRouter.post("/create-order", postCreateOrder);
 
-shopRouter.get("/orders", getOrders);
+// shopRouter.get("/orders", getOrders);
 
 export default shopRouter;

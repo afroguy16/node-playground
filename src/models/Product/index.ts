@@ -1,7 +1,7 @@
+import { WriteResponse } from "../Order/interfaces";
+
 import { ProductAttributes, ProductModel } from "./interfaces";
 import ProductService from "./Product.Service";
-
-// TODO - Add call back types for calls without one e.g. {message: string('succesfful deleted')}. but we need to confirm if the lack of error is equal to success before adding call back types
 
 class Product implements ProductModel {
   create(payload: Omit<ProductAttributes, "_id">) {
@@ -12,7 +12,7 @@ class Product implements ProductModel {
     return ProductService.getAll();
   }
 
-  get(id: string): Promise<ProductAttributes> {
+  get(id: string): Promise<ProductAttributes | null> {
     return ProductService.get(id);
   }
 
@@ -20,11 +20,11 @@ class Product implements ProductModel {
     return ProductService.getMultiple(ids);
   }
 
-  update(payload: ProductAttributes) {
+  update(payload: ProductAttributes): Promise<WriteResponse> {
     return ProductService.update(payload);
   }
 
-  delete(id: string) {
+  delete(id: string): Promise<WriteResponse> {
     return ProductService.delete(id);
   }
 }
