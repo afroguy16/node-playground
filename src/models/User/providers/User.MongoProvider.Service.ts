@@ -1,7 +1,7 @@
 const mongodb = require("mongodb");
 
 import { getDb } from "../../../utils/database";
-import { UserAttributes, UserModel } from "../interfaces";
+import { UserAttributes, UserGetPayload, UserModel } from "../interfaces";
 
 export default class UserMongoProviderService implements UserModel {
   private getCollection() {
@@ -16,9 +16,13 @@ export default class UserMongoProviderService implements UserModel {
     return this.getCollection().find().toArray();
   }
 
-  async get(id: string) {
+  async getById(id: string): Promise<UserAttributes | null> {
     const _id = new mongodb.ObjectId(id);
     return this.getCollection().findOne({ _id });
+  }
+
+  async get(payload: UserGetPayload): Promise<UserAttributes | null> {
+    return this.getCollection().findOne(payload);
   }
 
   async update(payload: UserAttributes) {

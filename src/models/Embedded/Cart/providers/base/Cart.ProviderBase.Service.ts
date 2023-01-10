@@ -41,7 +41,7 @@ export default class CartProviderProviderBase implements CartModel {
 
   async add(payload: AddToCartPayload) {
     const { userId, productId } = payload;
-    const user = await User.get(userId);
+    const user = await User.getById(userId);
 
     const cart: CartAttributes = user?.cart ? user.cart : { products: [] };
 
@@ -65,7 +65,7 @@ export default class CartProviderProviderBase implements CartModel {
   }
 
   async get(userId: string) {
-    const user = await User.get(userId);
+    const user = await User.getById(userId);
 
     const productIds = user?.cart?.products?.map(
       (product) => product.productId
@@ -104,7 +104,7 @@ export default class CartProviderProviderBase implements CartModel {
   }
 
   async getProductIds(userId: string) {
-    const user = await User.get(userId);
+    const user = await User.getById(userId);
     return user?.cart;
   }
 

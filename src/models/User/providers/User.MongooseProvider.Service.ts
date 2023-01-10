@@ -4,7 +4,7 @@ import { WriteResponse } from "../../../utils/interfaces";
 import { Optional } from "../../../utils/types";
 
 import { CartAttributes } from "../../Embedded/Cart/interfaces";
-import { UserAttributes, UserModel } from "../interfaces";
+import { UserAttributes, UserGetPayload, UserModel } from "../interfaces";
 
 const userSchema = new Schema<UserAttributes & { cart: CartAttributes }>({
   name: {
@@ -12,6 +12,10 @@ const userSchema = new Schema<UserAttributes & { cart: CartAttributes }>({
     required: true,
   },
   email: {
+    type: String,
+    required: true,
+  },
+  password: {
     type: String,
     required: true,
   },
@@ -52,8 +56,14 @@ export default class UserMongooseProviderService implements UserModel {
     return User.find();
   }
 
-  async get(id: string): Promise<UserAttributes | null> {
+  async getById(id: string): Promise<UserAttributes | null> {
     return User.findById(id);
+  }
+
+  async get(payload: UserGetPayload): Promise<UserAttributes | null> {
+    // TODO - fix this hack!
+    const key = Object.keys(payload)[0];
+    return User.findOne({ [key]: payload[key] });
   }
 
   async update(
