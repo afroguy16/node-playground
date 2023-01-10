@@ -1,4 +1,4 @@
-import { ProductAttributes } from "../Product/interfaces";
+import { ProductAttributes } from "../../Product/interfaces";
 
 export interface CartProductAttributes {
   productId: string;

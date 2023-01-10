@@ -1,18 +1,18 @@
 const mongodb = require("mongodb");
 
-import { getDb } from "../../utils/database";
-import Product from "../Product";
+import { getDb } from "../../../../utils/database";
+import Product from "../../../Product";
 import {
   AddToCartPayload,
   CartAttributes,
   CartModel,
   CartWithCompleteProductAttributes,
   ReplaceCartPayload,
-} from "./interfaces";
+} from "../interfaces";
 
 const COLLECTION = "users";
 
-class CartService implements CartModel {
+export default class CartService implements CartModel {
   private getCollection() {
     return getDb().collection(COLLECTION);
   }
@@ -148,5 +148,3 @@ class CartService implements CartModel {
     return this.replace({ userId, cart: { products: [] } });
   }
 }
-
-export default new CartService();

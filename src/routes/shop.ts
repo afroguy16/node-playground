@@ -1,14 +1,14 @@
 import express from "express";
 
 import {
-  // getCart,
+  getCart,
   getHome,
   // getOrders,
   getProduct,
   getProducts,
-  // postAddProductToCart,
+  postAddProductToCart,
   // postCreateOrder,
-  // postRemoveProductFromCart,
+  postRemoveProductFromCart,
 } from "../controllers/shop";
 
 const shopRouter = express.Router();
@@ -19,11 +19,11 @@ shopRouter.get("/products", getProducts);
 
 shopRouter.get(`/products/:productId`, getProduct);
 
-// shopRouter.get("/cart", getCart);
+shopRouter.get("/cart", getCart);
 
-// shopRouter.post("/cart", postAddProductToCart);
+shopRouter.post("/cart", postAddProductToCart);
 
-// shopRouter.post("/cart-delete-item", postRemoveProductFromCart);
+shopRouter.post("/cart-delete-item", postRemoveProductFromCart);
 
 // shopRouter.post("/create-order", postCreateOrder);
 

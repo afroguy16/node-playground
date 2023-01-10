@@ -1,4 +1,5 @@
 import { WriteResponse } from "../../utils/interfaces";
+import { Optional } from "../../utils/types";
 
 import { UserAttributes, UserModel } from "./interfaces";
 import UserService from "./User.Service";
@@ -16,7 +17,9 @@ class User implements UserModel {
     return UserService.get(id);
   }
 
-  update(payload: UserAttributes): Promise<WriteResponse> {
+  update(
+    payload: Optional<UserAttributes, "cart" | "name" | "email">
+  ): Promise<WriteResponse> {
     return UserService.update(payload);
   }
 }

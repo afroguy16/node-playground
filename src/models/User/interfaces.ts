@@ -1,9 +1,11 @@
 import { WriteResponse } from "../../utils/interfaces";
+import { CartAttributes } from "../Embedded/Cart/interfaces";
 
 export interface UserAttributes {
   _id: string;
   name: string;
   email: string;
+  cart?: CartAttributes;
 }
 
 export interface UserModel {

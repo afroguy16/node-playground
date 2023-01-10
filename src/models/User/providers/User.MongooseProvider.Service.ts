@@ -1,8 +1,9 @@
 import { model, Schema } from "mongoose";
 
 import { WriteResponse } from "../../../utils/interfaces";
+import { Optional } from "../../../utils/types";
 
-import { CartAttributes } from "../../Cart/interfaces";
+import { CartAttributes } from "../../Embedded/Cart/interfaces";
 import { UserAttributes, UserModel } from "../interfaces";
 
 const userSchema = new Schema<UserAttributes & { cart: CartAttributes }>({
@@ -16,20 +17,24 @@ const userSchema = new Schema<UserAttributes & { cart: CartAttributes }>({
   },
   cart: {
     type: {
-      products: [
-        {
-          productId: {
-            type: Schema.Types.ObjectId,
-            ref: "Product",
-            required: true,
+      products: {
+        _id: false,
+        type: [
+          {
+            productId: {
+              type: Schema.Types.ObjectId,
+              ref: "Product",
+              required: true,
+            },
+            quantity: {
+              type: Number,
+              required: true,
+            },
           },
-          quantity: {
-            type: Number,
-            required: true,
-          },
-        },
-      ],
+        ],
+      },
     },
+    _id: false,
     required: false,
   },
 });
@@ -51,7 +56,9 @@ export default class UserMongooseProviderService implements UserModel {
     return User.findById(id);
   }
 
-  async update(payload: UserAttributes): Promise<WriteResponse> {
+  async update(
+    payload: Optional<UserAttributes, "cart" | "name" | "email">
+  ): Promise<WriteResponse> {
     const { _id, ...update } = payload;
     const filter = { _id };
 
