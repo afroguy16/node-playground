@@ -3,11 +3,11 @@ import express from "express";
 import {
   getCart,
   getHome,
-  // getOrders,
+  getOrders,
   getProduct,
   getProducts,
   postAddProductToCart,
-  // postCreateOrder,
+  postCreateOrder,
   postRemoveProductFromCart,
 } from "../controllers/shop";
 
@@ -25,8 +25,8 @@ shopRouter.post("/cart", postAddProductToCart);
 
 shopRouter.post("/cart-delete-item", postRemoveProductFromCart);
 
-// shopRouter.post("/create-order", postCreateOrder);
+shopRouter.post("/create-order", postCreateOrder);
 
-// shopRouter.get("/orders", getOrders);
+shopRouter.get("/orders", getOrders);
 
 export default shopRouter;

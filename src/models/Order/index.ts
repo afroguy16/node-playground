@@ -1,19 +1,21 @@
+import { WriteResponse } from "../../utils/interfaces";
+
 import { Status } from "./enums";
-import { OrderAttributes, OrderModel, WriteResponse } from "./interfaces";
+import { OrderAttributes, OrderModel } from "./interfaces";
 import OrderService from "./Order.Service";
 
 class Order implements OrderModel {
-  async add(
+  async create(
     payload: Omit<OrderAttributes, "_id" | "status" | "createdAt">
   ): Promise<WriteResponse> {
-    return OrderService.add(payload);
+    return OrderService.create(payload);
   }
 
   async get(userId: string): Promise<Array<OrderAttributes>> {
     return OrderService.get(userId);
   }
 
-  async getOne(orderId: string): Promise<OrderAttributes> {
+  async getOne(orderId: string): Promise<OrderAttributes | null> {
     return OrderService.getOne(orderId);
   }
 

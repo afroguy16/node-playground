@@ -12,8 +12,8 @@ export interface OrderAttributes {
 }
 
 export interface OrderModel {
-  add: (payload: Omit<OrderAttributes, "status">) => Promise<WriteResponse>;
+  create: (payload: Omit<OrderAttributes, "status">) => Promise<WriteResponse>;
   get: (userId: string) => Promise<Array<OrderAttributes>>;
-  getOne: (orderId: string) => Promise<OrderAttributes>;
+  getOne: (orderId: string) => Promise<OrderAttributes | null>;
   updateStatus: (orderId: string, status: Status) => Promise<any>;
 }
