@@ -7,18 +7,36 @@
       <li class="main-header__item">
         <a href="/products" class="<%= pathName === '/products' ? 'active' : '' %>">Products</a>
       </li>
+      <% if (isLoggedIn) { %>
       <li class="main-header__item">
         <a href="/cart" class="<%= pathName === '/cart' ? 'active' : '' %>">Cart</a>
       </li>
       <li class="main-header__item">
         <a href="/orders" class="<%= pathName === '/orders' ? 'active' : '' %>">Orders</a>
       </li>
-      <li class="main-header__item">
-        <a href="/admin/add-product" class="<%= pathName === 'admin/add-product' ? 'active' : '' %>">Add Product</a>
-      </li>
-      <li class="main-header__item">
-        <a href="/admin/products" class="<%= pathName === 'admin/products' ? 'active' : '' %>">Admin Products</a>
-      </li>
+        <li class="main-header__item">
+          <a href="/admin/add-product" class="<%= pathName === 'admin/add-product' ? 'active' : '' %>">Add Product</a>
+        </li>
+        <li class="main-header__item">
+          <a href="/admin/products" class="<%= pathName === 'admin/products' ? 'active' : '' %>">Admin Products</a>
+        </li>
+      <% } %>
+    </ul>
+    <ul class="main-header__item-list">
+      <% if (!isLoggedIn) { %>
+        <li class="main-header__item">
+          <a href="/login" class="<%= pathName === '/login' ? 'active' : '' %>">Login</a>
+        </li>
+        <li class="main-header__item">
+          <a href="/signup" class="<%= pathName === '/signup' ? 'active' : '' %>">Sign up</a>
+        </li>
+      <% } else { %>
+        <li>
+          <form action="/logout" method="POST">
+            <button class="btn">Logout</button>
+          </form>
+        </li>
+       <% } %> 
     </ul>
   </nav>
 </header>

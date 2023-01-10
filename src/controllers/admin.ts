@@ -14,6 +14,7 @@ export const getProducts = async (req, res, next) => {
       pageTitle: "Admin Products",
       pathName: "admin/products",
       products,
+      isLoggedIn: req.session.user?._id,
     });
   } catch (e) {
     console.log(e);
@@ -25,13 +26,14 @@ export const getCreateProduct = (req, res, next) => {
     pageTitle: "Add Product",
     pathName: "admin/add-product",
     editing: false,
+    isLoggedIn: req.session.user?._id,
   });
 };
 
 export const postCreateProduct = async (req, res, next) => {
   const { title, imageUrl, description, price } = req.body;
   const payload: Omit<ProductAttributes, "_id"> = {
-    userId: req.user._id,
+    userId: req.session.user._id,
     title,
     imageUrl,
     description,
@@ -54,6 +56,7 @@ export const getEditProduct = async (req, res, next) => {
       pathName: pagesData.editProduct.pathName,
       editing: true,
       product,
+      isLoggedIn: req.session.user?._id,
     });
   } catch (e) {
     console.log(e);
@@ -65,7 +68,7 @@ export const postUpdateProduct = async (req, res, next) => {
   try {
     await Product.update({
       _id,
-      userId: req.user._id,
+      userId: req.session.user._id,
       title,
       imageUrl,
       description,

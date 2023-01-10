@@ -21,6 +21,7 @@ export const getHome = async (req, res, next) => {
       pageTitle: "Home",
       pathName: "/",
       products,
+      isLoggedIn: req.session.user?._id,
     });
   } catch (e) {
     console.log(e);
@@ -34,6 +35,7 @@ export const getProducts = async (req, res, next) => {
       pageTitle: "All products",
       pathName: "/products",
       products,
+      isLoggedIn: req.session.user?._id,
     });
   } catch (e) {
     console.log(e);
@@ -48,6 +50,7 @@ export const getProduct = async (req, res, next) => {
       pageTitle: "Product Details",
       pathName: "/products",
       product,
+      isLoggedIn: req.session.user?._id,
     });
   } catch (e) {
     console.log(e);
@@ -56,11 +59,12 @@ export const getProduct = async (req, res, next) => {
 
 export const getCart = async (req, res, next) => {
   try {
-    const cart = await Cart.get(req.user._id);
+    const cart = await Cart.get(req.session.user?._id);
     res.render("shop/cart", {
       pageTitle: "Your Cart",
       pathName: "/cart",
       cart,
+      isLoggedIn: req.session.user?._id,
     });
   } catch (error) {
     console.log(error);
@@ -70,7 +74,7 @@ export const getCart = async (req, res, next) => {
 export const postAddProductToCart = async (req, res, next) => {
   const { productId } = req.body;
   try {
-    await Cart.add({ userId: req.user._id, productId });
+    await Cart.add({ userId: req.session.user._id, productId });
     res.redirect("/cart");
   } catch (e) {
     console.log(e);
@@ -80,7 +84,7 @@ export const postAddProductToCart = async (req, res, next) => {
 export const postRemoveProductFromCart = async (req, res, next) => {
   const { id } = req.body;
   try {
-    await Cart.delete(req.user._id, id);
+    await Cart.delete(req.session.user._id, id);
     res.redirect("/cart");
   } catch (e) {
     console.log(e);
@@ -88,7 +92,7 @@ export const postRemoveProductFromCart = async (req, res, next) => {
 };
 
 export const postCreateOrder = async (req, res, next) => {
-  const { _id: userId } = req.user;
+  const { _id: userId } = req.session.user;
   try {
     const cart = await Cart.get(userId);
     const response = await Order.create({
@@ -110,11 +114,12 @@ export const postCreateOrder = async (req, res, next) => {
 
 export const getOrders = async (req, res, next) => {
   try {
-    const orders = await Order.get(req.user._id);
+    const orders = await Order.get(req.session.user?._id);
     res.render("shop/orders", {
       pageTitle: "My orders",
       pathName: "/orders",
       orders,
+      isLoggedIn: req.session.user?._id,
     });
   } catch (e) {
     console.log(e);
