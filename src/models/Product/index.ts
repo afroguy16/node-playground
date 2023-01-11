@@ -1,4 +1,5 @@
 import { WriteResponse } from "../../utils/interfaces";
+import { Optional } from "../../utils/types";
 import { ProductAttributes, ProductModel } from "./interfaces";
 import ProductService from "./Product.Service";
 
@@ -15,11 +16,20 @@ class Product implements ProductModel {
     return ProductService.get(id);
   }
 
+  // TODO - add to Interface and other Provider classes
+  getByFilter(payload: {
+    [key: string]: keyof ProductAttributes;
+  }): Promise<Array<ProductAttributes>> {
+    return ProductService.getByFilter(payload);
+  }
+
   getMultiple(ids: Array<string>): Promise<Array<ProductAttributes>> {
     return ProductService.getMultiple(ids);
   }
 
-  update(payload: ProductAttributes): Promise<WriteResponse> {
+  update(
+    payload: Optional<ProductAttributes, keyof Omit<ProductAttributes, "_id">>
+  ): Promise<WriteResponse> {
     return ProductService.update(payload);
   }
 

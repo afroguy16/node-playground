@@ -1,4 +1,5 @@
 import { WriteResponse } from "../../utils/interfaces";
+import { Optional } from "../../utils/types";
 
 export interface ProductAttributes {
   _id: string;
@@ -14,6 +15,8 @@ export interface ProductModel {
   getAll: () => Promise<Array<ProductAttributes>>;
   get: (id: string) => Promise<ProductAttributes | null>;
   getMultiple: (ids: Array<string>) => Promise<any>;
-  update: (payload: ProductAttributes) => Promise<any>;
+  update: (
+    payload: Optional<ProductAttributes, keyof Omit<ProductAttributes, "_id">>
+  ) => Promise<any>;
   delete: (id: string) => Promise<any>;
 }

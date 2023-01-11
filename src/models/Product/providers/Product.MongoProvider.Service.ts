@@ -1,6 +1,7 @@
 const mongodb = require("mongodb");
 
 import { getDb } from "../../../utils/database";
+import { Optional } from "../../../utils/types";
 
 import { ProductAttributes, ProductModel } from "../interfaces";
 
@@ -28,7 +29,9 @@ export default class ProductMongoProviderService implements ProductModel {
       .toArray();
   }
 
-  async update(payload: ProductAttributes) {
+  async update(
+    payload: Optional<ProductAttributes, keyof Omit<ProductAttributes, "_id">>
+  ) {
     const { _id, ...restPayload } = payload;
 
     return this.getCollection().updateOne(

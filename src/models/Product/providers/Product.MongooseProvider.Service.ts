@@ -1,6 +1,7 @@
 import { model, Schema } from "mongoose";
 
 import { WriteResponse } from "../../../utils/interfaces";
+import { Optional } from "../../../utils/types";
 
 import { ProductAttributes, ProductModel } from "../interfaces";
 
@@ -51,11 +52,21 @@ export default class ProductMongooseProviderService implements ProductModel {
     return Product.findById(id);
   }
 
+  // TODO - Proposal - add to Interface
+  async getByFilter(payload: {
+    [key: string]: keyof ProductAttributes;
+  }): Promise<Array<ProductAttributes>> {
+    return Product.find(payload);
+  }
+
+  // Fix the name to be more explanatory
   async getMultiple(ids: Array<string>): Promise<Array<ProductAttributes>> {
     return Product.find({ _id: { $in: ids } });
   }
 
-  async update(payload: ProductAttributes): Promise<WriteResponse> {
+  async update(
+    payload: Optional<ProductAttributes, keyof Omit<ProductAttributes, "_id">>
+  ): Promise<WriteResponse> {
     const { _id, ...update } = payload;
     const filter = { _id };
 
