@@ -1,6 +1,9 @@
 import bcyrpt from "bcryptjs";
 
 import User from "../models/User";
+import EmailService from "../services/EmailService";
+import { OfficialEmailE } from "../services/EmailService/enums";
+import signup from "../services/EmailService/templates/signup";
 
 export const getLogin = (req, res, next) => {
   res.render("auth/login", {
@@ -49,18 +52,31 @@ export const getSignup = (req, res, next) => {
 };
 
 export const postSignup = async (req, res, next) => {
-  const { email, password, confirmPassword } = req.body;
+  const { username, email, password, confirmPassword } = req.body;
   const salt = await bcyrpt.genSalt(12);
   const crypted = await bcyrpt.hash(password, salt);
   try {
-    // TODO - fix this hack! ensure that only the email is sent by fixing the type and making it compactible, i.e. accept email or password as an optional field
-    const user = await User.get({ email });
-    console.log(user);
+    let user = await User.get({ email });
+
     if (user) {
       return res.redirect("/signup");
     }
-    await User.create({ email, password: crypted, name: "Jo" });
+
+    // temporary hack, second call should be removed instead database should ensure that username is unique
+    user = await User.get({ username });
+
+    if (user) {
+      return res.redirect("/signup");
+    }
+
+    await User.create({ email, password: crypted, username });
     res.redirect("/login");
+
+    await EmailService.send({
+      to: email,
+      from: OfficialEmailE.SUPPORT,
+      template: { ...signup },
+    });
   } catch (e) {
     console.log(e);
   }

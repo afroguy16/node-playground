@@ -7,7 +7,7 @@ import { CartAttributes } from "../../Embedded/Cart/interfaces";
 import { GetUserPayload, UserAttributes, UserModel } from "../interfaces";
 
 const userSchema = new Schema<UserAttributes & { cart: CartAttributes }>({
-  name: {
+  username: {
     type: String,
     required: true,
   },
@@ -65,7 +65,7 @@ export default class UserMongooseProviderService implements UserModel {
   }
 
   async update(
-    payload: Optional<UserAttributes, "cart" | "name" | "email">
+    payload: Optional<UserAttributes, "cart" | "username" | "email">
   ): Promise<WriteResponse> {
     const { _id, ...update } = payload;
     const filter = { _id };

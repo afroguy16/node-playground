@@ -1,6 +1,5 @@
 const mongodb = require("mongodb");
 
-import { Optional } from "sequelize";
 import { getDb } from "../../../utils/database";
 import { GetUserPayload, UserAttributes, UserModel } from "../interfaces";
 

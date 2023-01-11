@@ -22,7 +22,7 @@ class User implements UserModel {
   }
 
   update(
-    payload: Optional<UserAttributes, "cart" | "name" | "email">
+    payload: Optional<UserAttributes, "cart" | "username" | "email">
   ): Promise<WriteResponse> {
     return UserService.update(payload);
   }

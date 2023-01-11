@@ -3,7 +3,7 @@ import { CartAttributes } from "../Embedded/Cart/interfaces";
 
 export interface UserAttributes {
   _id: string;
-  name: string;
+  username: string;
   password?: string;
   email: string;
   cart?: CartAttributes;
