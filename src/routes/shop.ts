@@ -10,6 +10,7 @@ import {
   postCreateOrder,
   postRemoveProductFromCart,
 } from "../controllers/shop";
+import { isAuth } from "../middleware/auth";
 
 const shopRouter = express.Router();
 
@@ -19,14 +20,14 @@ shopRouter.get("/products", getProducts);
 
 shopRouter.get(`/products/:productId`, getProduct);
 
-shopRouter.get("/cart", getCart);
+shopRouter.get("/cart", isAuth, getCart);
 
-shopRouter.post("/cart", postAddProductToCart);
+shopRouter.post("/cart", isAuth, postAddProductToCart);
 
-shopRouter.post("/cart-delete-item", postRemoveProductFromCart);
+shopRouter.post("/cart-delete-item", isAuth, postRemoveProductFromCart);
 
-shopRouter.post("/create-order", postCreateOrder);
+shopRouter.post("/create-order", isAuth, postCreateOrder);
 
-shopRouter.get("/orders", getOrders);
+shopRouter.get("/orders", isAuth, getOrders);
 
 export default shopRouter;

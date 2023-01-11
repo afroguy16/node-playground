@@ -8,17 +8,18 @@ import {
   postDeleteProduct,
   postUpdateProduct,
 } from "../controllers/admin";
+import { isAuth } from "../middleware/auth";
 
 export const adminRouter = express.Router();
 
-adminRouter.get("/add-product", getCreateProduct);
+adminRouter.get("/add-product", isAuth, getCreateProduct);
 
-adminRouter.post("/add-product", postCreateProduct);
+adminRouter.post("/add-product", isAuth, postCreateProduct);
 
-adminRouter.get("/products", getProducts);
+adminRouter.get("/products", isAuth, getProducts);
 
-adminRouter.get("/edit-product/:productId", getEditProduct);
+adminRouter.get("/edit-product/:productId", isAuth, getEditProduct);
 
-adminRouter.post("/edit-product", postUpdateProduct);
+adminRouter.post("/edit-product", isAuth, postUpdateProduct);
 
-adminRouter.post("/delete-product", postDeleteProduct);
+adminRouter.post("/delete-product", isAuth, postDeleteProduct);

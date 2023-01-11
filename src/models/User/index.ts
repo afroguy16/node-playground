@@ -1,7 +1,7 @@
 import { WriteResponse } from "../../utils/interfaces";
 import { Optional } from "../../utils/types";
 
-import { UserAttributes, UserGetPayload, UserModel } from "./interfaces";
+import { GetUserPayload, UserAttributes, UserModel } from "./interfaces";
 import UserService from "./User.Service";
 
 class User implements UserModel {
@@ -13,7 +13,7 @@ class User implements UserModel {
     return UserService.getAll();
   }
 
-  get(payload: UserGetPayload): Promise<UserAttributes | null> {
+  get(payload: GetUserPayload): Promise<UserAttributes | null> {
     return UserService.get(payload);
   }
 

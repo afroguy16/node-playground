@@ -1,7 +1,8 @@
 const mongodb = require("mongodb");
 
+import { Optional } from "sequelize";
 import { getDb } from "../../../utils/database";
-import { UserAttributes, UserGetPayload, UserModel } from "../interfaces";
+import { GetUserPayload, UserAttributes, UserModel } from "../interfaces";
 
 export default class UserMongoProviderService implements UserModel {
   private getCollection() {
@@ -21,7 +22,7 @@ export default class UserMongoProviderService implements UserModel {
     return this.getCollection().findOne({ _id });
   }
 
-  async get(payload: UserGetPayload): Promise<UserAttributes | null> {
+  async get(payload: GetUserPayload): Promise<UserAttributes | null> {
     return this.getCollection().findOne(payload);
   }
 
