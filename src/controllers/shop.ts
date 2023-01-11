@@ -21,7 +21,6 @@ export const getHome = async (req, res, next) => {
       pageTitle: "Home",
       pathName: "/",
       products,
-      isLoggedIn: req.session.user?._id,
     });
   } catch (e) {
     console.log(e);
@@ -35,7 +34,6 @@ export const getProducts = async (req, res, next) => {
       pageTitle: "All products",
       pathName: "/products",
       products,
-      isLoggedIn: req.session.user?._id,
     });
   } catch (e) {
     console.log(e);
@@ -50,7 +48,6 @@ export const getProduct = async (req, res, next) => {
       pageTitle: "Product Details",
       pathName: "/products",
       product,
-      isLoggedIn: req.session.user?._id,
     });
   } catch (e) {
     console.log(e);
@@ -64,7 +61,6 @@ export const getCart = async (req, res, next) => {
       pageTitle: "Your Cart",
       pathName: "/cart",
       cart,
-      isLoggedIn: req.session.user?._id,
     });
   } catch (error) {
     console.log(error);
@@ -119,7 +115,6 @@ export const getOrders = async (req, res, next) => {
       pageTitle: "My orders",
       pathName: "/orders",
       orders,
-      isLoggedIn: req.session.user?._id,
     });
   } catch (e) {
     console.log(e);

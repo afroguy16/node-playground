@@ -27,6 +27,7 @@
         </div>
 
         <input type="hidden" name="_id" value="<%= editing ? product._id : '' %>">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
         
         <button><%= editing ? 'Edit Product' : 'Add Product' %></button>
       </form>

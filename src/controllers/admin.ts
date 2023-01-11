@@ -14,7 +14,6 @@ export const getProducts = async (req, res, next) => {
       pageTitle: "Admin Products",
       pathName: "admin/products",
       products,
-      isLoggedIn: req.session.user?._id,
     });
   } catch (e) {
     console.log(e);
@@ -26,7 +25,6 @@ export const getCreateProduct = (req, res, next) => {
     pageTitle: "Add Product",
     pathName: "admin/add-product",
     editing: false,
-    isLoggedIn: req.session.user?._id,
   });
 };
 
@@ -56,7 +54,6 @@ export const getEditProduct = async (req, res, next) => {
       pathName: pagesData.editProduct.pathName,
       editing: true,
       product,
-      isLoggedIn: req.session.user?._id,
     });
   } catch (e) {
     console.log(e);
