@@ -1,8 +1,11 @@
 import bcyrpt from "bcryptjs";
+import crypto from "crypto";
 
+import ResetPasswordToken from "../models/ResetPasswordToken";
 import User from "../models/User";
 import EmailService from "../services/EmailService";
 import { OfficialEmailE } from "../services/EmailService/enums";
+import resetPassword from "../services/EmailService/templates/resetPassword";
 import signup from "../services/EmailService/templates/signup";
 
 export const getLogin = (req, res, next) => {
@@ -17,7 +20,6 @@ const INVALID_CREDENTIALS = "Invalid email or password";
 
 export const postLogin = async (req, res, next) => {
   const { email, password } = req.body;
-  console.log(req.flash("error"));
 
   try {
     const user = await User.get({ email });
@@ -82,10 +84,99 @@ export const postSignup = async (req, res, next) => {
   }
 };
 
+export const getRequestPasswordReset = (req, res, next) => {
+  res.render("auth/request-password-reset", {
+    pathName: "request-password-reset",
+    pageTitle: "Request Password Reset",
+    error: req.flash("error"),
+  });
+};
+
 export const postLogout = async (req, res, next) => {
   try {
     await req.session.destroy();
     res.redirect("/");
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const postRequestPasswordReset = async (req, res, next) => {
+  const { email } = req.body;
+  try {
+    const tokenBuffer = crypto.randomBytes(32);
+    const token = tokenBuffer.toString("hex");
+    const user = await User.get({ email });
+
+    if (!user) {
+      req.flash(INVALID_CREDENTIALS);
+      return res.redirect("/login");
+    }
+
+    const expiration = Date.now() + 3600000;
+    await ResetPasswordToken.create({ userId: user._id, token, expiration });
+
+    await EmailService.send({
+      to: email,
+      from: OfficialEmailE.SUPPORT,
+      template: resetPassword(token),
+    });
+
+    res.redirect("/login");
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const getResetPassword = async (req, res, next) => {
+  const token = req.params.token;
+
+  const tokenObject = await ResetPasswordToken.get(token);
+
+  if (!tokenObject) {
+    return res.redirect("/login");
+  }
+
+  const isTokenValid = tokenObject.expiration > Date.now();
+
+  if (isTokenValid) {
+    res.render("auth/reset", {
+      pathName: "reset",
+      pageTitle: "Reset Password",
+      token,
+    });
+  } else {
+    // don't wait for delete
+    ResetPasswordToken.delete(tokenObject._id);
+    res.redirect("/login");
+  }
+};
+
+export const postResetPassword = async (req, res, next) => {
+  const { email, password, confirmPassword, token } = req.body; // TODO - add confirmPassword validation
+
+  try {
+    // TODO - create a job that deletes expired token from the DB
+    const tokenObject = await ResetPasswordToken.get(token);
+
+    if (!tokenObject) {
+      return res.redirect("/login");
+    }
+
+    const isTokenValid = tokenObject.expiration > Date.now();
+
+    if (isTokenValid) {
+      const user = await User.getById(tokenObject.userId);
+
+      if (user?.email === email) {
+        const salt = await bcyrpt.genSalt(12);
+        const crypted = await bcyrpt.hash(password, salt);
+        await User.update({ _id: tokenObject.userId, password: crypted });
+      }
+    }
+
+    ResetPasswordToken.delete(tokenObject._id);
+    res.redirect("/login");
   } catch (e) {
     console.log(e);
   }

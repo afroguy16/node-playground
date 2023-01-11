@@ -1,4 +1,5 @@
 import { WriteResponse } from "../../utils/interfaces";
+import { Optional } from "../../utils/types";
 import { CartAttributes } from "../Embedded/Cart/interfaces";
 
 export interface UserAttributes {
@@ -18,5 +19,7 @@ export interface UserModel {
   getAll: () => Promise<Array<UserAttributes>>;
   get: (payload: GetUserPayload) => Promise<UserAttributes | null>;
   getById: (id: string) => Promise<UserAttributes | null>;
-  update: (payload: UserAttributes) => Promise<WriteResponse>;
+  update: (
+    payload: Optional<UserAttributes, "cart" | "username" | "email">
+  ) => Promise<WriteResponse>;
 }
