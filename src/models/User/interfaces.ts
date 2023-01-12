@@ -10,9 +10,7 @@ export interface UserAttributes {
   cart?: CartAttributes;
 }
 
-export interface GetUserPayload {
-  [key: string]: keyof UserAttributes;
-}
+export type GetUserPayload = Partial<UserAttributes>;
 
 export interface UserModel {
   create: (payload: Omit<UserAttributes, "_id">) => Promise<WriteResponse>;

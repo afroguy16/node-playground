@@ -11,7 +11,7 @@ import {
   postSignup,
   getResetPassword,
 } from "../controllers/auth";
-import { validateEmail } from "../middleware/validators/auth";
+import useSignupValidators from "../middleware/validators/auth/signup/useSignupValidators";
 
 const authRouter = express.Router();
 
@@ -21,6 +21,8 @@ authRouter.post("/login", postLogin);
 
 authRouter.get("/signup", getSignup);
 
+authRouter.post("/signup", ...useSignupValidators, postSignup);
+
 authRouter.get("/request-password-reset", getRequestPasswordReset);
 
 authRouter.post("/request-password-reset", postRequestPasswordReset);
@@ -28,8 +30,6 @@ authRouter.post("/request-password-reset", postRequestPasswordReset);
 authRouter.get("/reset/:token", getResetPassword);
 
 authRouter.post("/reset", postResetPassword);
-
-authRouter.post("/signup", postSignup);
 
 authRouter.post("/logout", postLogout);
 

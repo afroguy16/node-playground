@@ -1,12 +1,14 @@
 import bcyrpt from "bcryptjs";
 import crypto from "crypto";
+import { validationResult } from "express-validator";
 
 import ResetPasswordToken from "../models/ResetPasswordToken";
 import User from "../models/User";
-import EmailService from "./services/EmailService";
-import { OfficialEmailE } from "./services/EmailService/enums";
-import resetPassword from "./services/EmailService/templates/resetPassword";
-import signup from "./services/EmailService/templates/signup";
+import { ERROR_CODE_UNPROCESSED_ENTITY } from "./constants";
+import EmailService from "./shared/services/EmailService";
+import { OfficialEmailE } from "./shared/services/EmailService/enums";
+import resetPassword from "./shared/services/EmailService/templates/resetPassword";
+import signup from "./shared/services/EmailService/templates/signup";
 
 export const getLogin = (req, res, next) => {
   res.render("auth/login", {
@@ -54,22 +56,20 @@ export const getSignup = (req, res, next) => {
 };
 
 export const postSignup = async (req, res, next) => {
-  const { username, email, password, confirmPassword } = req.body;
-  const salt = await bcyrpt.genSalt(12);
-  const crypted = await bcyrpt.hash(password, salt);
+  const { username, email, password } = req.body;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(ERROR_CODE_UNPROCESSED_ENTITY).render("auth/signup", {
+      pathName: "signup",
+      pageTitle: "Sign up",
+      error: errors.array()[0].msg,
+    });
+  }
+
   try {
-    let user = await User.get({ email });
-
-    if (user) {
-      return res.redirect("/signup");
-    }
-
-    // temporary hack, second call should be removed instead database should ensure that username is unique
-    user = await User.get({ username });
-
-    if (user) {
-      return res.redirect("/signup");
-    }
+    const salt = await bcyrpt.genSalt(12);
+    const crypted = await bcyrpt.hash(password, salt);
 
     await User.create({ email, password: crypted, username });
     res.redirect("/login");
@@ -81,6 +81,7 @@ export const postSignup = async (req, res, next) => {
     });
   } catch (e) {
     console.log(e);
+    return res.redirect("/signup");
   }
 };
 
