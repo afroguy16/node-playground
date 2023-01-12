@@ -11,6 +11,7 @@ import {
   postSignup,
   getResetPassword,
 } from "../controllers/auth";
+import { validateEmail } from "../middleware/validators/auth";
 
 const authRouter = express.Router();
 

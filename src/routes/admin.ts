@@ -8,7 +8,7 @@ import {
   postDeleteProduct,
   postUpdateProduct,
 } from "../controllers/admin";
-import { isAuth } from "../middleware/auth";
+import { isAuth } from "../middleware/isAuth";
 
 export const adminRouter = express.Router();
 

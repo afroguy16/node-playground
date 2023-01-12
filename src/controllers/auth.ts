@@ -3,10 +3,10 @@ import crypto from "crypto";
 
 import ResetPasswordToken from "../models/ResetPasswordToken";
 import User from "../models/User";
-import EmailService from "../services/EmailService";
-import { OfficialEmailE } from "../services/EmailService/enums";
-import resetPassword from "../services/EmailService/templates/resetPassword";
-import signup from "../services/EmailService/templates/signup";
+import EmailService from "./services/EmailService";
+import { OfficialEmailE } from "./services/EmailService/enums";
+import resetPassword from "./services/EmailService/templates/resetPassword";
+import signup from "./services/EmailService/templates/signup";
 
 export const getLogin = (req, res, next) => {
   res.render("auth/login", {
