@@ -4,7 +4,7 @@ import {
   EMAIL_ERROR_MESSAGE_INVALID_TYPE,
   EMAIL_ERROR_MESSAGE_UNACCEPTABLE_ADDRESS,
   EMAIL_UNACCEPTABLE_ADDRESSES,
-} from "../constants";
+} from "../../constants";
 import isAcceptedEmailAddress from "../custom-validators/isAcceptedEmailAddress";
 import isEmailUnique from "../custom-validators/isEmailUnique";
 

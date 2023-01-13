@@ -11,17 +11,18 @@ import {
   postSignup,
   getResetPassword,
 } from "../controllers/auth";
+import useLoginValidators from "../middlewares/validators/auth/login/useLoginValidators";
 import useSignupValidators from "../middlewares/validators/auth/signup/useSignupValidators";
 
 const authRouter = express.Router();
 
 authRouter.get("/login", getLogin);
 
-authRouter.post("/login", postLogin);
+authRouter.post("/login", useLoginValidators, postLogin);
 
 authRouter.get("/signup", getSignup);
 
-authRouter.post("/signup", ...useSignupValidators, postSignup);
+authRouter.post("/signup", useSignupValidators, postSignup);
 
 authRouter.get("/request-password-reset", getRequestPasswordReset);
 

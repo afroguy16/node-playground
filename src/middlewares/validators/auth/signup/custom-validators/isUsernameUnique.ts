@@ -1,6 +1,6 @@
 import User from "../../../../../models/User";
 
-import { USERNAME_ERROR_MESSAGE_UNAVAILABLE_ADDRESS } from "../constants";
+import { USERNAME_ERROR_MESSAGE_UNAVAILABLE_ADDRESS } from "../../constants";
 
 export default async (username: string) => {
   const user = await User.get({ username });

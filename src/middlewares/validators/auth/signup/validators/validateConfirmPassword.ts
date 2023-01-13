@@ -1,6 +1,6 @@
 import { body } from "express-validator";
 
-import { CONFIRM_PASSWORD_ERROR_MESSAGE } from "../constants";
+import { CONFIRM_PASSWORD_ERROR_MESSAGE } from "../../constants";
 import isPasswordMatched from "../custom-validators/isPasswordMatched";
 
 export default () => {

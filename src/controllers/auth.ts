@@ -10,48 +10,36 @@ import { OfficialEmailE } from "./shared/services/EmailService/enums";
 import resetPassword from "./shared/services/EmailService/templates/resetPassword";
 import signup from "./shared/services/EmailService/templates/signup";
 
-export const getLogin = (req, res, next) => {
+export const getLogin = (req, res) => {
   res.render("auth/login", {
     pathName: "login",
     pageTitle: "Login",
-    error: req.flash("error"),
   });
 };
 
-const INVALID_CREDENTIALS = "Invalid email or password";
+export const postLogin = (req, res) => {
+  const errors = validationResult(req);
 
-export const postLogin = async (req, res, next) => {
-  const { email, password } = req.body;
-
-  try {
-    const user = await User.get({ email });
-
-    if (!user) {
-      req.flash("error", INVALID_CREDENTIALS);
-      return res.redirect("/signup");
-    }
-
-    const matched = await bcyrpt.compare(password, user.password);
-
-    if (!matched) {
-      req.flash("error", INVALID_CREDENTIALS);
-      return res.redirect("/login");
-    }
-
-    req.session.user = user;
-    res.redirect("/");
-  } catch (e) {
-    console.log(e);
-    req.flash("error", INVALID_CREDENTIALS);
-    res.redirect("/login");
+  if (!errors.isEmpty()) {
+    return res.status(ERROR_CODE_UNPROCESSED_ENTITY).render("auth/login", {
+      pathName: "login",
+      pageTitle: "Login",
+      error: errors.array()[0].msg,
+    });
   }
+
+  const reqSessionPendingLogginedInUserStr = JSON.stringify(
+    req.session.pendingLoggedInUser
+  );
+  req.session.user = JSON.parse(reqSessionPendingLogginedInUserStr);
+  req.session.pendingLoggedInUser = undefined;
+  res.redirect("/");
 };
 
-export const getSignup = (req, res, next) => {
+export const getSignup = (req, res) => {
   res.render("auth/signup", {
     pathName: "signup",
     pageTitle: "Sign up",
-    error: req.flash("error"),
   });
 };
 
@@ -88,11 +76,11 @@ export const getRequestPasswordReset = (req, res, next) => {
   res.render("auth/request-password-reset", {
     pathName: "request-password-reset",
     pageTitle: "Request Password Reset",
-    error: req.flash("error"),
+    // error: req.flash("error"),
   });
 };
 
-export const postLogout = async (req, res, next) => {
+export const postLogout = async (req, res) => {
   try {
     await req.session.destroy();
     res.redirect("/");
@@ -109,7 +97,7 @@ export const postRequestPasswordReset = async (req, res, next) => {
     const user = await User.get({ email });
 
     if (!user) {
-      req.flash(INVALID_CREDENTIALS);
+      // req.flash(INVALID_CREDENTIALS);
       return res.redirect("/login");
     }
 

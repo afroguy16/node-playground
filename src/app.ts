@@ -6,7 +6,7 @@ import connectMongoDbSession from "connect-mongodb-session";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import csurf from "csurf";
-import connectFlash from "connect-flash";
+// import connectFlash from "connect-flash";
 
 import { rootDirectory } from "./utils";
 import { adminRouter as adminRoutes } from "./routes/admin";
@@ -24,7 +24,7 @@ const store = new MongoDBStore({
   collection: "sessions",
 });
 const csrfProtection = csurf();
-app.use(connectFlash());
+// app.use(connectFlash());
 
 app.set("view engine", "ejs");
 app.set("views", path.join(rootDirectory, "views"));
@@ -43,6 +43,7 @@ app.use(
 app.use(csrfProtection);
 
 app.use((req, res, next) => {
+  res.locals.error = undefined;
   res.locals.isLoggedIn = (req as any).session?.user?._id;
   res.locals.csrfToken = (req as any).csrfToken();
   next();
