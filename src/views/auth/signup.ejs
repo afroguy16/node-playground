@@ -10,22 +10,22 @@
       <form class="login-form" action="/signup" method="POST">
         <div class="form-control">
           <label for="username">Username</label>
-          <input id="username" type="text" name="username" />
+          <input id="username" type="text" name="username" value="<%= data.username %>" />
         </div>
 
         <div class="form-control">
           <label for="email">Email</label>
-          <input id="email" type="email" name="email" />
+          <input id="email" type="email" name="email" value="<%= data.email %>" />
         </div>
 
         <div class="form-control">
           <label for="password">Password</label>
-          <input id="password" type="password" name="password" />
+          <input id="password" type="password" name="password" value="<%= data.password %>" />
         </div>
 
         <div class="form-control">
           <label for="password">Confirm Password</label>
-          <input id="confirmPassword" type="password" name="confirmPassword" />
+          <input id="confirmPassword" type="password" name="confirmPassword" value="<%= data.confirmPassword %>" />
         </div>
         
         <input type="hidden" name="_csrf" value="<%= csrfToken %>">

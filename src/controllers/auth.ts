@@ -14,10 +14,12 @@ export const getLogin = (req, res) => {
   res.render("auth/login", {
     pathName: "login",
     pageTitle: "Login",
+    data: undefined,
   });
 };
 
 export const postLogin = (req, res) => {
+  const { email, password } = req.body;
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -25,6 +27,7 @@ export const postLogin = (req, res) => {
       pathName: "login",
       pageTitle: "Login",
       error: errors.array()[0].msg,
+      data: { email, password },
     });
   }
 
@@ -40,11 +43,12 @@ export const getSignup = (req, res) => {
   res.render("auth/signup", {
     pathName: "signup",
     pageTitle: "Sign up",
+    data: undefined,
   });
 };
 
-export const postSignup = async (req, res, next) => {
-  const { username, email, password } = req.body;
+export const postSignup = async (req, res) => {
+  const { username, email, password, confirmPassword } = req.body;
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -52,6 +56,7 @@ export const postSignup = async (req, res, next) => {
       pathName: "signup",
       pageTitle: "Sign up",
       error: errors.array()[0].msg,
+      data: { username, email, password, confirmPassword },
     });
   }
 
