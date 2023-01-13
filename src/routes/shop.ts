@@ -10,7 +10,7 @@ import {
   postCreateOrder,
   postRemoveProductFromCart,
 } from "../controllers/shop";
-import { isAuth } from "../middleware/isAuth";
+import { isAuth } from "../middlewares/isAuth";
 
 const shopRouter = express.Router();
 

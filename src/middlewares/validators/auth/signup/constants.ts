@@ -1,7 +1,7 @@
 export const EMAIL_ERROR_MESSAGE_INVALID_TYPE = "Please enter a valid email";
 export const EMAIL_ERROR_MESSAGE_UNACCEPTABLE_ADDRESS =
   "This email address isn't acceptable";
-export const EMAIL_UNACCEPTABLE_ADDRESS = "test@test.com";
+export const EMAIL_UNACCEPTABLE_ADDRESSES = ["test@test.com"];
 export const EMAIL_UNAVAILABLE_ADDRESS = "Email is already taken";
 
 export const PASSWORD_LENGTH = 3;

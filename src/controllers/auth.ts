@@ -81,7 +81,6 @@ export const postSignup = async (req, res, next) => {
     });
   } catch (e) {
     console.log(e);
-    return res.redirect("/signup");
   }
 };
 

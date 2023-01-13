@@ -11,7 +11,7 @@ import {
   postSignup,
   getResetPassword,
 } from "../controllers/auth";
-import useSignupValidators from "../middleware/validators/auth/signup/useSignupValidators";
+import useSignupValidators from "../middlewares/validators/auth/signup/useSignupValidators";
 
 const authRouter = express.Router();
 
