@@ -1,6 +1,7 @@
 import bcyrpt from "bcryptjs";
 import crypto from "crypto";
 import { validationResult } from "express-validator";
+import { EMAIL_ERROR_MESSAGE_INVALID_TYPE } from "../middlewares/validators/auth/constants";
 
 import ResetPasswordToken from "../models/ResetPasswordToken";
 import User from "../models/User";
@@ -14,7 +15,7 @@ export const getLogin = (req, res) => {
   res.render("auth/login", {
     pathName: "login",
     pageTitle: "Login",
-    data: undefined,
+    data: { email: undefined, password: undefined },
   });
 };
 
@@ -43,7 +44,12 @@ export const getSignup = (req, res) => {
   res.render("auth/signup", {
     pathName: "signup",
     pageTitle: "Sign up",
-    data: undefined,
+    data: {
+      username: undefined,
+      email: undefined,
+      password: undefined,
+      confirmPassword: undefined,
+    },
   });
 };
 
@@ -77,12 +83,52 @@ export const postSignup = async (req, res) => {
   }
 };
 
-export const getRequestPasswordReset = (req, res, next) => {
+export const getRequestPasswordReset = (req, res) => {
   res.render("auth/request-password-reset", {
     pathName: "request-password-reset",
     pageTitle: "Request Password Reset",
-    // error: req.flash("error"),
+    data: { email: undefined },
   });
+};
+
+export const postRequestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res
+      .status(ERROR_CODE_UNPROCESSED_ENTITY)
+      .render("auth/request-password-reset", {
+        pathName: "request-password-reset",
+        pageTitle: "Request Password Reset",
+        data: { email },
+        error:
+          errors.array()[0].msg === EMAIL_ERROR_MESSAGE_INVALID_TYPE
+            ? errors.array()[0].msg
+            : "",
+      });
+  }
+
+  try {
+    const tokenBuffer = crypto.randomBytes(32);
+    const token = tokenBuffer.toString("hex");
+    const expiration = Date.now() + 3600000;
+
+    await ResetPasswordToken.create({
+      userId: req.session.pendingLoggedInUser._id,
+      token,
+      expiration,
+    });
+
+    res.redirect("/login");
+
+    await EmailService.send({
+      to: email,
+      from: OfficialEmailE.SUPPORT,
+      template: resetPassword(token),
+    });
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const postLogout = async (req, res) => {
@@ -94,36 +140,8 @@ export const postLogout = async (req, res) => {
   }
 };
 
-export const postRequestPasswordReset = async (req, res, next) => {
-  const { email } = req.body;
-  try {
-    const tokenBuffer = crypto.randomBytes(32);
-    const token = tokenBuffer.toString("hex");
-    const user = await User.get({ email });
-
-    if (!user) {
-      // req.flash(INVALID_CREDENTIALS);
-      return res.redirect("/login");
-    }
-
-    const expiration = Date.now() + 3600000;
-    await ResetPasswordToken.create({ userId: user._id, token, expiration });
-
-    await EmailService.send({
-      to: email,
-      from: OfficialEmailE.SUPPORT,
-      template: resetPassword(token),
-    });
-
-    res.redirect("/login");
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-export const getResetPassword = async (req, res, next) => {
+export const getResetPassword = async (req, res) => {
   const token = req.params.token;
-
   const tokenObject = await ResetPasswordToken.get(token);
 
   if (!tokenObject) {
@@ -131,11 +149,15 @@ export const getResetPassword = async (req, res, next) => {
   }
 
   const isTokenValid = tokenObject.expiration > Date.now();
-
   if (isTokenValid) {
     res.render("auth/reset", {
       pathName: "reset",
       pageTitle: "Reset Password",
+      data: {
+        email: undefined,
+        password: undefined,
+        confirmPassword: undefined,
+      },
       token,
     });
   } else {
@@ -147,28 +169,34 @@ export const getResetPassword = async (req, res, next) => {
 
 export const postResetPassword = async (req, res, next) => {
   const { email, password, confirmPassword, token } = req.body; // TODO - add confirmPassword validation
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(ERROR_CODE_UNPROCESSED_ENTITY).render("auth/reset", {
+      pathName: "reset",
+      pageTitle: "Reset Password",
+      error: errors.array()[0].msg,
+      data: { email, password, confirmPassword },
+      token,
+    });
+  }
 
   try {
-    // TODO - create a job that deletes expired token from the DB
-    const tokenObject = await ResetPasswordToken.get(token);
+    const userId = req.session.resetPasswordUser._id;
+    const user = await User.getById(userId);
 
-    if (!tokenObject) {
-      return res.redirect("/login");
+    if (user) {
+      const salt = await bcyrpt.genSalt(12);
+      const crypted = await bcyrpt.hash(password, salt);
+      await User.update({ _id: userId, password: crypted });
     }
+    const tokenId = req.session.resetPasswordTokenObject;
+    await ResetPasswordToken.delete(tokenId);
 
-    const isTokenValid = tokenObject.expiration > Date.now();
+    // clean up session temp variables
+    req.session.resetPasswordUser = undefined;
+    req.session.resetPasswordTokenObject = undefined;
 
-    if (isTokenValid) {
-      const user = await User.getById(tokenObject.userId);
-
-      if (user?.email === email) {
-        const salt = await bcyrpt.genSalt(12);
-        const crypted = await bcyrpt.hash(password, salt);
-        await User.update({ _id: tokenObject.userId, password: crypted });
-      }
-    }
-
-    ResetPasswordToken.delete(tokenObject._id);
     res.redirect("/login");
   } catch (e) {
     console.log(e);

@@ -1,4 +1,4 @@
-import validateEmail from "./validators/validateEmail";
+import validateEmail from "../shared/validators/validateUserEmail";
 import validatePassword from "./validators/validatePassword";
 
 export default (() => {

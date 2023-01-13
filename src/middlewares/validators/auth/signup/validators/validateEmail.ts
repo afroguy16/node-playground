@@ -9,8 +9,9 @@ import isAcceptedEmailAddress from "../custom-validators/isAcceptedEmailAddress"
 import isEmailUnique from "../custom-validators/isEmailUnique";
 
 export default () => {
-  return body("email", EMAIL_ERROR_MESSAGE_INVALID_TYPE)
+  return body("email")
     .isEmail()
+    .withMessage(EMAIL_ERROR_MESSAGE_INVALID_TYPE)
     .custom((email) =>
       isAcceptedEmailAddress(
         email,

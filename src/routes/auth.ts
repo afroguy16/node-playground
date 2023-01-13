@@ -12,6 +12,8 @@ import {
   getResetPassword,
 } from "../controllers/auth";
 import useLoginValidators from "../middlewares/validators/auth/login/useLoginValidators";
+import useRequestPasswordResetValidators from "../middlewares/validators/auth/requestPasswordReset/useRequestPasswordResetValidators";
+import useResetPasswordValidators from "../middlewares/validators/auth/resestPassword/useResetPasswordValidators";
 import useSignupValidators from "../middlewares/validators/auth/signup/useSignupValidators";
 
 const authRouter = express.Router();
@@ -26,11 +28,15 @@ authRouter.post("/signup", useSignupValidators, postSignup);
 
 authRouter.get("/request-password-reset", getRequestPasswordReset);
 
-authRouter.post("/request-password-reset", postRequestPasswordReset);
+authRouter.post(
+  "/request-password-reset",
+  useRequestPasswordResetValidators,
+  postRequestPasswordReset
+);
 
 authRouter.get("/reset/:token", getResetPassword);
 
-authRouter.post("/reset", postResetPassword);
+authRouter.post("/reset", useResetPasswordValidators, postResetPassword);
 
 authRouter.post("/logout", postLogout);
 

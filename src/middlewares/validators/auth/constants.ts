@@ -15,3 +15,6 @@ export const USERNAME_ERROR_MESSAGE_UNAVAILABLE_ADDRESS =
   "Username is already taken";
 
 export const LOGIN_ERROR_MESSAGE_INVALID_CREDENTIALS = "Invalid credentials";
+
+export const RESET_PASSWORD_TOKEN_UNAVAILABLE = "No token found!";
+export const RESET_PASSWORD_UNMATCHED_EMAIL = "Unauthorized change requested";

@@ -6,7 +6,6 @@ import connectMongoDbSession from "connect-mongodb-session";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import csurf from "csurf";
-// import connectFlash from "connect-flash";
 
 import { rootDirectory } from "./utils";
 import { adminRouter as adminRoutes } from "./routes/admin";
@@ -24,7 +23,6 @@ const store = new MongoDBStore({
   collection: "sessions",
 });
 const csrfProtection = csurf();
-// app.use(connectFlash());
 
 app.set("view engine", "ejs");
 app.set("views", path.join(rootDirectory, "views"));
