@@ -1,6 +1,6 @@
 const mongodb = require("mongodb");
 
-import { getDb } from "../../../utils/database";
+import { getDb } from "../../../utils/database-providers/mongodbDriver";
 import { Optional } from "../../../utils/types";
 
 import { ProductAttributes, ProductModel } from "../interfaces";

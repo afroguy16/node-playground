@@ -131,15 +131,6 @@ export const postRequestPasswordReset = async (req, res) => {
   }
 };
 
-export const postLogout = async (req, res) => {
-  try {
-    await req.session.destroy();
-    res.redirect("/");
-  } catch (e) {
-    console.log(e);
-  }
-};
-
 export const getResetPassword = async (req, res) => {
   const token = req.params.token;
   const tokenObject = await ResetPasswordToken.get(token);
@@ -198,6 +189,15 @@ export const postResetPassword = async (req, res, next) => {
     req.session.resetPasswordTokenObject = undefined;
 
     res.redirect("/login");
+  } catch (e) {
+    console.log(e);
+  }
+};
+
+export const postLogout = async (req, res) => {
+  try {
+    await req.session.destroy();
+    res.redirect("/");
   } catch (e) {
     console.log(e);
   }

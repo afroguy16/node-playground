@@ -13,7 +13,7 @@ import {
 } from "../controllers/auth";
 import useLoginValidators from "../middlewares/validators/auth/login/useLoginValidators";
 import useRequestPasswordResetValidators from "../middlewares/validators/auth/requestPasswordReset/useRequestPasswordResetValidators";
-import useResetPasswordValidators from "../middlewares/validators/auth/resestPassword/useResetPasswordValidators";
+import useResetPasswordValidators from "../middlewares/validators/auth/resetPassword/useResetPasswordValidators";
 import useSignupValidators from "../middlewares/validators/auth/signup/useSignupValidators";
 
 const authRouter = express.Router();
