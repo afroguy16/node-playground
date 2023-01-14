@@ -53,6 +53,13 @@ app.use(shopRoutes);
 
 app.use(get404);
 
+app.use((error, req, res, next) => {
+  res.status(500).render("errors/server", {
+    pageTitle: "Server error",
+    pathName: "/server",
+  });
+});
+
 (async () => {
   try {
     await mongoose.connect(MONGODB_URI);
