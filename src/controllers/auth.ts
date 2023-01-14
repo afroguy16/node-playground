@@ -133,29 +133,22 @@ export const postRequestPasswordReset = async (req, res) => {
 
 export const getResetPassword = async (req, res) => {
   const token = req.params.token;
-  const tokenObject = await ResetPasswordToken.get(token);
+  const errors = validationResult(req);
 
-  if (!tokenObject) {
+  if (!errors.isEmpty()) {
     return res.redirect("/login");
   }
 
-  const isTokenValid = tokenObject.expiration > Date.now();
-  if (isTokenValid) {
-    res.render("auth/reset", {
-      pathName: "reset",
-      pageTitle: "Reset Password",
-      data: {
-        email: undefined,
-        password: undefined,
-        confirmPassword: undefined,
-      },
-      token,
-    });
-  } else {
-    // don't wait for delete
-    ResetPasswordToken.delete(tokenObject._id);
-    res.redirect("/login");
-  }
+  res.render("auth/reset", {
+    pathName: "reset",
+    pageTitle: "Reset Password",
+    data: {
+      email: undefined,
+      password: undefined,
+      confirmPassword: undefined,
+    },
+    token,
+  });
 };
 
 export const postResetPassword = async (req, res, next) => {

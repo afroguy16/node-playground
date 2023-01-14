@@ -12,6 +12,7 @@ import {
   getResetPassword,
 } from "../controllers/auth";
 import useLoginValidators from "../middlewares/validators/auth/login/useLoginValidators";
+import useGetRequestPasswordResetValidators from "../middlewares/validators/auth/requestPasswordReset/get/useGetRequestPasswordResetValidators";
 import useRequestPasswordResetValidators from "../middlewares/validators/auth/requestPasswordReset/useRequestPasswordResetValidators";
 import useResetPasswordValidators from "../middlewares/validators/auth/resetPassword/useResetPasswordValidators";
 import useSignupValidators from "../middlewares/validators/auth/signup/useSignupValidators";
@@ -34,7 +35,11 @@ authRouter.post(
   postRequestPasswordReset
 );
 
-authRouter.get("/reset/:token", getResetPassword);
+authRouter.get(
+  "/reset/:token",
+  useGetRequestPasswordResetValidators,
+  getResetPassword
+);
 
 authRouter.post("/reset", useResetPasswordValidators, postResetPassword);
 

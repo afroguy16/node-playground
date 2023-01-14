@@ -1,6 +1,6 @@
 import { body } from "express-validator";
-import isTokenAvailable from "../custom-validators/isTokenAvailable";
-import isTokenTimeValid from "../custom-validators/isTokenTimeValid";
+import isTokenAvailable from "../../shared/custom-validators/isTokenAvailable";
+import isTokenTimeValid from "../../shared/custom-validators/isTokenTimeValid";
 
 export default () => {
   return body("token", "BAD TOKEN")
