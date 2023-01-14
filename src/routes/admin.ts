@@ -6,7 +6,7 @@ import {
   getProducts,
   postCreateProduct,
   postDeleteProduct,
-  postUpdateProduct,
+  postEditProduct,
 } from "../controllers/admin";
 import { isAuth } from "../middlewares/isAuth";
 import useUpdateProductValidators from "../middlewares/validators/admin/update-product/useUpdateProductValidators";
@@ -30,7 +30,7 @@ adminRouter.post(
   "/edit-product",
   isAuth,
   useUpdateProductValidators,
-  postUpdateProduct
+  postEditProduct
 );
 
 adminRouter.post("/delete-product", isAuth, postDeleteProduct);

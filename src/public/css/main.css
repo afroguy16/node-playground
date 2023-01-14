@@ -48,3 +48,7 @@ main {
 .centered {
   text-align: center;
 }
+
+.card__image img {
+  max-width: 200px;
+}

@@ -6,6 +6,8 @@ import connectMongoDbSession from "connect-mongodb-session";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
 import csurf from "csurf";
+import multer from "multer";
+import { v4 as generateUuid } from "uuid";
 
 import { rootDirectory } from "./utils";
 import { adminRouter as adminRoutes } from "./routes/admin";
@@ -24,11 +26,32 @@ const store = new MongoDBStore({
 });
 const csrfProtection = csurf();
 
+const fileStorage = multer.diskStorage({
+  destination: "images",
+  filename: (req, file, cb) => {
+    cb(null, `${generateUuid()}-${file.originalname}`);
+  },
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === "image/png" ||
+    file.mimetype === "image/jpg" ||
+    file.mimetype === "image/jpeg"
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
 app.set("view engine", "ejs");
 app.set("views", path.join(rootDirectory, "views"));
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 app.use(express.static(path.join(rootDirectory, "public")));
+app.use("/images", express.static(path.join(rootDirectory, "../images")));
 app.use(
   session({
     secret: "dksjosidoslskdsjdiuskskdslsi",
