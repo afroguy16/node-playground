@@ -26,6 +26,11 @@ adminRouter.get("/products", isAuth, getProducts);
 
 adminRouter.get("/edit-product/:productId", isAuth, getEditProduct);
 
-adminRouter.post("/edit-product", isAuth, postUpdateProduct);
+adminRouter.post(
+  "/edit-product",
+  isAuth,
+  useUpdateProductValidators,
+  postUpdateProduct
+);
 
 adminRouter.post("/delete-product", isAuth, postDeleteProduct);

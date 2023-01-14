@@ -41,8 +41,6 @@ export const postCreateProduct = async (req, res, next) => {
   const { title, imageUrl, description, price } = req.body;
   const errors = validationResult(req);
 
-  console.log(title);
-
   if (!errors.isEmpty()) {
     return res
       .status(ERROR_CODE_UNPROCESSED_ENTITY)
@@ -91,6 +89,19 @@ export const postUpdateProduct = async (req, res, next) => {
   const { _id, title, imageUrl, description, price } = req.body;
   const isAuthorizedUser =
     req.session.product.userId.toString() === req.session.user._id.toString();
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res
+      .status(ERROR_CODE_UNPROCESSED_ENTITY)
+      .render("admin/update-product", {
+        pathName: "radmin/add-product",
+        pageTitle: "Add Product",
+        editing: false,
+        product: { title, imageUrl, description, price },
+        error: errors.array()[0].msg,
+      });
+  }
   try {
     if (isAuthorizedUser) {
       await Product.update({
@@ -103,7 +114,8 @@ export const postUpdateProduct = async (req, res, next) => {
     }
     res.redirect("products");
   } catch (e) {
-    console.log(e);
+    const error = { status: ERROR_CODE_SERVER, error: e };
+    next(error);
   }
 };
 
