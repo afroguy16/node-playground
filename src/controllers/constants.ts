@@ -1,1 +1,2 @@
 export const ERROR_CODE_UNPROCESSED_ENTITY = 422;
+export const ERROR_CODE_SERVER = 500;

@@ -1,5 +1,7 @@
 import { ProductAttributes } from "../models/Product/interfaces";
 import Product from "../models/Product";
+import { validationResult } from "express-validator";
+import { ERROR_CODE_SERVER, ERROR_CODE_UNPROCESSED_ENTITY } from "./constants";
 
 export const pagesData = {
   editProduct: {
@@ -26,11 +28,33 @@ export const getCreateProduct = (req, res, next) => {
     pageTitle: "Add Product",
     pathName: "admin/add-product",
     editing: false,
+    product: {
+      title: undefined,
+      imageUrl: undefined,
+      description: undefined,
+      price: undefined,
+    },
   });
 };
 
 export const postCreateProduct = async (req, res, next) => {
   const { title, imageUrl, description, price } = req.body;
+  const errors = validationResult(req);
+
+  console.log(title);
+
+  if (!errors.isEmpty()) {
+    return res
+      .status(ERROR_CODE_UNPROCESSED_ENTITY)
+      .render("admin/update-product", {
+        pathName: "radmin/add-product",
+        pageTitle: "Add Product",
+        editing: false,
+        product: { title, imageUrl, description, price },
+        error: errors.array()[0].msg,
+      });
+  }
+
   const payload: Omit<ProductAttributes, "_id"> = {
     userId: req.session.user._id,
     title,
@@ -42,7 +66,8 @@ export const postCreateProduct = async (req, res, next) => {
     await Product.create(payload);
     res.redirect("products");
   } catch (e) {
-    console.log(e);
+    const error = { status: ERROR_CODE_SERVER, error: e };
+    next(error);
   }
 };
 

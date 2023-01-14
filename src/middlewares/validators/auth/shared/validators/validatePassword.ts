@@ -6,7 +6,7 @@ import {
 } from "../../constants";
 
 export default () => {
-  return body("password", PASSWORD_ERROR_MESSAGE_LENGTH_TOO_SHORT)
-    .isLength({ min: PASSWORD_LENGTH })
-    .isAlphanumeric();
+  return body("password", PASSWORD_ERROR_MESSAGE_LENGTH_TOO_SHORT).isLength({
+    min: PASSWORD_LENGTH,
+  });
 };

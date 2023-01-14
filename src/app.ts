@@ -54,6 +54,7 @@ app.use(shopRoutes);
 app.use(get404);
 
 app.use((error, req, res, next) => {
+  console.log(error);
   res.status(500).render("errors/server", {
     pageTitle: "Server error",
     pathName: "/server",

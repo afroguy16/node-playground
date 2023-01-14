@@ -9,12 +9,18 @@ import {
   postUpdateProduct,
 } from "../controllers/admin";
 import { isAuth } from "../middlewares/isAuth";
+import useUpdateProductValidators from "../middlewares/validators/admin/update-product/useUpdateProductValidators";
 
 export const adminRouter = express.Router();
 
 adminRouter.get("/add-product", isAuth, getCreateProduct);
 
-adminRouter.post("/add-product", isAuth, postCreateProduct);
+adminRouter.post(
+  "/add-product",
+  isAuth,
+  useUpdateProductValidators,
+  postCreateProduct
+);
 
 adminRouter.get("/products", isAuth, getProducts);
 

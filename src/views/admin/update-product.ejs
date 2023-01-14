@@ -5,25 +5,26 @@
 <body>
   <%- include('../includes/navigation.ejs') %>
     <main>
+      <p><%= error && error %></p>
       <form class="product-form" action="/admin/<%= editing ? 'edit-product' : 'add-product' %>" method="POST">
         <div class="form-control">
           <label for="title">Title</label>
-          <input id="title" type="text" name="title" value="<%= editing ? product.title : '' %>" />
+          <input id="title" type="text" name="title" value="<%= product.title %>" />
         </div>
 
         <div class="form-control">
           <label for="imageUrl">Image URL</label>
-          <input id="imageUrl" type="text" name="imageUrl" value="<%= editing ? product.imageUrl : '' %>" />
+          <input id="imageUrl" type="text" name="imageUrl" value="<%= product.imageUrl %>" />
         </div>
 
         <div class="form-control">
           <label for="price">Price</label>
-          <input id="price" type="number" name="price" value="<%= editing ? product.price : '' %>"/>
+          <input id="price" type="number" name="price" value="<%= product.price %>"/>
         </div>
 
         <div class="form-control">
           <label for="description">Description</label>
-          <textarea name="description" id="description" cols="30" rows="4"><%= editing ? product.description : '' %></textarea>
+          <textarea name="description" id="description" cols="30" rows="4"><%= product.description %></textarea>
         </div>
 
         <input type="hidden" name="_id" value="<%= editing ? product._id : '' %>">
