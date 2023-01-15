@@ -50,8 +50,14 @@ export default class ProductMongooseProviderService implements ProductModel {
   }
 
   // TODO - Proposal -Add to interface
-  async getAllProductsCount(): Promise<number> {
-    return Product.count();
+  async getAllProductsCount(payload?: GetProductsInterface): Promise<number> {
+    const page = payload?.pagination?.page;
+    const filter = payload?.filter;
+    const itemsPerPage = page ? ITEMS_PER_PAGE : 0;
+
+    return Product.count(filter!)
+      .skip((page! - 1) * itemsPerPage)
+      .limit(itemsPerPage);
   }
 
   async getAll(

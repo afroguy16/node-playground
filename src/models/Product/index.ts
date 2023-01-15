@@ -12,8 +12,8 @@ class Product implements ProductModel {
     return ProductService.create(payload);
   }
 
-  async getAllProductsCount(): Promise<number> {
-    return ProductService.getAllProductsCount();
+  async getAllProductsCount(payload?: GetProductsInterface): Promise<number> {
+    return ProductService.getAllProductsCount(payload);
   }
 
   getAll(payload?: GetProductsInterface): Promise<Array<ProductAttributes>> {

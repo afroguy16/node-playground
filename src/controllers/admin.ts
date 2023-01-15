@@ -1,7 +1,12 @@
 import { ProductAttributes } from "../models/Product/interfaces";
 import Product from "../models/Product";
 import { validationResult } from "express-validator";
-import { ERROR_CODE_SERVER, ERROR_CODE_UNPROCESSED_ENTITY } from "./constants";
+import {
+  DEFAULT_PAGE_NUMBER,
+  ERROR_CODE_SERVER,
+  ERROR_CODE_UNPROCESSED_ENTITY,
+  ITEMS_PER_PAGE,
+} from "./constants";
 import { Optional } from "../utils/types";
 
 export const pagesData = {
@@ -12,11 +17,21 @@ export const pagesData = {
 
 export const getProducts = async (req, res, next) => {
   const userId = req.session.user._id;
+  const { page: paramsPage } = req.query;
+  const page = paramsPage || DEFAULT_PAGE_NUMBER;
   try {
-    const products = await Product.getByFilter({ userId });
+    const productCount = await Product.getAllProductsCount({
+      filter: { userId },
+    });
+    const products = await Product.getAll({
+      pagination: { page },
+      filter: { userId },
+    });
     res.render("admin/products", {
       pageTitle: "Admin Products",
       pathName: "admin/products",
+      page: Number(page),
+      pageCount: Math.ceil(productCount / ITEMS_PER_PAGE),
       products,
     });
   } catch (e) {
