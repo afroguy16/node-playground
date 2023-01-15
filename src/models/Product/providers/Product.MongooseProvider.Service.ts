@@ -1,9 +1,14 @@
 import { model, Schema } from "mongoose";
+import { ITEMS_PER_PAGE } from "../../../controllers/constants";
 
 import { WriteResponse } from "../../../utils/interfaces";
 import { Optional } from "../../../utils/types";
 
-import { ProductAttributes, ProductModel } from "../interfaces";
+import {
+  GetProductsInterface,
+  ProductAttributes,
+  ProductModel,
+} from "../interfaces";
 
 interface ProductAttributesSchema extends Omit<ProductAttributes, "userId"> {
   userId: Schema.Types.ObjectId;
@@ -44,19 +49,33 @@ export default class ProductMongooseProviderService implements ProductModel {
     return { status: true };
   }
 
-  async getAll(): Promise<Array<ProductAttributes>> {
-    return Product.find();
+  // TODO - Proposal -Add to interface
+  async getAllProductsCount(): Promise<number> {
+    return Product.count();
+  }
+
+  async getAll(
+    payload?: GetProductsInterface
+  ): Promise<Array<ProductAttributes>> {
+    const page = payload?.pagination?.page;
+    const filter = payload?.filter;
+    const itemsPerPage = page ? ITEMS_PER_PAGE : 0;
+
+    return Product.find(filter!)
+      .skip((page! - 1) * itemsPerPage)
+      .limit(itemsPerPage) as any;
   }
 
   async get(id: string): Promise<ProductAttributes | null> {
     return Product.findById(id);
   }
 
-  // TODO - Proposal - add to Interface
+  // TODO - Proposal - cancelled, here for reference(add to Interface) -
+  // New thought - do not add to interface, use the getAll method instead
   async getByFilter(payload: {
     [key: string]: keyof ProductAttributes;
   }): Promise<Array<ProductAttributes>> {
-    return Product.find(payload);
+    return this.getAll({ filter: payload });
   }
 
   // Fix the name to be more explanatory

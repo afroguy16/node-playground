@@ -1,6 +1,10 @@
 import { WriteResponse } from "../../utils/interfaces";
 import { Optional } from "../../utils/types";
-import { ProductAttributes, ProductModel } from "./interfaces";
+import {
+  GetProductsInterface,
+  ProductAttributes,
+  ProductModel,
+} from "./interfaces";
 import ProductService from "./Product.Service";
 
 class Product implements ProductModel {
@@ -8,8 +12,12 @@ class Product implements ProductModel {
     return ProductService.create(payload);
   }
 
-  getAll(): Promise<Array<ProductAttributes>> {
-    return ProductService.getAll();
+  async getAllProductsCount(): Promise<number> {
+    return ProductService.getAllProductsCount();
+  }
+
+  getAll(payload?: GetProductsInterface): Promise<Array<ProductAttributes>> {
+    return ProductService.getAll(payload);
   }
 
   get(id: string): Promise<ProductAttributes | null> {

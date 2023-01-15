@@ -2,7 +2,6 @@ import express from "express";
 
 import {
   getCart,
-  getHome,
   getOrder,
   getOrders,
   getProduct,
@@ -15,9 +14,7 @@ import { isAuth } from "../middlewares/isAuth";
 
 const shopRouter = express.Router();
 
-shopRouter.get("/", getHome);
-
-shopRouter.get("/products", getProducts);
+shopRouter.get("/", getProducts);
 
 shopRouter.get(`/products/:productId`, getProduct);
 

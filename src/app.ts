@@ -54,7 +54,7 @@ app.use(express.static(path.join(rootDirectory, "public")));
 app.use("/images", express.static(path.join(rootDirectory, "../images")));
 app.use(
   session({
-    secret: "dksjosidoslskdsjdiuskskdslsi",
+    secret: "gotcha",
     resave: false,
     saveUninitialized: false,
     store,

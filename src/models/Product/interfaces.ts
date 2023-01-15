@@ -10,6 +10,15 @@ export interface ProductAttributes {
   price: number;
 }
 
+export interface GetProductsInterface {
+  pagination?: {
+    page: number;
+  };
+  filter?: {
+    [key: string]: keyof ProductAttributes;
+  };
+}
+
 export interface ProductModel {
   create: (payload: Omit<ProductAttributes, "_id">) => Promise<WriteResponse>;
   getAll: () => Promise<Array<ProductAttributes>>;

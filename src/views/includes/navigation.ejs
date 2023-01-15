@@ -4,9 +4,6 @@
       <li class="main-header__item">
         <a href="/" class="<%= pathName === '/' ? 'active' : '' %>">Shop</a>
       </li>
-      <li class="main-header__item">
-        <a href="/products" class="<%= pathName === '/products' ? 'active' : '' %>">Products</a>
-      </li>
       <% if (isLoggedIn) { %>
       <li class="main-header__item">
         <a href="/cart" class="<%= pathName === '/cart' ? 'active' : '' %>">Cart</a>

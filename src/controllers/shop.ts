@@ -4,7 +4,11 @@ import Cart from "../models/Embedded/Cart";
 import Order from "../models/Order";
 import { ProductAttributes } from "../models/Product/interfaces";
 import Product from "../models/Product";
-import { ERROR_CODE_SERVER } from "./constants";
+import {
+  DEFAULT_PAGE_NUMBER,
+  ERROR_CODE_SERVER,
+  ITEMS_PER_PAGE,
+} from "./constants";
 
 interface CartProduct {
   product: ProductAttributes;
@@ -17,25 +21,17 @@ interface Cart {
   totalPrice: number;
 }
 
-export const getHome = async (req, res, next) => {
-  try {
-    const products = await Product.getAll();
-    res.render("shop/index", {
-      pageTitle: "Home",
-      pathName: "/",
-      products,
-    });
-  } catch (e) {
-    console.log(e);
-  }
-};
-
 export const getProducts = async (req, res, next) => {
+  const { page: paramsPage } = req.query;
+  const page = paramsPage || DEFAULT_PAGE_NUMBER;
   try {
-    const products = await Product.getAll();
+    const productCount = await Product.getAllProductsCount();
+    const products = await Product.getAll({ pagination: { page } });
     res.render("shop/product-list", {
       pageTitle: "All products",
-      pathName: "/products",
+      pathName: "/",
+      page: Number(page),
+      pageCount: Math.ceil(productCount / ITEMS_PER_PAGE),
       products,
     });
   } catch (e) {
