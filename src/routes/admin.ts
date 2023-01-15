@@ -1,11 +1,11 @@
 import express from "express";
 
 import {
+  deleteProduct,
   getCreateProduct,
   getEditProduct,
   getProducts,
   postCreateProduct,
-  postDeleteProduct,
   postEditProduct,
 } from "../controllers/admin";
 import { isAuth } from "../middlewares/isAuth";
@@ -33,4 +33,4 @@ adminRouter.post(
   postEditProduct
 );
 
-adminRouter.post("/delete-product", isAuth, postDeleteProduct);
+adminRouter.delete("/product/:productId", isAuth, deleteProduct);

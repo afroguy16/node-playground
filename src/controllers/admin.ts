@@ -6,6 +6,7 @@ import {
   ERROR_CODE_SERVER,
   ERROR_CODE_UNPROCESSED_ENTITY,
   ITEMS_PER_PAGE,
+  SUCCESS_CODE,
 } from "./constants";
 import { Optional } from "../utils/types";
 
@@ -140,15 +141,16 @@ export const postEditProduct = async (req, res, next) => {
   }
 };
 
-export const postDeleteProduct = async (req, res, next) => {
-  const { id } = req.body;
+export const deleteProduct = async (req, res, next) => {
+  const { productId } = req.params;
   try {
-    const product = await Product.get(id);
+    const product = await Product.get(productId);
     const isAuthorizedUser =
       product?.userId.toString() === req.session.user._id.toString();
-    isAuthorizedUser && (await Product.delete(id));
-    res.redirect("products");
+    console.log(isAuthorizedUser, productId);
+    isAuthorizedUser && (await Product.delete(productId));
+    res.status(SUCCESS_CODE).json({ message: "success" });
   } catch (e) {
-    console.log(e);
+    res.status(ERROR_CODE_SERVER).json({ message: "product delete failed" });
   }
 };
