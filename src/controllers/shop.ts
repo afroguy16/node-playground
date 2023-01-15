@@ -9,6 +9,8 @@ import {
   ERROR_CODE_SERVER,
   ITEMS_PER_PAGE,
 } from "./constants";
+import Stripe from "stripe";
+import StripeService from "./shared/services/PaymentService/vendors/Stripe.Service";
 
 interface CartProduct {
   product: ProductAttributes;
@@ -86,7 +88,26 @@ export const postRemoveProductFromCart = async (req, res, next) => {
   }
 };
 
-export const postCreateOrder = async (req, res, next) => {
+export const getCheckout = async (req, res, next) => {
+  try {
+    const cart = await Cart.get(req.session.user?._id);
+    const session = await StripeService.createProductCheckoutSession(
+      req,
+      cart.products
+    );
+    console.log(session);
+    res.render("shop/checkout", {
+      pageTitle: "Checkout",
+      pathName: "/checkout",
+      cart,
+      sessionId: session.id,
+    });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getCheckoutSuccess = async (req, res, next) => {
   const { _id: userId } = req.session.user;
   try {
     const cart = await Cart.get(userId);
@@ -106,6 +127,27 @@ export const postCreateOrder = async (req, res, next) => {
     console.log(e);
   }
 };
+
+// export const postCreateOrder = async (req, res, next) => {
+//   const { _id: userId } = req.session.user;
+//   try {
+//     const cart = await Cart.get(userId);
+//     const response = await Order.create({
+//       userId,
+//       products: cart.products,
+//       totalPrice: cart.totalPrice,
+//     });
+
+//     // This if check only makes sense with the assumption that mongodb fail the operation without throwing an error
+//     if (response.status) {
+//       await Cart.clear(userId);
+//     }
+
+//     res.redirect("/orders");
+//   } catch (e) {
+//     console.log(e);
+//   }
+// };
 
 export const getOrders = async (req, res, next) => {
   try {

@@ -2,12 +2,13 @@ import express from "express";
 
 import {
   getCart,
+  getCheckout,
+  getCheckoutSuccess,
   getOrder,
   getOrders,
   getProduct,
   getProducts,
   postAddProductToCart,
-  postCreateOrder,
   postRemoveProductFromCart,
 } from "../controllers/shop";
 import { isAuth } from "../middlewares/isAuth";
@@ -24,7 +25,11 @@ shopRouter.post("/cart", isAuth, postAddProductToCart);
 
 shopRouter.post("/cart-delete-item", isAuth, postRemoveProductFromCart);
 
-shopRouter.post("/create-order", isAuth, postCreateOrder);
+shopRouter.get("/checkout", isAuth, getCheckout);
+
+shopRouter.get("/checkout/success", isAuth, getCheckoutSuccess);
+
+shopRouter.get("/checkout/cancel", isAuth, getCheckout);
 
 shopRouter.get("/orders", isAuth, getOrders);
 
