@@ -1,7 +1,10 @@
+import PDFDocument from "pdfkit";
+
 import Cart from "../models/Embedded/Cart";
 import Order from "../models/Order";
 import { ProductAttributes } from "../models/Product/interfaces";
 import Product from "../models/Product";
+import { ERROR_CODE_SERVER } from "./constants";
 
 interface CartProduct {
   product: ProductAttributes;
@@ -119,4 +122,39 @@ export const getOrders = async (req, res, next) => {
   } catch (e) {
     console.log(e);
   }
+};
+
+export const getOrder = async (req, res, next) => {
+  const orderId = req.params.orderId;
+  const order = await Order.getOne(orderId);
+  const isUserAuthorized =
+    order?.userId.toString() === req.session.user._id.toString();
+
+  if (!isUserAuthorized) {
+    const error = { status: ERROR_CODE_SERVER, error: "Invalid order request" };
+    next(error);
+  }
+
+  const pdfDoc = new PDFDocument();
+  res.setHeader("Content-Type", "application/pdf");
+  res.setHeader("Content-Disposition", `inline; filename = ${orderId}.pdf`);
+
+  pdfDoc.pipe(res);
+
+  pdfDoc.fontSize(26).text("Invoice");
+  order?.products.forEach((product) => {
+    pdfDoc
+      .fontSize(16)
+      .text(
+        `${product.title} - ${product.quantity} * ${product.price} | ${product.totalPrice}`
+      );
+  });
+  pdfDoc.text(`Total price: ${order?.totalPrice}`);
+
+  pdfDoc.end();
+
+  pdfDoc.on("error", (e) => {
+    const error = { status: ERROR_CODE_SERVER, error: e };
+    next(error);
+  });
 };

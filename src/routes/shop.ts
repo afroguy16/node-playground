@@ -3,6 +3,7 @@ import express from "express";
 import {
   getCart,
   getHome,
+  getOrder,
   getOrders,
   getProduct,
   getProducts,
@@ -29,5 +30,7 @@ shopRouter.post("/cart-delete-item", isAuth, postRemoveProductFromCart);
 shopRouter.post("/create-order", isAuth, postCreateOrder);
 
 shopRouter.get("/orders", isAuth, getOrders);
+
+shopRouter.get("/orders/:orderId", isAuth, getOrder);
 
 export default shopRouter;

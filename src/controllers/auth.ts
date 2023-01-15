@@ -5,7 +5,7 @@ import { EMAIL_ERROR_MESSAGE_INVALID_TYPE } from "../middlewares/validators/auth
 
 import ResetPasswordToken from "../models/ResetPasswordToken";
 import User from "../models/User";
-import { ERROR_CODE_UNPROCESSED_ENTITY } from "./constants";
+import { ERROR_CODE_SERVER, ERROR_CODE_UNPROCESSED_ENTITY } from "./constants";
 import EmailService from "./shared/services/EmailService";
 import { OfficialEmailE } from "./shared/services/EmailService/enums";
 import resetPassword from "./shared/services/EmailService/templates/resetPassword";
@@ -19,7 +19,7 @@ export const getLogin = (req, res) => {
   });
 };
 
-export const postLogin = (req, res) => {
+export const postLogin = async (req, res) => {
   const { email, password } = req.body;
   const errors = validationResult(req);
 
@@ -32,12 +32,13 @@ export const postLogin = (req, res) => {
     });
   }
 
-  const reqSessionPendingLogginedInUserStr = JSON.stringify(
-    req.session.pendingLoggedInUser
-  );
-  req.session.user = JSON.parse(reqSessionPendingLogginedInUserStr);
-  req.session.pendingLoggedInUser = undefined;
-  res.redirect("/");
+  try {
+    req.session.user = await req.session.pendingLoggedInUser;
+    await req.session.save();
+    res.redirect("/");
+  } catch (e) {
+    console.log(e);
+  }
 };
 
 export const getSignup = (req, res) => {
@@ -133,6 +134,7 @@ export const postRequestPasswordReset = async (req, res) => {
 
 export const getResetPassword = async (req, res) => {
   const token = req.params.token;
+  // TODO - Bring back validation of get request to Controller
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -183,7 +185,8 @@ export const postResetPassword = async (req, res, next) => {
 
     res.redirect("/login");
   } catch (e) {
-    console.log(e);
+    const error = { status: ERROR_CODE_SERVER, error: e };
+    next(error);
   }
 };
 

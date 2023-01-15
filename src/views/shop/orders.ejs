@@ -18,7 +18,8 @@
                  </li>
                 <% }) %>
               </ul>
-              $<%= order.totalPrice %> 
+              <p>$<%= order.totalPrice %></p>
+              <a href="/orders/<%= order._id %>" target="_blank" rel="noopener noreferrer">Download invoice</a> 
             </li>
           <% }) %>
         </ul>
