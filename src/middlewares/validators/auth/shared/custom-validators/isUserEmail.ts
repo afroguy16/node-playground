@@ -5,7 +5,7 @@ import { LOGIN_ERROR_MESSAGE_INVALID_CREDENTIALS } from "../../constants";
 export default async (email: string, req: Request) => {
   const user = await User.get({ email });
   if (user) {
-    req.session.pendingLoggedInUser = user;
+    req.pendingLoggedInUser = user;
     return true;
   }
 

@@ -5,15 +5,15 @@ import session from "express-session";
 import connectMongoDbSession from "connect-mongodb-session";
 import bodyParser from "body-parser";
 import mongoose from "mongoose";
-import csurf from "csurf";
 import multer from "multer";
 import { v4 as generateUuid } from "uuid";
 
 import { rootDirectory } from "./utils";
-import { adminRouter as adminRoutes } from "./routes/admin";
 import shopRoutes from "./routes/shop";
 import { get404 } from "./controllers/error";
-import authRouter from "./routes/auth";
+import { ERROR_CODE_FORBIDDEN_REQUEST } from "./controllers/constants";
+import { adminApiRouter } from "./routes/apis/admin";
+import { authApiRouter } from "./routes/apis/auth";
 
 const MONGODB_URI =
   "mongodb+srv://afroguy16:_cNtka5miKjv.3s@cluster0.7l9wyuh.mongodb.net/shop?retryWrites=true&w=majority";
@@ -24,7 +24,6 @@ const store = new MongoDBStore({
   uri: MONGODB_URI,
   collection: "sessions",
 });
-const csrfProtection = csurf();
 
 const fileStorage = multer.diskStorage({
   destination: "images",
@@ -49,9 +48,18 @@ app.set("view engine", "ejs");
 app.set("views", path.join(rootDirectory, "views"));
 
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 app.use(multer({ storage: fileStorage, fileFilter }).single("image"));
 app.use(express.static(path.join(rootDirectory, "public")));
 app.use("/images", express.static(path.join(rootDirectory, "../images")));
+
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "");
+  res.setHeader("Access-Control-Allow-Methods", "GET");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization");
+  next();
+});
+
 app.use(
   session({
     secret: "gotcha",
@@ -61,27 +69,29 @@ app.use(
   })
 );
 
-app.use(csrfProtection);
-
 app.use((req, res, next) => {
   res.locals.error = undefined;
   res.locals.isLoggedIn = (req as any).session?.user?._id;
-  res.locals.csrfToken = (req as any).csrfToken();
   next();
 });
 
-app.use(authRouter);
-app.use("/admin", adminRoutes);
+// app.use(authRouter);
+// app.use("/admin", adminRoutes);
+app.use("/api", authApiRouter);
+app.use("/admin/api", adminApiRouter);
 app.use(shopRoutes);
 
 app.use(get404);
 
 app.use((error, req, res, next) => {
   console.log(error);
-  res.status(500).render("errors/server", {
-    pageTitle: "Server error",
-    pathName: "/server",
-  });
+  return res
+    .status(ERROR_CODE_FORBIDDEN_REQUEST)
+    .json({ message: "Invalid request" });
+  // res.status(ERROR_CODE_SERVER).render("errors/server", {
+  //   pageTitle: "Server error",
+  //   pathName: "/server",
+  // });
 });
 
 (async () => {
