@@ -1,6 +1,9 @@
 import express from "express";
 
-import { postCreateProduct } from "../../controllers/replica-for-apis/admin";
+import {
+  getProducts,
+  postCreateProduct,
+} from "../../controllers/replica-for-apis/admin";
 import isAuth from "../../middlewares/isAuth";
 import useUpdateProductValidators from "../../middlewares/validators/admin/update-product/useUpdateProductValidators";
 
@@ -12,3 +15,5 @@ adminApiRouter.post(
   useUpdateProductValidators,
   postCreateProduct
 );
+
+adminApiRouter.get("/products", isAuth, getProducts);

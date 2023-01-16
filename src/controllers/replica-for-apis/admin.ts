@@ -2,8 +2,11 @@ import { validationResult } from "express-validator";
 import Product from "../../models/Product";
 import { ProductAttributes } from "../../models/Product/interfaces";
 import {
+  DEFAULT_PAGE_NUMBER,
   ERROR_CODE_SERVER,
   ERROR_CODE_UNPROCESSED_ENTITY,
+  ITEMS_PER_PAGE,
+  SUCCESS_CODE,
   SUCCESS_CODE_CREATED,
 } from "../constants";
 
@@ -34,5 +37,29 @@ export const postCreateProduct = async (req, res) => {
     res
       .status(ERROR_CODE_SERVER)
       .json({ message: "Failed to upload", error: e });
+  }
+};
+
+export const getProducts = async (req, res, next) => {
+  const userId = req.jwt.userId;
+  const { page: paramsPage } = req.query;
+  const page = paramsPage || DEFAULT_PAGE_NUMBER;
+  try {
+    const productCount = await Product.getAllProductsCount({
+      filter: { userId },
+    });
+    const products = await Product.getAll({
+      pagination: { page },
+      filter: { userId },
+    });
+    res.status(SUCCESS_CODE).json({
+      page: Number(page),
+      pageCount: Math.ceil(productCount / ITEMS_PER_PAGE),
+      products,
+    });
+  } catch (e) {
+    res
+      .status(ERROR_CODE_SERVER)
+      .json({ message: "Get product failed", error: e });
   }
 };
