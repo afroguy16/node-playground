@@ -9,11 +9,11 @@ import multer from "multer";
 import { v4 as generateUuid } from "uuid";
 
 import { rootDirectory } from "./utils";
-import shopRoutes from "./routes/shop";
 import { get404 } from "./controllers/error";
 import { ERROR_CODE_FORBIDDEN_REQUEST } from "./controllers/constants";
 import { adminApiRouter } from "./routes/apis/admin";
 import { authApiRouter } from "./routes/apis/auth";
+import { shopApiRouter } from "./routes/apis/shop";
 
 const MONGODB_URI =
   "mongodb+srv://afroguy16:_cNtka5miKjv.3s@cluster0.7l9wyuh.mongodb.net/shop?retryWrites=true&w=majority";
@@ -75,23 +75,16 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use(authRouter);
-// app.use("/admin", adminRoutes);
 app.use("/api", authApiRouter);
 app.use("/admin/api", adminApiRouter);
-app.use(shopRoutes);
+app.use("/api", shopApiRouter);
 
 app.use(get404);
 
 app.use((error, req, res, next) => {
-  console.log(error);
   return res
     .status(ERROR_CODE_FORBIDDEN_REQUEST)
-    .json({ message: "Invalid request" });
-  // res.status(ERROR_CODE_SERVER).render("errors/server", {
-  //   pageTitle: "Server error",
-  //   pathName: "/server",
-  // });
+    .json({ message: "Invalid request", error });
 });
 
 (async () => {

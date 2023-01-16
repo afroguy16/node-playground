@@ -8,7 +8,7 @@ import {
   postCreateProduct,
   postEditProduct,
 } from "../controllers/admin";
-import { isAuth } from "../middlewares/isAuth";
+import isAuth from "../middlewares/isAuth";
 import useUpdateProductValidators from "../middlewares/validators/admin/update-product/useUpdateProductValidators";
 
 export const adminRouter = express.Router();

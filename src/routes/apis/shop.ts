@@ -1,6 +1,7 @@
 import express from "express";
 import { getProducts } from "../../controllers/replica-for-apis/shop";
+import isAuth from "../../middlewares/isAuth";
 
-const shopRouter = express.Router();
+export const shopApiRouter = express.Router();
 
-shopRouter.get("/api/products", getProducts);
+shopApiRouter.get("/products", isAuth, getProducts);
