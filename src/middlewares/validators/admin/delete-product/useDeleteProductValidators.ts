@@ -1,4 +1,4 @@
-import validateAuthority from "../shared/validators/validateAuthority";
+import validateAuthority from "./validators/validateAuthority";
 
 export default (() => {
   return [validateAuthority()];

@@ -43,7 +43,7 @@ export const postCreateProduct = async (req, res) => {
 };
 
 export const patchEditProduct = async (req, res, next) => {
-  const { id: _id, title, description, price } = req.body;
+  const { id, title, description, price } = req.body;
   const imageUrl = req.file?.path;
   const errors = validationResult(req);
 
@@ -55,13 +55,14 @@ export const patchEditProduct = async (req, res, next) => {
 
   try {
     const payload: ProductAttributes = {
-      _id,
+      _id: id,
       ...(title && { title }),
       ...(description && { description }),
       ...(price && { price }),
       ...(imageUrl && { imageUrl }),
     };
 
+    // TODO - ensure that you only send a success response when the DB is updated
     await Product.update(payload);
     res
       .status(SUCCESS_CODE_CREATED)

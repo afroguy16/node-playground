@@ -7,15 +7,16 @@ import {
   deleteProduct,
 } from "../../controllers/replica-for-apis/admin";
 import isAuth from "../../middlewares/isAuth";
+import useAddProductValidators from "../../middlewares/validators/admin/add-product/useAddProductValidators";
 import useDeleteProductValidators from "../../middlewares/validators/admin/delete-product/useDeleteProductValidators";
-import useUpdateProductValidators from "../../middlewares/validators/admin/update-product/useUpdateProductValidators";
+import useEditProductValidators from "../../middlewares/validators/admin/edit-product/useEditProductValidators";
 
 export const adminApiRouter = express.Router();
 
 adminApiRouter.post(
   "/product",
   isAuth,
-  useUpdateProductValidators,
+  useAddProductValidators,
   postCreateProduct
 );
 
@@ -24,7 +25,7 @@ adminApiRouter.get("/products", isAuth, getProducts);
 adminApiRouter.patch(
   "/product",
   isAuth,
-  useUpdateProductValidators,
+  useEditProductValidators,
   patchEditProduct
 );
 
