@@ -10,7 +10,10 @@ import { v4 as generateUuid } from "uuid";
 
 import { rootDirectory } from "./utils";
 import { get404 } from "./controllers/error";
-import { ERROR_CODE_FORBIDDEN_REQUEST } from "./controllers/constants";
+import {
+  ERROR_CODE_FORBIDDEN_REQUEST,
+  ERROR_CODE_SERVER,
+} from "./controllers/constants";
 import { adminApiRouter } from "./routes/apis/admin";
 import { authApiRouter } from "./routes/apis/auth";
 import { shopApiRouter } from "./routes/apis/shop";
@@ -86,8 +89,8 @@ app.use(get404);
 app.use((error, req, res, next) => {
   console.log(error);
   return res
-    .status(ERROR_CODE_FORBIDDEN_REQUEST)
-    .json({ message: "Invalid request", error });
+    .status(ERROR_CODE_SERVER)
+    .json({ message: "Something went wrong", error });
 });
 
 (async () => {

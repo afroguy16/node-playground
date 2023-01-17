@@ -1,4 +1,4 @@
-import validateAuthority from "./validators/validateAuthority";
+import validateAuthority from "../shared/validators/validateAuthority";
 import validateDescription from "./validators/validateDescription";
 import validatePrice from "./validators/validatePrice";
 import validateTitle from "./validators/validateTitle";

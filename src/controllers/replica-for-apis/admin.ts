@@ -96,3 +96,24 @@ export const getProducts = async (req, res, next) => {
       .json({ message: "Get product failed", error: e });
   }
 };
+
+export const deleteProduct = async (req, res, next) => {
+  const { id } = req.params;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res
+      .status(ERROR_CODE_UNPROCESSED_ENTITY)
+      .json({ message: "Illegal request", error: errors.array() });
+  }
+
+  try {
+    // TODO - verify that product was deleted by Model before sending a success report
+    await Product.delete(id);
+    res.status(SUCCESS_CODE).json({ message: "successfully deleted" });
+  } catch (e) {
+    res
+      .status(ERROR_CODE_SERVER)
+      .json({ message: "product delete failed", error: e });
+  }
+};
