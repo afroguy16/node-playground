@@ -10,12 +10,6 @@ import {
 } from "./constants";
 import { Optional } from "../utils/types";
 
-export const pagesData = {
-  editProduct: {
-    pathName: "admin/edit-product/:productId",
-  },
-};
-
 export const getProducts = async (req, res, next) => {
   const userId = req.session.user._id;
   const { page: paramsPage } = req.query;
@@ -94,7 +88,7 @@ export const getEditProduct = async (req, res, next) => {
     req.session.product = product;
     res.render("admin/update-product", {
       pageTitle: `Edit ${product?.title}`,
-      pathName: pagesData.editProduct.pathName,
+      pathName: "admin/edit-product/:productId",
       editing: true,
       product,
     });

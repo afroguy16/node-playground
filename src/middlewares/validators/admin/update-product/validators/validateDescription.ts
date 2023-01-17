@@ -5,7 +5,6 @@ import {
 } from "../../constants";
 
 export default () =>
-  body(
-    "description",
-    UPDATE_PRODUCT_DESCRIPTION_ERROR_MESSAGE_LENGTH_TOO_SHORT
-  ).isLength({ min: UPDATE_PRODUCT_DESCRIPTION_LENGTH });
+  body("description", UPDATE_PRODUCT_DESCRIPTION_ERROR_MESSAGE_LENGTH_TOO_SHORT)
+    .if((description, { req }) => req.body.description)
+    .isLength({ min: UPDATE_PRODUCT_DESCRIPTION_LENGTH });

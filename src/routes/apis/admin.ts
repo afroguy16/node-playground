@@ -3,6 +3,7 @@ import express from "express";
 import {
   getProducts,
   postCreateProduct,
+  patchEditProduct,
 } from "../../controllers/replica-for-apis/admin";
 import isAuth from "../../middlewares/isAuth";
 import useUpdateProductValidators from "../../middlewares/validators/admin/update-product/useUpdateProductValidators";
@@ -17,3 +18,10 @@ adminApiRouter.post(
 );
 
 adminApiRouter.get("/products", isAuth, getProducts);
+
+adminApiRouter.patch(
+  "/edit-product",
+  isAuth,
+  useUpdateProductValidators,
+  patchEditProduct
+);
