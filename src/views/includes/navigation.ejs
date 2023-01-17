@@ -30,7 +30,6 @@
       <% } else { %>
         <li>
           <form action="/logout" method="POST">
-            <input type="hidden" name="_csrf" value="<%= csrfToken %>">
             <button class="btn">Logout</button>
           </form>
         </li>
