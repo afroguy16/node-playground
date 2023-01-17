@@ -2,6 +2,7 @@ import { validationResult } from "express-validator";
 
 import Product from "../models/Product";
 import { ProductAttributes } from "../models/Product/interfaces";
+import SocketService from "../services/SocketService";
 import {
   DEFAULT_PAGE_NUMBER,
   ERROR_CODE_FORBIDDEN_REQUEST,
@@ -111,7 +112,12 @@ export const deleteProduct = async (req, res, next) => {
   try {
     // TODO - verify that product was deleted by Model before sending a success report
     await Product.delete(id);
-    res.status(SUCCESS_CODE).json({ message: "successfully deleted" });
+    const message = "successfully deleted";
+    SocketService.connection.emit("product", {
+      action: "delete",
+      data: { message },
+    });
+    res.status(SUCCESS_CODE).json({ message });
   } catch (e) {
     res
       .status(ERROR_CODE_SERVER)

@@ -10,14 +10,12 @@ import { v4 as generateUuid } from "uuid";
 
 import { rootDirectory } from "./utils";
 import { get404 } from "./controllers/error";
-import {
-  ERROR_CODE_FORBIDDEN_REQUEST,
-  ERROR_CODE_SERVER,
-} from "./controllers/constants";
+import { ERROR_CODE_SERVER } from "./controllers/constants";
 import { adminApiRouter } from "./routes/apis/admin";
 import { authApiRouter } from "./routes/apis/auth";
 import { shopApiRouter } from "./routes/apis/shop";
 import shopRouter from "./routes/shop";
+import SocketService from "./services/SocketService";
 
 const MONGODB_URI =
   "mongodb+srv://afroguy16:_cNtka5miKjv.3s@cluster0.7l9wyuh.mongodb.net/shop?retryWrites=true&w=majority";
@@ -97,7 +95,9 @@ app.use((error, req, res, next) => {
   try {
     await mongoose.connect(MONGODB_URI);
     console.log("connected with mongoose");
-    app.listen(4000);
+    const server = app.listen(4000);
+    const connection = await SocketService.init(server);
+    console.log(connection);
   } catch (e) {
     console.log(e);
   }
