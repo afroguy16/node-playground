@@ -5,7 +5,7 @@ import {
   postCreateProduct,
   patchEditProduct,
   deleteProduct,
-} from "../../controllers/replica-for-apis/admin";
+} from "../../controllers/admin";
 import isAuth from "../../middlewares/isAuth";
 import useAddProductValidators from "../../middlewares/validators/admin/add-product/useAddProductValidators";
 import useDeleteProductValidators from "../../middlewares/validators/admin/delete-product/useDeleteProductValidators";

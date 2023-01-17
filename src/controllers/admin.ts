@@ -1,17 +1,81 @@
-import { ProductAttributes } from "../models/Product/interfaces";
-import Product from "../models/Product";
 import { validationResult } from "express-validator";
+
+import Product from "../models/Product";
+import { ProductAttributes } from "../models/Product/interfaces";
 import {
   DEFAULT_PAGE_NUMBER,
+  ERROR_CODE_FORBIDDEN_REQUEST,
   ERROR_CODE_SERVER,
   ERROR_CODE_UNPROCESSED_ENTITY,
   ITEMS_PER_PAGE,
   SUCCESS_CODE,
+  SUCCESS_CODE_CREATED,
 } from "./constants";
-import { Optional } from "../utils/types";
+
+export const postCreateProduct = async (req, res) => {
+  const { title, description, price } = req.body;
+  const imageUrl = req.file?.path;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res
+      .status(ERROR_CODE_UNPROCESSED_ENTITY)
+      .json({ message: "Illegal content", error: errors.array() });
+  }
+
+  const payload: Omit<ProductAttributes, "_id"> = {
+    userId: req.jwt.userId,
+    title,
+    imageUrl,
+    description,
+    price,
+  };
+  try {
+    await Product.create(payload);
+    res
+      .status(SUCCESS_CODE_CREATED)
+      .json({ message: "Post created successfully" });
+  } catch (e) {
+    res
+      .status(ERROR_CODE_SERVER)
+      .json({ message: "Failed to upload", error: e });
+  }
+};
+
+export const patchEditProduct = async (req, res, next) => {
+  const { id, title, description, price } = req.body;
+  const imageUrl = req.file?.path;
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res
+      .status(ERROR_CODE_UNPROCESSED_ENTITY)
+      .json({ message: "Illegal request", error: errors.array() });
+  }
+
+  try {
+    const payload: ProductAttributes = {
+      _id: id,
+      ...(title && { title }),
+      ...(description && { description }),
+      ...(price && { price }),
+      ...(imageUrl && { imageUrl }),
+    };
+
+    // TODO - ensure that you only send a success response when the DB is updated
+    await Product.update(payload);
+    res
+      .status(SUCCESS_CODE_CREATED)
+      .json({ message: "Post updated successfully" });
+  } catch (e) {
+    res
+      .status(ERROR_CODE_UNPROCESSED_ENTITY)
+      .json({ message: "Illegal request", error: errors.array() });
+  }
+};
 
 export const getProducts = async (req, res, next) => {
-  const userId = req.session.user._id;
+  const userId = req.jwt.userId;
   const { page: paramsPage } = req.query;
   const page = paramsPage || DEFAULT_PAGE_NUMBER;
   try {
@@ -22,129 +86,35 @@ export const getProducts = async (req, res, next) => {
       pagination: { page },
       filter: { userId },
     });
-    res.render("admin/products", {
-      pageTitle: "Admin Products",
-      pathName: "admin/products",
+    res.status(SUCCESS_CODE).json({
       page: Number(page),
       pageCount: Math.ceil(productCount / ITEMS_PER_PAGE),
       products,
     });
   } catch (e) {
-    console.log(e);
+    res
+      .status(ERROR_CODE_FORBIDDEN_REQUEST)
+      .json({ message: "Get product failed", error: e });
   }
 };
 
-export const getCreateProduct = (req, res, next) => {
-  res.render("admin/update-product", {
-    pageTitle: "Add Product",
-    pathName: "admin/add-product",
-    editing: false,
-    product: {
-      title: undefined,
-      image: undefined,
-      description: undefined,
-      price: undefined,
-    },
-  });
-};
-
-export const postCreateProduct = async (req, res, next) => {
-  const { title, description, price } = req.body;
-  const imageUrl = req.file?.path;
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty() || !imageUrl) {
-    return res
-      .status(ERROR_CODE_UNPROCESSED_ENTITY)
-      .render("admin/update-product", {
-        pathName: "radmin/add-product",
-        pageTitle: "Add Product",
-        editing: false,
-        product: { title, description, price },
-        error: !imageUrl ? "Upload a jpg or png image" : errors.array()[0].msg,
-      });
-  }
-
-  const payload: Omit<ProductAttributes, "_id"> = {
-    userId: req.session.user._id,
-    title,
-    imageUrl,
-    description,
-    price,
-  };
-  try {
-    await Product.create(payload);
-    res.redirect("products");
-  } catch (e) {
-    const error = { status: ERROR_CODE_SERVER, error: e };
-    next(error);
-  }
-};
-
-export const getEditProduct = async (req, res, next) => {
-  const { productId } = req.params;
-  try {
-    const product = await Product.get(productId);
-    req.session.product = product;
-    res.render("admin/update-product", {
-      pageTitle: `Edit ${product?.title}`,
-      pathName: "admin/edit-product/:productId",
-      editing: true,
-      product,
-    });
-  } catch (e) {
-    console.log(e);
-  }
-};
-
-export const postEditProduct = async (req, res, next) => {
-  const { _id, title, description, price } = req.body;
-  const imageUrl = req.file?.path;
-  const isAuthorizedUser =
-    req.session.product.userId.toString() === req.session.user._id.toString();
+export const deleteProduct = async (req, res, next) => {
+  const { id } = req.params;
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     return res
       .status(ERROR_CODE_UNPROCESSED_ENTITY)
-      .render("admin/update-product", {
-        pathName: "radmin/add-product",
-        pageTitle: "Add Product",
-        editing: false,
-        product: { title, imageUrl, description, price },
-        error: !imageUrl ? "Upload a jpg or png image" : errors.array()[0].msg,
-      });
+      .json({ message: "Illegal request", error: errors.array() });
   }
-  try {
-    if (isAuthorizedUser) {
-      const payload: Optional<ProductAttributes, "imageUrl" | "userId"> = {
-        _id,
-        title,
-        description,
-        price,
-      };
-      if (imageUrl) {
-        payload.imageUrl = imageUrl;
-      }
-      await Product.update({ ...payload });
-    }
-    res.redirect("products");
-  } catch (e) {
-    const error = { status: ERROR_CODE_SERVER, error: e };
-    next(error);
-  }
-};
 
-export const deleteProduct = async (req, res, next) => {
-  const { productId } = req.params;
   try {
-    const product = await Product.get(productId);
-    const isAuthorizedUser =
-      product?.userId.toString() === req.session.user._id.toString();
-    console.log(isAuthorizedUser, productId);
-    isAuthorizedUser && (await Product.delete(productId));
-    res.status(SUCCESS_CODE).json({ message: "success" });
+    // TODO - verify that product was deleted by Model before sending a success report
+    await Product.delete(id);
+    res.status(SUCCESS_CODE).json({ message: "successfully deleted" });
   } catch (e) {
-    res.status(ERROR_CODE_SERVER).json({ message: "product delete failed" });
+    res
+      .status(ERROR_CODE_SERVER)
+      .json({ message: "product delete failed", error: e });
   }
 };
