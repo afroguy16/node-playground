@@ -14,13 +14,14 @@ import signup from "../shared/services/EmailService/templates/signup";
 
 export const postSignup = async (req, res) => {
   const { username, email, password } = req.body;
-  console.log(username, email, password);
-  const errors = validationResult(req);
+  const errors = req.validator.getErrors();
 
-  if (!errors.isEmpty()) {
+  console.log({ errors });
+
+  if (req.validator.hasError()) {
     return res
       .status(ERROR_CODE_UNPROCESSED_ENTITY)
-      .json({ message: "Auth failed", error: errors.array() });
+      .json({ message: "Auth failed", error: errors });
   }
 
   try {

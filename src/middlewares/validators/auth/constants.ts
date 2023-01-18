@@ -13,6 +13,7 @@ export const USERNAME_LENGTH = 3;
 export const USERNAME_ERROR_MESSAGE_LENGTH_TOO_SHORT = `The username must be at least ${PASSWORD_LENGTH} characters`;
 export const USERNAME_ERROR_MESSAGE_UNAVAILABLE_ADDRESS =
   "Username is already taken";
+export const USERNAME_ERROR_INVALID_TYPE = "Username must be alphanumeric";
 
 export const LOGIN_ERROR_MESSAGE_INVALID_CREDENTIALS = "Invalid credentials";
 
