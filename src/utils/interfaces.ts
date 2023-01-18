@@ -1,4 +1,4 @@
 export interface WriteResponse {
   status: boolean;
-  message?: unknown;
+  message?: string;
 }

@@ -16,6 +16,7 @@ import { authApiRouter } from "./routes/apis/auth";
 import { shopApiRouter } from "./routes/apis/shop";
 import shopRouter from "./routes/shop";
 import SocketService from "./services/SocketService";
+import graphqlEntry from "./graphql/entry";
 
 const MONGODB_URI =
   "mongodb+srv://afroguy16:_cNtka5miKjv.3s@cluster0.7l9wyuh.mongodb.net/shop?retryWrites=true&w=majority";
@@ -82,6 +83,8 @@ app.use("/api", authApiRouter);
 app.use("/admin/api", adminApiRouter);
 app.use("/api", shopApiRouter);
 
+app.use("/graphql", graphqlEntry);
+
 app.use(get404);
 
 app.use((error, req, res, next) => {
@@ -97,7 +100,6 @@ app.use((error, req, res, next) => {
     console.log("connected with mongoose");
     const server = app.listen(4000);
     const connection = await SocketService.init(server);
-    console.log(connection);
   } catch (e) {
     console.log(e);
   }
