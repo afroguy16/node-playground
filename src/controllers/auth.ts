@@ -1,15 +1,16 @@
 import bcyrpt from "bcryptjs";
 import crypto from "crypto";
 import { validationResult } from "express-validator";
-import { EMAIL_ERROR_MESSAGE_INVALID_TYPE } from "../middlewares/validators/auth/constants";
 
+import { EMAIL_ERROR_MESSAGE_INVALID_TYPE } from "../middlewares/validators/auth/constants";
 import ResetPasswordToken from "../models/ResetPasswordToken";
 import User from "../models/User";
+
 import { ERROR_CODE_SERVER, ERROR_CODE_UNPROCESSED_ENTITY } from "./constants";
 import EmailService from "./shared/services/EmailService";
 import { OfficialEmailE } from "./shared/services/EmailService/enums";
 import resetPassword from "./shared/services/EmailService/templates/resetPassword";
-import signup from "./shared/services/EmailService/templates/signup";
+import signup from "./shared/services/EmailService/templates/signupTemplate";
 
 export const getLogin = (req, res) => {
   res.render("auth/login", {

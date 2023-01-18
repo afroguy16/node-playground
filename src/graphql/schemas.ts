@@ -1,11 +1,15 @@
 import { buildSchema } from "graphql";
 
 export default buildSchema(`
+  type ErrorResponse {
+    path: String!
+    message: String!
+  }
+
   type WriteResponse {
     status: Boolean
     message: String
-    fake: String
-    real: String
+    errors: [ErrorResponse]
   }
 
   input SignupInputData {

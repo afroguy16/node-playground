@@ -10,13 +10,11 @@ import {
 } from "../constants";
 import EmailService from "../shared/services/EmailService";
 import { OfficialEmailE } from "../shared/services/EmailService/enums";
-import signup from "../shared/services/EmailService/templates/signup";
+import signup from "../shared/services/EmailService/templates/signupTemplate";
 
 export const postSignup = async (req, res) => {
   const { username, email, password } = req.body;
   const errors = req.validator.getErrors();
-
-  console.log({ errors });
 
   if (req.validator.hasError()) {
     return res
