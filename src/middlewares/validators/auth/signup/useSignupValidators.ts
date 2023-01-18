@@ -9,5 +9,6 @@ export default async (req, res, next) => {
   new ErrorService(req);
   req.validator.clearErrors();
   await validateUsername(req);
+  await validateEmail(req);
   next();
 };
