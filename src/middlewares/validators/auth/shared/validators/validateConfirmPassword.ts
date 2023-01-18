@@ -1,10 +1,20 @@
-import { body } from "express-validator";
-
-import { CONFIRM_PASSWORD_ERROR_MESSAGE } from "../../constants";
+import {
+  CONFIRM_PASSWORD_ERROR_MESSAGE,
+  CONFIRM_PASSWORD_ERROR_MESSAGE_EMPTY,
+} from "../../constants";
 import isPasswordMatched from "../custom-validators/isPasswordMatched";
 
-export default () => {
-  return body("confirmPassword", CONFIRM_PASSWORD_ERROR_MESSAGE).custom(
-    (value, { req }) => isPasswordMatched(value, req)
-  );
+export default (req) => {
+  const confirmPassword = req.body.confirmPassword;
+  const path = "confirmPassword";
+
+  if (!confirmPassword) {
+    req.validator.setError(path, CONFIRM_PASSWORD_ERROR_MESSAGE_EMPTY);
+    return false;
+  }
+
+  if (!isPasswordMatched(confirmPassword, req)) {
+    req.validator.setError(path, CONFIRM_PASSWORD_ERROR_MESSAGE);
+    return false;
+  }
 };

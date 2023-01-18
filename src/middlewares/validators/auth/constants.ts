@@ -5,8 +5,10 @@ export const EMAIL_UNACCEPTABLE_ADDRESSES = ["test@test.com"];
 export const EMAIL_UNAVAILABLE_ADDRESS = "Email is already taken";
 
 export const PASSWORD_LENGTH = 3;
-export const PASSWORD_ERROR_MESSAGE_LENGTH_TOO_SHORT = `The password must be alphanumeric characters and at least ${PASSWORD_LENGTH} characters`;
+export const PASSWORD_ERROR_MESSAGE_LENGTH_TOO_SHORT = `The password must be alphanumeric characters and at least ${PASSWORD_LENGTH} characters long`;
 
+export const CONFIRM_PASSWORD_ERROR_MESSAGE_EMPTY =
+  "Confirm password cannot be empty";
 export const CONFIRM_PASSWORD_ERROR_MESSAGE = "Password must match";
 
 export const USERNAME_LENGTH = 3;
