@@ -1,4 +1,5 @@
 import bcyrpt from "bcryptjs";
+import { GraphQLError } from "graphql";
 
 import EmailService from "../controllers/shared/services/EmailService";
 import { OfficialEmailE } from "../controllers/shared/services/EmailService/enums";
@@ -6,17 +7,30 @@ import signupTemplate from "../controllers/shared/services/EmailService/template
 import useSignupValidators from "../middlewares/validators/auth/signup/useSignupValidators";
 import User from "../models/User";
 
+const getSignupErrorObject = (errors) => {
+  const errorExtensions = { status: false, errors };
+  return new GraphQLError(
+    "Signup failed",
+    null,
+    null,
+    null,
+    null,
+    null,
+    errorExtensions
+  );
+};
+
 const signup = async (args, req) => {
   const { username, email, password } = args.signupInputData;
 
-  // HACK - move the content of the arg.signupInputData to req.body so the validators (which were created for REST) would work with Graphql
+  // TODO - Research a better design for this HACK - move the content of the arg.signupInputData to req.body so the validators (which were created for REST) would work with Graphql
   req.body = args.signupInputData;
   await useSignupValidators(req);
 
   const errors = req.validator.getErrors();
 
   if (req.validator.hasError()) {
-    return { status: false, message: "Auth failed", errors };
+    throw getSignupErrorObject(errors);
   }
 
   try {
@@ -36,11 +50,7 @@ const signup = async (args, req) => {
     return response;
   } catch (e) {
     console.log(e);
-    return {
-      status: false,
-      message: "Auth failed",
-      errors: [{ path: "", message: e }],
-    };
+    throw getSignupErrorObject([{ path: "signup", message: e }]);
   }
 };
 
