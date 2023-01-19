@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { ERROR_CODE_UNAUTHORIZED } from "../../../../../../controllers/constants";
 
 export default (req) => {
   try {

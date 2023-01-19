@@ -12,7 +12,7 @@ import {
   postRemoveProductFromCart,
 } from "../controllers/shop";
 
-import isAuth from "../middlewares/validators/auth/special/authenticate/custom-validators/isAuth";
+import isAuth from "../middlewares/validators/auth/special/authenticate/validators/rest.isAuth";
 
 const shopRouter = express.Router();
 
