@@ -1,7 +1,12 @@
-import { body } from "express-validator";
-import isUserAuthorisedToUpdate from "../../shared/custom-validators/isUserAuthorisedToUpdate";
+import isUserAuthorisedToUpdate from "../custom-validators/isUserAuthorisedToUpdate";
 
-export default () =>
-  body("id").custom((productId, { req }) =>
-    isUserAuthorisedToUpdate(productId, req)
-  );
+export default (productUserId: string, userId: string, req) => {
+  const path = "id";
+
+  if (!isUserAuthorisedToUpdate(productUserId, userId)) {
+    req.validator.setError(path, "Unauthorized");
+    return false;
+  }
+
+  return true;
+};

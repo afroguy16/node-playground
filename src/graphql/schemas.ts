@@ -40,7 +40,7 @@ export default buildSchema(`
   type Mutation {
     signup(signupInputData: SignupInputData): WriteResponse!
     addProduct(title: String!, description: String!, price: Int!): WriteResponse!
-    editProduct(id: String!): WriteResponse!
+    editProduct(id: String!, title: String, description: String, price: Int): WriteResponse!
   }
 
   schema {

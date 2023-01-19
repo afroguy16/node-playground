@@ -12,11 +12,10 @@ import { createGraphQLErrorObject } from "./utils";
 import useAddProductValidators from "../middlewares/validators/admin/add-product/useAddProductValidators";
 import {
   DEFAULT_PAGE_NUMBER,
-  ERROR_CODE_SERVER,
   ERROR_CODE_UNPROCESSED_ENTITY,
   ITEMS_PER_PAGE,
-  SUCCESS_CODE,
 } from "../controllers/constants";
+import useEditProductValidators from "../middlewares/validators/admin/edit-product/useEditProductValidators";
 
 const signup = async (args, req) => {
   const { username, email, password } = args.signupInputData;
@@ -52,9 +51,8 @@ const signup = async (args, req) => {
 };
 
 const addProduct = async (args, req) => {
-  isAuth(req);
+  isAuth("addProduct", req);
   const { title, description, price } = args;
-  const imageUrl = req.file?.path;
 
   useAddProductValidators(args, req);
   const errors = req.validator.getErrors();
@@ -70,7 +68,7 @@ const addProduct = async (args, req) => {
   const payload: Omit<ProductAttributes, "_id"> = {
     userId: req.jwt.userId,
     title,
-    imageUrl,
+    imageUrl: "fakeUrl",
     description,
     price,
   };
@@ -78,7 +76,6 @@ const addProduct = async (args, req) => {
   try {
     return await Product.create(payload);
   } catch (e) {
-    console.log(e);
     throw createGraphQLErrorObject("Failed to add product", [
       { path: "addProduct", message: e },
     ]);
@@ -107,8 +104,43 @@ export const products = async (args) => {
   }
 };
 
+const editProduct = async (args, req) => {
+  const { id, title, description, price } = args;
+
+  isAuth("editProduct", req);
+  await useEditProductValidators(args, req);
+  const errors = req.validator.getErrors();
+
+  if (req.validator.hasError()) {
+    throw createGraphQLErrorObject(
+      "Illegal content",
+      errors,
+      ERROR_CODE_UNPROCESSED_ENTITY
+    );
+  }
+
+  try {
+    const payload: ProductAttributes = {
+      _id: id,
+      ...(title && { title }),
+      ...(description && { description }),
+      ...(price >= 0 && { price }),
+    };
+
+    // TODO - ensure that you only send a success response when the DB is updated
+    return await Product.update(payload);
+  } catch (e) {
+    throw createGraphQLErrorObject(
+      "Illegal request",
+      [{ path: "editProduct", message: e }],
+      ERROR_CODE_UNPROCESSED_ENTITY
+    );
+  }
+};
+
 export default {
   signup,
   addProduct,
+  editProduct,
   products,
 };
