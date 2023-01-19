@@ -3,7 +3,7 @@ import validator from "validator";
 import { UPDATE_PRODUCT_PRICE_ERROR_MESSAGE_INVALID_TYPE } from "../../constants";
 
 export default (source, req) => {
-  const price = source.price;
+  const { price } = source;
   const path = "price";
 
   if (!price) {

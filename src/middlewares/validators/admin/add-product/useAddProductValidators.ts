@@ -11,6 +11,6 @@ export default (source, req, next?) => {
   // call validators
   validateTitle(source, req);
   validatePrice(source, req);
-  // validateDescription()
+  validateDescription(source, req);
   next && next();
 };

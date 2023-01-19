@@ -7,7 +7,7 @@ export default (() => {
   return [
     // validateTitle(), // TODO - fix this to work with REST
     // validatePrice(), // TODO - fix this to work with REST
-    validateDescription(),
+    // validateDescription(),
     validateAuthority(),
   ];
 })();

@@ -64,7 +64,7 @@ const addProduct = async (args, req) => {
   const payload: Omit<ProductAttributes, "_id"> = {
     userId: req.jwt.userId,
     title,
-    imageUrl: "fakeUrl",
+    imageUrl,
     description,
     price,
   };
