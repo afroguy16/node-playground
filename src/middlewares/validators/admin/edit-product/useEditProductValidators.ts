@@ -5,8 +5,8 @@ import validateAuthority from "./validators/validateAuthority";
 
 export default (() => {
   return [
-    validateTitle(),
-    validatePrice(),
+    // validateTitle(), // TODO - fix this to work with REST
+    // validatePrice(), // TODO - fix this to work with REST
     validateDescription(),
     validateAuthority(),
   ];

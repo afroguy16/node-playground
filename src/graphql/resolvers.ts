@@ -1,5 +1,4 @@
 import bcyrpt from "bcryptjs";
-import { GraphQLError } from "graphql";
 
 import EmailService from "../controllers/shared/services/EmailService";
 import { OfficialEmailE } from "../controllers/shared/services/EmailService/enums";
@@ -10,6 +9,8 @@ import { ProductAttributes } from "../models/Product/interfaces";
 import User from "../models/User";
 import isAuth from "../middlewares/validators/auth/special/authenticate/validators/graphql.isAuth";
 import { createGraphQLErrorObject } from "./utils";
+import useAddProductValidators from "../middlewares/validators/admin/add-product/useAddProductValidators";
+import { ERROR_CODE_UNPROCESSED_ENTITY } from "../controllers/constants";
 
 const signup = async (args, req) => {
   const { username, email, password } = args.signupInputData;
@@ -38,7 +39,6 @@ const signup = async (args, req) => {
 
     return response;
   } catch (e) {
-    console.log(e);
     throw createGraphQLErrorObject("Signup failed", [
       { path: "signup", message: e },
     ]);
@@ -49,13 +49,17 @@ const addProduct = async (args, req) => {
   isAuth(req);
   const { title, description, price } = args;
   const imageUrl = req.file?.path;
-  // const errors = validationResult(req);
 
-  // if (!errors.isEmpty()) {
-  //   return res
-  //     .status(ERROR_CODE_UNPROCESSED_ENTITY)
-  //     .json({ message: "Illegal content", error: errors.array() });
-  // }
+  useAddProductValidators(args, req);
+  const errors = req.validator.getErrors();
+
+  if (req.validator.hasError()) {
+    throw createGraphQLErrorObject(
+      "Illegal content",
+      errors,
+      ERROR_CODE_UNPROCESSED_ENTITY
+    );
+  }
 
   const payload: Omit<ProductAttributes, "_id"> = {
     userId: req.jwt.userId,
@@ -67,15 +71,11 @@ const addProduct = async (args, req) => {
 
   try {
     return await Product.create(payload);
-    // res
-    //   .status(SUCCESS_CODE_CREATED)
-    //   .json({ message: "Post created successfully" });
   } catch (e) {
-    console.log("error", e);
-    return { message: "Failed to upload", error: e };
-    // res
-    //   .status(ERROR_CODE_SERVER)
-    //   .json({ message: "Failed to upload", error: e });
+    console.log(e);
+    throw createGraphQLErrorObject("Failed to add product", [
+      { path: "addProduct", message: e },
+    ]);
   }
 };
 

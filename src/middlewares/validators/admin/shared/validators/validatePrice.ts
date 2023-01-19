@@ -1,8 +1,26 @@
-import { body } from "express-validator";
+import validator from "validator";
 
 import { UPDATE_PRODUCT_PRICE_ERROR_MESSAGE_INVALID_TYPE } from "../../constants";
 
-export default () =>
-  body("price", UPDATE_PRODUCT_PRICE_ERROR_MESSAGE_INVALID_TYPE)
-    .if((price, { req }) => req.body.price)
-    .isFloat();
+export default (source, req) => {
+  const price = source.price;
+  const path = "price";
+
+  if (!price) {
+    req.validator.setError(
+      path,
+      UPDATE_PRODUCT_PRICE_ERROR_MESSAGE_INVALID_TYPE
+    );
+    return false;
+  }
+
+  if (!validator.isFloat(price.toString())) {
+    req.validator.setError(
+      path,
+      UPDATE_PRODUCT_PRICE_ERROR_MESSAGE_INVALID_TYPE
+    );
+    return false;
+  }
+
+  return true;
+};
