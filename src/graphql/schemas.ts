@@ -9,7 +9,6 @@ export default buildSchema(`
   type WriteResponse {
     status: Boolean
     message: String
-    errors: [ErrorResponse]
   }
 
   input SignupInputData {
@@ -25,6 +24,7 @@ export default buildSchema(`
 
   type Mutation {
     signup(signupInputData: SignupInputData): WriteResponse!
+    addProduct(title: String!, description: String!, price: Int!): WriteResponse!
   }
 
   schema {

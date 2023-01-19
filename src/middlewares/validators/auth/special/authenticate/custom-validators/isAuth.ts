@@ -1,15 +1,13 @@
 import jwt from "jsonwebtoken";
-import { ERROR_CODE_UNAUTHORIZED } from "../controllers/constants";
+import { ERROR_CODE_UNAUTHORIZED } from "../../../../../../controllers/constants";
 
-export default (req, res, next) => {
+export default (req) => {
   try {
     const token = req.get("Authorization").split(" ")[1];
     const decodedToken = jwt.verify(token, "this is some long ass ");
     req.jwt = { userId: decodedToken.userId };
-    next();
+    return true;
   } catch (e) {
-    res
-      .status(ERROR_CODE_UNAUTHORIZED)
-      .json({ message: "Not authorized", error: e });
+    throw { message: "Not authorized", error: e };
   }
 };
