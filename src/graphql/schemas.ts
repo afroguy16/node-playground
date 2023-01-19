@@ -6,6 +6,21 @@ export default buildSchema(`
     message: String!
   }
 
+  type Product {
+    _id: String!
+    userId: String!
+    title: String!
+    imageUrl: String!
+    description: String!
+    price: Int!
+  }
+
+  type ProductsData {
+    currentPage: Int!
+    pageCount: Int!
+    products: [Product]!
+  }
+
   type WriteResponse {
     status: Boolean
     message: String
@@ -19,12 +34,13 @@ export default buildSchema(`
   }
 
   type RootQuery {
-    hello: String
+    products(page: Int!): ProductsData!
   }
 
   type Mutation {
     signup(signupInputData: SignupInputData): WriteResponse!
     addProduct(title: String!, description: String!, price: Int!): WriteResponse!
+    editProduct(id: String!): WriteResponse!
   }
 
   schema {

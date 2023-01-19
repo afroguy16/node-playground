@@ -10,7 +10,13 @@ import User from "../models/User";
 import isAuth from "../middlewares/validators/auth/special/authenticate/validators/graphql.isAuth";
 import { createGraphQLErrorObject } from "./utils";
 import useAddProductValidators from "../middlewares/validators/admin/add-product/useAddProductValidators";
-import { ERROR_CODE_UNPROCESSED_ENTITY } from "../controllers/constants";
+import {
+  DEFAULT_PAGE_NUMBER,
+  ERROR_CODE_SERVER,
+  ERROR_CODE_UNPROCESSED_ENTITY,
+  ITEMS_PER_PAGE,
+  SUCCESS_CODE,
+} from "../controllers/constants";
 
 const signup = async (args, req) => {
   const { username, email, password } = args.signupInputData;
@@ -79,7 +85,30 @@ const addProduct = async (args, req) => {
   }
 };
 
+export const products = async (args) => {
+  const { page } = args;
+  try {
+    const productCount = await Product.getAllProductsCount();
+    const products = await Product.getAll({
+      pagination: { page: page || DEFAULT_PAGE_NUMBER },
+    });
+    return (
+      products && {
+        currentPage: Number(page),
+        pageCount: Math.ceil(productCount / ITEMS_PER_PAGE),
+        products,
+      }
+    );
+  } catch (e) {
+    console.log(e);
+    throw createGraphQLErrorObject("Failed to fetch products", [
+      { path: "Products", message: e },
+    ]);
+  }
+};
+
 export default {
   signup,
   addProduct,
+  products,
 };
