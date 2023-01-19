@@ -9,19 +9,7 @@ import Product from "../models/Product";
 import { ProductAttributes } from "../models/Product/interfaces";
 import User from "../models/User";
 import isAuth from "../middlewares/validators/auth/special/authenticate/validators/graphql.isAuth";
-
-const getSignupErrorObject = (errors) => {
-  const errorExtensions = { status: false, errors };
-  return new GraphQLError(
-    "Signup failed",
-    null,
-    null,
-    null,
-    null,
-    null,
-    errorExtensions
-  );
-};
+import { createGraphQLErrorObject } from "./utils";
 
 const signup = async (args, req) => {
   const { username, email, password } = args.signupInputData;
@@ -31,7 +19,7 @@ const signup = async (args, req) => {
   await useSignupValidators(req);
   const errors = req.validator.getErrors();
   if (req.validator.hasError()) {
-    throw getSignupErrorObject(errors);
+    throw createGraphQLErrorObject("Signup failed", errors);
   }
 
   try {
@@ -51,7 +39,9 @@ const signup = async (args, req) => {
     return response;
   } catch (e) {
     console.log(e);
-    throw getSignupErrorObject([{ path: "signup", message: e }]);
+    throw createGraphQLErrorObject("Signup failed", [
+      { path: "signup", message: e },
+    ]);
   }
 };
 
