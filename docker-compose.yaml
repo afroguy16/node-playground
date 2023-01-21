@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  mongodb:
+    image: mongo:5.0.2
+    restart: unless-stopped
+    ports:
+      - 6000:6000
+    volumes:
+      - db:/data/db
+  app:
+    image: afrogu16/node-playground:test4
+    depends_on:
+      - mongodb
+    restart: unless-stopped
+    ports:
+      - 4000:4000
+    stdin_open: true
+    tty: true
+
+volumes:
+  db:
