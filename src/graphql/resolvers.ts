@@ -7,7 +7,7 @@ import useSignupValidators from "../middlewares/validators/auth/signup/useSignup
 import Product from "../models/Product";
 import { ProductAttributes } from "../models/Product/interfaces";
 import User from "../models/User";
-import isAuth from "../middlewares/validators/auth/special/authenticate/validators/graphql.isAuth";
+import isAuth from "../middlewares/validators/auth/authenticate/validators/graphql.isAuth";
 import { createGraphQLErrorObject } from "./utils";
 import useAddProductValidators from "../middlewares/validators/admin/add-product/useAddProductValidators";
 import {

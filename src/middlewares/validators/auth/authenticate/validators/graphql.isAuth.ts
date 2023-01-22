@@ -1,5 +1,5 @@
-import { ERROR_CODE_UNAUTHORIZED } from "../../../../../../controllers/constants";
-import { createGraphQLErrorObject } from "../../../../../../graphql/utils";
+import { ERROR_CODE_UNAUTHORIZED } from "../../../../../controllers/constants";
+import { createGraphQLErrorObject } from "../../../../../graphql/utils";
 import isAuth from "../utils/get-valid-token";
 
 export default (path: string, req) => {

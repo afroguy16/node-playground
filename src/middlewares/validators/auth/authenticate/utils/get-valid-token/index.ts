@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 
-import { TO_MOVE_VARIABLE_HASH_KEY } from "../../../../constants";
+import { TO_MOVE_VARIABLE_HASH_KEY } from "../../../constants";
 
 export default (req) => {
   try {
