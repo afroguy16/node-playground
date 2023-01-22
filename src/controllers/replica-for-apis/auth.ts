@@ -37,7 +37,9 @@ export const postSignup = async (req, res) => {
       template: { ...signup },
     });
   } catch (e) {
-    console.log(e);
+    return res
+      .status(ERROR_CODE_UNPROCESSED_ENTITY)
+      .json({ message: "Auth failed", error: e });
   }
 };
 

@@ -4,7 +4,7 @@ import validatePassword from "../shared/validators/validatePassword";
 import validateUsername from "./validators/validateUsername";
 import { ErrorService } from "../../ErrorService";
 
-export default async (req, next?) => {
+export default async (req, res?, next?) => {
   // Initialize ErrorService instance
   new ErrorService(req);
 
