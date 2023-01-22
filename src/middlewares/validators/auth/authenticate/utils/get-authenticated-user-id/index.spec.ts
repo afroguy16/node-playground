@@ -4,7 +4,7 @@ import isAuth from ".";
 
 jest.mock("jsonwebtoken");
 
-describe("Is-Auth Middleware", () => {
+describe("Get Authenticated UserId Utility", () => {
   it("should return null if no Authorization header is present", () => {
     const req = {
       get: () => null,

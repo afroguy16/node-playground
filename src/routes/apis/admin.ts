@@ -6,7 +6,7 @@ import {
   patchEditProduct,
   deleteProduct,
 } from "../../controllers/admin";
-import isAuth from "../../middlewares/validators/auth/authenticate/validators/rest-is-auth";
+import isAuth from "../../middlewares/validators/auth/authenticate/authenticators/use-rest-authenticator";
 import useAddProductValidators from "../../middlewares/validators/admin/add-product/useAddProductValidators";
 import useDeleteProductValidators from "../../middlewares/validators/admin/delete-product/useDeleteProductValidators";
 import useEditProductValidators from "../../middlewares/validators/admin/edit-product/useEditProductValidators";
