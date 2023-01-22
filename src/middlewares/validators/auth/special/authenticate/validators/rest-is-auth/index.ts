@@ -1,5 +1,5 @@
-import { ERROR_CODE_UNAUTHORIZED } from "../../../../../../controllers/constants";
-import isAuth from "../custom-validators/is-auth";
+import { ERROR_CODE_UNAUTHORIZED } from "../../../../../../../controllers/constants";
+import isAuth from "../../utils/get-valid-token";
 
 export default (req, res, next) => {
   try {
