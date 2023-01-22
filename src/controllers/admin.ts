@@ -25,7 +25,7 @@ export const postCreateProduct = async (req, res) => {
   }
 
   const payload: Omit<ProductAttributes, "_id"> = {
-    userId: req.jwt.userId,
+    userId: req.userId,
     title,
     imageUrl,
     description,
@@ -76,7 +76,7 @@ export const patchEditProduct = async (req, res, next) => {
 };
 
 export const getProducts = async (req, res, next) => {
-  const userId = req.jwt.userId;
+  const userId = req.userId;
   const { page: paramsPage } = req.query;
   const page = paramsPage || DEFAULT_PAGE_NUMBER;
   try {

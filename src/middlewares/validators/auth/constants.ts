@@ -22,7 +22,6 @@ export const LOGIN_ERROR_MESSAGE_INVALID_CREDENTIALS = "Invalid credentials";
 export const RESET_PASSWORD_TOKEN_UNAVAILABLE = "No token found!";
 export const RESET_PASSWORD_UNMATCHED_EMAIL = "Unauthorized change requested";
 
-export const IS_AUTH_ERROR_MESSAGE_ILLEGAL_AUTHENTICATION_REQUEST =
-  "Illegal authentication request";
+export const IS_AUTH_ERROR_MESSAGE_UNAUTHORIZED = "Not authorized";
 
 export const TO_MOVE_VARIABLE_HASH_KEY = "this is some long ass ";

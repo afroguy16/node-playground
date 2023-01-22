@@ -1,6 +1,6 @@
 import useRestAuthenticator from ".";
 import { ERROR_CODE_UNAUTHORIZED } from "../../../../../../controllers/constants";
-import { IS_AUTH_ERROR_MESSAGE_ILLEGAL_AUTHENTICATION_REQUEST } from "../../../constants";
+import { IS_AUTH_ERROR_MESSAGE_UNAUTHORIZED } from "../../../constants";
 import getAuthenticatedUserId from "../../utils/get-authenticated-user-id";
 
 jest.mock("../../utils/get-authenticated-user-id");
@@ -19,7 +19,7 @@ describe("Use Rest Authenticator Middleware", () => {
     useRestAuthenticator(req, res, next);
     expect(res.status).toHaveBeenNthCalledWith(1, ERROR_CODE_UNAUTHORIZED);
     expect(res.json).toHaveBeenCalledWith({
-      message: IS_AUTH_ERROR_MESSAGE_ILLEGAL_AUTHENTICATION_REQUEST,
+      message: IS_AUTH_ERROR_MESSAGE_UNAUTHORIZED,
     });
   });
 
