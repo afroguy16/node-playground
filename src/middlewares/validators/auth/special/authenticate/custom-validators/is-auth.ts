@@ -7,14 +7,11 @@ import {
 
 export default (req) => {
   try {
-    const token = req.get("Authorization").split(" ")[1];
+    const token = req.get("Authorization")?.split(" ")[1];
     const decodedToken = jwt.verify(token, TO_MOVE_VARIABLE_HASH_KEY);
     req.jwt = { userId: decodedToken.userId };
     return true;
   } catch (e) {
-    throw {
-      message: IS_AUTH_ERROR_MESSAGE_ILLEGAL_AUTHENTICATION_REQUEST,
-      error: e,
-    };
+    return false;
   }
 };
