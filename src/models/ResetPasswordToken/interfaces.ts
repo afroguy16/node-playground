@@ -3,7 +3,7 @@ import { WriteResponse } from "../../utils/interfaces";
 export interface ResetPasswordTokenAttributes {
   _id: string;
   token: string;
-  userId: string;
+  email: string;
   expiration: number;
 }
 

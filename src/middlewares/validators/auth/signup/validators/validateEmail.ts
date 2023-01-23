@@ -6,10 +6,10 @@ import {
   EMAIL_UNACCEPTABLE_ADDRESSES,
   EMAIL_UNAVAILABLE_ADDRESS,
 } from "../../constants";
-import isAcceptedEmailAddress from "../custom-validators/isAcceptedEmailAddress";
+import isAcceptedEmailAddress from "../../shared/custom-validators/isAcceptedEmailAddress";
 import isEmailUnique from "../custom-validators/isEmailUnique";
 
-export default async (req) => {
+export default (req) => {
   const email = req.body.email;
   const path = "email";
 
@@ -28,10 +28,10 @@ export default async (req) => {
     return false;
   }
 
-  if (!(await isEmailUnique(email))) {
-    req.validator.setError(path, EMAIL_UNAVAILABLE_ADDRESS);
-    return false;
-  }
+  // if (!(await isEmailUnique(email))) {
+  //   req.validator.setError(path, EMAIL_UNAVAILABLE_ADDRESS);
+  //   return false;
+  // }
 
   return true;
 };

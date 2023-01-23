@@ -1,5 +1,6 @@
 import { validationResult } from "express-validator";
 import bcyrpt from "bcryptjs";
+import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
 import User from "../../models/User";
@@ -11,7 +12,12 @@ import {
 import EmailService from "../shared/services/EmailService";
 import { OfficialEmailE } from "../shared/services/EmailService/enums";
 import signup from "../shared/services/EmailService/templates/signupTemplate";
-import { SIGNUP_ERROR_MESSAGE_FAILED } from "../../middlewares/validators/auth/constants";
+import {
+  EMAIL_ERROR_MESSAGE_INVALID_TYPE,
+  SIGNUP_ERROR_MESSAGE_FAILED,
+} from "../../middlewares/validators/auth/constants";
+import ResetPasswordToken from "../../models/ResetPasswordToken";
+import resetPassword from "../shared/services/EmailService/templates/resetPassword";
 
 export const postSignup = async (req, res) => {
   const { username, email, password } = req.body;
@@ -68,5 +74,31 @@ export const postLogin = async (req, res) => {
     return res
       .status(ERROR_CODE_UNPROCESSED_ENTITY)
       .json({ message: SIGNUP_ERROR_MESSAGE_FAILED, error: e });
+  }
+};
+
+export const postRequestPasswordReset = async (req, res) => {
+  const { email } = req.body;
+
+  try {
+    const tokenBuffer = crypto.randomBytes(32);
+    const token = tokenBuffer.toString("hex");
+    const expiration = Date.now() + 3600000;
+
+    await ResetPasswordToken.create({
+      email,
+      token,
+      expiration,
+    });
+
+    res.status(SUCCESS_CODE).json({ message: "OK" });
+
+    await EmailService.send({
+      to: email,
+      from: OfficialEmailE.SUPPORT,
+      template: resetPassword(token),
+    });
+  } catch (e) {
+    console.log(e);
   }
 };

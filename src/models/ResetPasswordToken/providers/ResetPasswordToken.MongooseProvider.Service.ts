@@ -7,15 +7,10 @@ import {
   ResetPasswordTokenModel,
 } from "../interfaces";
 
-interface ResetPasswordTokenAttributesSchema
-  extends Omit<ResetPasswordTokenAttributes, "userId"> {
-  userId: Schema.Types.ObjectId;
-}
-
 const resetPasswordTokenAttributesSchema =
-  new Schema<ResetPasswordTokenAttributesSchema>({
-    userId: {
-      type: Schema.Types.ObjectId,
+  new Schema<ResetPasswordTokenAttributes>({
+    email: {
+      type: String,
       ref: "ResetPasswordToken",
       required: true,
     },
@@ -29,7 +24,7 @@ const resetPasswordTokenAttributesSchema =
     },
   });
 
-const ResetPasswordToken = model<ResetPasswordTokenAttributesSchema>(
+const ResetPasswordToken = model<ResetPasswordTokenAttributes>(
   "ResetPasswordToken",
   resetPasswordTokenAttributesSchema
 );
