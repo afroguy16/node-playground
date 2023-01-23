@@ -12,9 +12,9 @@ import {
   getResetPassword,
 } from "../controllers/auth";
 import useLoginValidators from "../middlewares/validators/auth/login/useLoginValidators";
-import useGetRequestPasswordResetValidators from "../middlewares/validators/auth/requestPasswordReset/get/useGetRequestPasswordResetValidators";
-import useRequestPasswordResetValidators from "../middlewares/validators/auth/requestPasswordReset/useRequestPasswordResetValidators";
-import useResetPasswordValidators from "../middlewares/validators/auth/resetPassword/useResetPasswordValidators";
+import useGetRequestPasswordResetValidators from "../middlewares/validators/auth/update-password/requestPasswordReset/get/useGetRequestPasswordResetValidators";
+import useRequestPasswordResetValidators from "../middlewares/validators/auth/update-password/requestPasswordReset/useRequestPasswordResetValidators";
+import useResetPasswordValidators from "../middlewares/validators/auth/update-password/resetPassword/useResetPasswordValidators";
 import useSignupValidators from "../middlewares/validators/auth/signup/useSignupValidators";
 
 const authRouter = express.Router();

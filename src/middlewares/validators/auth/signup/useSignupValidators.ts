@@ -1,8 +1,8 @@
-import validateConfirmPassword from "../shared/validators/validateConfirmPassword";
 import validateEmail from "./validators/validateEmail";
-import validatePassword from "../shared/validators/validatePassword";
+import validatePassword from "../utils/getPasswordErrors";
 import validateUsername from "./validators/validateUsername";
 import { ErrorService } from "../../ErrorService";
+import getConfirmPasswordErrors from "../utils/getConfirmPasswordErrors";
 
 export default async (req, res, next?) => {
   // Initialize ErrorService instance
@@ -11,8 +11,8 @@ export default async (req, res, next?) => {
   // call validators
   await validateUsername(req);
   await validateEmail(req);
-  validatePassword(req);
-  validateConfirmPassword(req);
+  validatePassword(req); // TODO - update signupValidators to comply with the new style
+  getConfirmPasswordErrors(req.body.confirmPassword, req.body.password); // TODO - update signupValidators to comply with the new style
 
   // call next after all validator has been called
   next && next();

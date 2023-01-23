@@ -1,7 +1,6 @@
-import User from "../../../../../models/User";
-
-import getEmailErrors from "../../../utils/get-email-errors";
-import { REQUEST_PASSWORD_RESET_ERROR_MESSAGE_NO_USER_FOUND } from "../../constants";
+import User from "../../../../models/User";
+import getEmailErrors from "../../utils/get-email-errors";
+import { REQUEST_PASSWORD_RESET_ERROR_MESSAGE_NO_USER_FOUND } from "../constants";
 
 export default async (email: string) => {
   const errors: Array<string> = [];
@@ -14,7 +13,7 @@ export default async (email: string) => {
 
   // check if there is a user with this email
   const user = await User.get({ email });
-  if (!user) {
+  if (!user || user.email !== email) {
     errors.push(REQUEST_PASSWORD_RESET_ERROR_MESSAGE_NO_USER_FOUND);
   }
 

@@ -1,7 +1,6 @@
-import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../../../controllers/constants";
-import { EMAIL_ERROR_MESSAGE_INVALID_TYPE } from "../constants";
-
-import getEmailErrors from "./utils/getEmailErrors";
+import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../../../../controllers/constants";
+import { EMAIL_ERROR_MESSAGE_INVALID_TYPE } from "../../constants";
+import getEmailErrors from "../../utils/getEmailErrors";
 
 export default async (req, res, next) => {
   const email = req?.body?.email;

@@ -24,7 +24,7 @@ export const LOGIN_ERROR_MESSAGE_INVALID_CREDENTIALS = "Invalid credentials";
 export const REQUEST_PASSWORD_RESET_ERROR_MESSAGE_NO_USER_FOUND =
   "No user found";
 
-export const RESET_PASSWORD_TOKEN_UNAVAILABLE = "No token found!";
+export const RESET_PASSWORD_TOKEN_BAD = "Illegal token";
 export const RESET_PASSWORD_UNMATCHED_EMAIL = "Unauthorized change requested";
 
 export const IS_AUTH_ERROR_MESSAGE_UNAUTHORIZED = "Not authorized";

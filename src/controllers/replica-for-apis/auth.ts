@@ -102,3 +102,40 @@ export const postRequestPasswordReset = async (req, res) => {
     console.log(e);
   }
 };
+
+export const postResetPassword = async (req, res, next) => {
+  const { email, password, confirmPassword, token } = req.body; // TODO - add confirmPassword validation
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(ERROR_CODE_UNPROCESSED_ENTITY).render("auth/reset", {
+      pathName: "reset",
+      pageTitle: "Reset Password",
+      error: errors.array()[0].msg,
+      data: { email, password, confirmPassword },
+      token,
+    });
+  }
+
+  // try {
+  //   const userId = req.session.resetPasswordUser._id;
+  //   const user = await User.getById(userId);
+
+  //   if (user) {
+  //     const salt = await bcyrpt.genSalt(12);
+  //     const crypted = await bcyrpt.hash(password, salt);
+  //     await User.update({ _id: userId, password: crypted });
+  //   }
+  //   const tokenId = req.session.resetPasswordTokenObject;
+  //   await ResetPasswordToken.delete(tokenId);
+
+  //   // clean up session temp variables
+  //   req.session.resetPasswordUser = undefined;
+  //   req.session.resetPasswordTokenObject = undefined;
+
+  //   res.redirect("/login");
+  // } catch (e) {
+  //   const error = { status: ERROR_CODE_SERVER, error: e };
+  //   next(error);
+  // }
+};
