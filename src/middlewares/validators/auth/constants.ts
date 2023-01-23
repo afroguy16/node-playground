@@ -17,6 +17,8 @@ export const USERNAME_ERROR_MESSAGE_UNAVAILABLE_ADDRESS =
   "Username is already taken";
 export const USERNAME_ERROR_INVALID_TYPE = "Username must be alphanumeric";
 
+export const SIGNUP_ERROR_MESSAGE_FAILED = "Signup failed";
+
 export const LOGIN_ERROR_MESSAGE_INVALID_CREDENTIALS = "Invalid credentials";
 
 export const RESET_PASSWORD_TOKEN_UNAVAILABLE = "No token found!";

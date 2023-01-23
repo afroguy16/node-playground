@@ -11,6 +11,7 @@ import {
 import EmailService from "../shared/services/EmailService";
 import { OfficialEmailE } from "../shared/services/EmailService/enums";
 import signup from "../shared/services/EmailService/templates/signupTemplate";
+import { SIGNUP_ERROR_MESSAGE_FAILED } from "../../middlewares/validators/auth/constants";
 
 export const postSignup = async (req, res) => {
   const { username, email, password } = req.body;
@@ -19,7 +20,7 @@ export const postSignup = async (req, res) => {
   if (req.validator.hasError()) {
     return res
       .status(ERROR_CODE_UNPROCESSED_ENTITY)
-      .json({ message: "Auth failed", error: errors });
+      .json({ message: SIGNUP_ERROR_MESSAGE_FAILED, error: errors });
   }
 
   try {
@@ -39,7 +40,7 @@ export const postSignup = async (req, res) => {
   } catch (e) {
     return res
       .status(ERROR_CODE_UNPROCESSED_ENTITY)
-      .json({ message: "Auth failed", error: e });
+      .json({ message: SIGNUP_ERROR_MESSAGE_FAILED, error: e });
   }
 };
 
@@ -49,7 +50,7 @@ export const postLogin = async (req, res) => {
   if (!errors.isEmpty()) {
     return res
       .status(ERROR_CODE_UNPROCESSED_ENTITY)
-      .json({ message: "Auth failed", error: errors.array() });
+      .json({ message: SIGNUP_ERROR_MESSAGE_FAILED, error: errors.array() });
   }
 
   const token = jwt.sign(
@@ -66,6 +67,6 @@ export const postLogin = async (req, res) => {
   } catch (e) {
     return res
       .status(ERROR_CODE_UNPROCESSED_ENTITY)
-      .json({ message: "Auth failed", error: e });
+      .json({ message: SIGNUP_ERROR_MESSAGE_FAILED, error: e });
   }
 };
