@@ -9,12 +9,12 @@ import multer from "multer";
 import { v4 as generateUuid } from "uuid";
 
 import { rootDirectory } from "./utils";
-import { get404 } from "./controllers/error";
-import { ERROR_CODE_SERVER } from "./controllers/constants";
-import { adminApiRouter } from "./routes/apis/admin";
+import { get404 } from "./controllers/views-to-port/error";
+import { ERROR_CODE_SERVER } from "./controllers/utils/constants";
+import { adminApiRouter } from "./routes/admin";
 import { authRouter } from "./routes/auth";
-import { shopApiRouter } from "./routes/apis/shop";
-import shopRouter from "./routes/shop";
+import { shopApiRouter } from "./routes/shop";
+import shopRouter from "./routes/views/shop";
 import SocketService from "./services/SocketService";
 
 const MONGODB_URI =

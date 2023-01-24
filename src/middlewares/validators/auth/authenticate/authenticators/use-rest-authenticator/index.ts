@@ -1,4 +1,4 @@
-import { ERROR_CODE_UNAUTHORIZED } from "../../../../../../controllers/constants";
+import { ERROR_CODE_UNAUTHORIZED } from "../../../../../../controllers/utils/constants";
 import { IS_AUTH_ERROR_MESSAGE_UNAUTHORIZED } from "../../../constants";
 import getAuthenticatedUserId from "../../utils/get-authenticated-user-id";
 

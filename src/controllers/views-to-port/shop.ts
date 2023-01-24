@@ -1,16 +1,16 @@
 import PDFDocument from "pdfkit";
 
-import Cart from "../models/Embedded/Cart";
-import Order from "../models/Order";
-import { ProductAttributes } from "../models/Product/interfaces";
-import Product from "../models/Product";
+import Cart from "../../models/Embedded/Cart";
+import Order from "../../models/Order";
+import { ProductAttributes } from "../../models/Product/interfaces";
+import Product from "../../models/Product";
+
 import {
   DEFAULT_PAGE_NUMBER,
   ERROR_CODE_SERVER,
   ITEMS_PER_PAGE,
-} from "./constants";
-import Stripe from "stripe";
-import StripeService from "./shared/services/PaymentService/vendors/Stripe.Service";
+} from "../utils/constants";
+import StripeService from "../utils/services/PaymentService/vendors/Stripe.Service";
 
 interface CartProduct {
   product: ProductAttributes;

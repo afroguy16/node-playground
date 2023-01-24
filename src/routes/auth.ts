@@ -7,8 +7,8 @@ import {
   postSignup,
 } from "../controllers/auth";
 import useLoginValidators from "../middlewares/validators/auth/login/useLoginValidators";
-import useRequestPasswordResetValidators from "../middlewares/validators/auth/update-password/requestPasswordReset/useRequestPasswordResetValidators";
 import useSignupValidators from "../middlewares/validators/auth/signup/useSignupValidators";
+import useRequestPasswordResetValidators from "../middlewares/validators/auth/update-password/requestPasswordReset/useRequestPasswordResetValidators";
 import useResetPasswordValidators from "../middlewares/validators/auth/update-password/resetPassword/useResetPasswordValidators";
 
 export const authRouter = express.Router();

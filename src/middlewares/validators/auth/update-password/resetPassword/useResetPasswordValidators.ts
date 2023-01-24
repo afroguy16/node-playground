@@ -1,4 +1,4 @@
-import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../../../../controllers/constants";
+import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../../../../controllers/utils/constants";
 
 import packageErrors from "../../../utils/package-errors";
 

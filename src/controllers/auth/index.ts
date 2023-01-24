@@ -3,22 +3,23 @@ import bcyrpt from "bcryptjs";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 
-import User from "../models/User";
+import User from "../../models/User";
+import {
+  SIGNUP_ERROR_MESSAGE_FAILED,
+  TO_MOVE_VARIABLE_HASH_KEY,
+} from "../../middlewares/validators/auth/constants";
+import ResetPasswordToken from "../../models/ResetPasswordToken";
+
+import resetPassword from "../utils/services/EmailService/templates/resetPassword";
 import {
   ERROR_CODE_SERVER,
   ERROR_CODE_UNPROCESSED_ENTITY,
   SUCCESS_CODE,
   SUCCESS_CODE_CREATED,
-} from "./constants";
-import EmailService from "./shared/services/EmailService";
-import { OfficialEmailE } from "./shared/services/EmailService/enums";
-import signup from "./shared/services/EmailService/templates/signupTemplate";
-import {
-  SIGNUP_ERROR_MESSAGE_FAILED,
-  TO_MOVE_VARIABLE_HASH_KEY,
-} from "../middlewares/validators/auth/constants";
-import ResetPasswordToken from "../models/ResetPasswordToken";
-import resetPassword from "./shared/services/EmailService/templates/resetPassword";
+} from "../utils/constants";
+import EmailService from "../utils/services/EmailService";
+import { OfficialEmailE } from "../utils/services/EmailService/enums";
+import signup from "../utils/services/EmailService/templates/signupTemplate";
 
 export const postSignup = async (req, res) => {
   const { username, email, password } = req.body;

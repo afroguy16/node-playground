@@ -3,7 +3,7 @@ import getUsernameErrors from "./utils/getUsernameErrors";
 import packageErrors from "../../utils/package-errors";
 import getEmailErrors from "./utils/getEmailErrors";
 import getPasswordErrors from "../utils/getPasswordErrors";
-import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../../../controllers/constants";
+import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../../../controllers/utils/constants";
 
 export default async (req, res, next) => {
   const { username, email, password, confirmPassword } = req.body;

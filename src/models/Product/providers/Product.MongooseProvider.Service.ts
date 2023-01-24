@@ -1,5 +1,5 @@
 import { model, Schema } from "mongoose";
-import { ITEMS_PER_PAGE } from "../../../controllers/constants";
+import { ITEMS_PER_PAGE } from "../../../controllers/utils/constants";
 
 import { WriteResponse } from "../../../utils/interfaces";
 import { Optional } from "../../../utils/types";

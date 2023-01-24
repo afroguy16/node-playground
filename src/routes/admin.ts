@@ -5,11 +5,11 @@ import {
   postCreateProduct,
   patchEditProduct,
   deleteProduct,
-} from "../../controllers/admin";
-import isAuth from "../../middlewares/validators/auth/authenticate/authenticators/use-rest-authenticator";
-import useAddProductValidators from "../../middlewares/validators/admin/add-product/useAddProductValidators";
-import useDeleteProductValidators from "../../middlewares/validators/admin/delete-product/useDeleteProductValidators";
-import useEditProductValidators from "../../middlewares/validators/admin/edit-product/useEditProductValidators";
+} from "../controllers/admin";
+import isAuth from "../middlewares/validators/auth/authenticate/authenticators/use-rest-authenticator";
+import useAddProductValidators from "../middlewares/validators/admin/add-product/useAddProductValidators";
+import useDeleteProductValidators from "../middlewares/validators/admin/delete-product/useDeleteProductValidators";
+import useEditProductValidators from "../middlewares/validators/admin/edit-product/useEditProductValidators";
 
 export const adminApiRouter = express.Router();
 

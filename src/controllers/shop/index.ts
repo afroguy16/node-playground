@@ -1,11 +1,10 @@
 import Product from "../../models/Product";
-
 import {
   DEFAULT_PAGE_NUMBER,
   ERROR_CODE_SERVER,
   ITEMS_PER_PAGE,
   SUCCESS_CODE,
-} from "../constants";
+} from "../utils/constants";
 
 export const getProducts = async (req, res, next) => {
   const { page: paramsPage } = req.query;

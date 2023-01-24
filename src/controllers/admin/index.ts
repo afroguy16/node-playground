@@ -1,8 +1,9 @@
 import { validationResult } from "express-validator";
 
-import Product from "../models/Product";
-import { ProductAttributes } from "../models/Product/interfaces";
-import SocketService from "../services/SocketService";
+import Product from "../../models/Product";
+import { ProductAttributes } from "../../models/Product/interfaces";
+import SocketService from "../../services/SocketService";
+
 import {
   DEFAULT_PAGE_NUMBER,
   ERROR_CODE_FORBIDDEN_REQUEST,
@@ -11,7 +12,7 @@ import {
   ITEMS_PER_PAGE,
   SUCCESS_CODE,
   SUCCESS_CODE_CREATED,
-} from "./constants";
+} from "../utils/constants";
 
 export const postCreateProduct = async (req, res) => {
   const { title, description, price } = req.body;
