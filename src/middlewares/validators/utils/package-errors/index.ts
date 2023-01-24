@@ -6,7 +6,7 @@ import {
 import { PackagedError } from "./interfaces";
 
 /**
- * Return a packaged error
+ * Takes a path and an array of paths, then return a packaged error array
  *
  * @param {string} path - The location of the error
  * @param {Array<string>} errors - The errors to package.

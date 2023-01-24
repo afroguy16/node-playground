@@ -5,7 +5,7 @@ import packageErrors from "../../utils/package-errors";
 import getPasswordErrors from "../utils/get-password-errors";
 import getConfirmPasswordErrors from "../utils/get-confirm-password-errors";
 
-import getUsernameErrors from "./utils/getUsernameErrors";
+import getUsernameErrors from "./utils/get-username-errors";
 import getEmailErrors from "./utils/getEmailErrors";
 
 export default async (req, res, next) => {
