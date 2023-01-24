@@ -4,7 +4,7 @@ import {
   PASSWORD_LENGTH,
 } from "../../constants";
 
-describe("Get Password Errors Utility", () => {
+describe("Auth Utility - Get Password Errors", () => {
   it(`should return array with a messsage of ${PASSWORD_ERROR_MESSAGE_LENGTH_TOO_SHORT} if there is no password is given`, () => {
     getPasswordErrors("");
   });
