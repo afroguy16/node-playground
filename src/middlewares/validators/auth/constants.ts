@@ -7,9 +7,9 @@ export const EMAIL_UNAVAILABLE_ADDRESS = "Email is already taken";
 export const PASSWORD_LENGTH = 3;
 export const PASSWORD_ERROR_MESSAGE_LENGTH_TOO_SHORT = `The password must be alphanumeric characters and at least ${PASSWORD_LENGTH} characters long`;
 
-export const CONFIRM_PASSWORD_ERROR_MESSAGE_EMPTY =
+export const CONFIRM_PASSWORD_ERROR_SHORT_LENGTH =
   "Confirm password cannot be empty";
-export const CONFIRM_PASSWORD_ERROR_MESSAGE = "Password must match";
+export const CONFIRM_PASSWORD_ERROR_MISMATCHED = "Password must match";
 
 export const USERNAME_LENGTH = 3;
 export const USERNAME_ERROR_MESSAGE_LENGTH_TOO_SHORT = `The username must be at least ${PASSWORD_LENGTH} characters`;

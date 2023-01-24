@@ -4,7 +4,7 @@ import packageErrors from "../../../utils/package-errors";
 
 import getEmailErrors from "../../utils/getEmailErrors";
 import getPasswordErrors from "../../utils/get-password-errors";
-import getConfirmPasswordErrors from "../../utils/getConfirmPasswordErrors";
+import getConfirmPasswordErrors from "../../utils/get-confirm-password-errors";
 import getTokenErrors from "../../utils/getTokenErrors";
 
 export default async (req, res, next) => {
