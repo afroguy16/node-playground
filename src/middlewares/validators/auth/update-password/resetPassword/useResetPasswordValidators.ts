@@ -1,15 +1,11 @@
 import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../../../../controllers/constants";
 
+import packageErrors from "../../../utils/package-errors";
+
 import getEmailErrors from "../../utils/getEmailErrors";
 import getPasswordErrors from "../../utils/getPasswordErrors";
 import getConfirmPasswordErrors from "../../utils/getConfirmPasswordErrors";
 import getTokenErrors from "../../utils/getTokenErrors";
-
-const packageErrors = (path: string, errors: Array<string>) => {
-  const mem: Array<{ path: string; message: string }> = [];
-  errors.forEach((error) => mem.push({ path, message: error }));
-  return mem;
-};
 
 export default async (req, res, next) => {
   const { email, password, confirmPassword, token } = req?.body;

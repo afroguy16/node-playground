@@ -14,7 +14,6 @@ import EmailService from "./shared/services/EmailService";
 import { OfficialEmailE } from "./shared/services/EmailService/enums";
 import signup from "./shared/services/EmailService/templates/signupTemplate";
 import {
-  EMAIL_ERROR_MESSAGE_INVALID_TYPE,
   SIGNUP_ERROR_MESSAGE_FAILED,
   TO_MOVE_VARIABLE_HASH_KEY,
 } from "../middlewares/validators/auth/constants";
@@ -23,13 +22,6 @@ import resetPassword from "./shared/services/EmailService/templates/resetPasswor
 
 export const postSignup = async (req, res) => {
   const { username, email, password } = req.body;
-  const errors = req.validator.getErrors();
-
-  if (req.validator.hasError()) {
-    return res
-      .status(ERROR_CODE_UNPROCESSED_ENTITY)
-      .json({ message: SIGNUP_ERROR_MESSAGE_FAILED, error: errors });
-  }
 
   try {
     const salt = await bcyrpt.genSalt(12);
