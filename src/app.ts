@@ -12,7 +12,7 @@ import { rootDirectory } from "./utils";
 import { get404 } from "./controllers/error";
 import { ERROR_CODE_SERVER } from "./controllers/constants";
 import { adminApiRouter } from "./routes/apis/admin";
-import { authApiRouter } from "./routes/apis/auth";
+import { authRouter } from "./routes/auth";
 import { shopApiRouter } from "./routes/apis/shop";
 import shopRouter from "./routes/shop";
 import SocketService from "./services/SocketService";
@@ -78,7 +78,7 @@ app.use((req, res, next) => {
 });
 
 app.use(shopRouter);
-app.use("/api", authApiRouter);
+app.use("/api", authRouter);
 app.use("/admin/api", adminApiRouter);
 app.use("/api", shopApiRouter);
 

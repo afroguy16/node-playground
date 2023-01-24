@@ -2,7 +2,7 @@ import { SIGNUP_ERROR_MESSAGE_FAILED } from "../../../middlewares/validators/aut
 
 import { ErrorService } from "../../../middlewares/validators/ErrorService";
 import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../constants";
-import { postSignup } from "../auth";
+import { postSignup } from "../../auth";
 
 describe("Signup Controller", () => {
   it("should send an error response with a status of unprocessed entity and the message with the validator's messages if there is any validation error", () => {
