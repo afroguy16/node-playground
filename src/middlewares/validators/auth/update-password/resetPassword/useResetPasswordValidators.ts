@@ -3,7 +3,7 @@ import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../../../../controllers/utils/
 import packageErrors from "../../../utils/package-errors";
 
 import getEmailErrors from "../../utils/getEmailErrors";
-import getPasswordErrors from "../../utils/getPasswordErrors";
+import getPasswordErrors from "../../utils/get-password-errors";
 import getConfirmPasswordErrors from "../../utils/getConfirmPasswordErrors";
 import getTokenErrors from "../../utils/getTokenErrors";
 
