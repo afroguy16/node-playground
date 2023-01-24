@@ -6,7 +6,7 @@ import {
 export default (confirmPassword, password) => {
   const errors: Array<string> = [];
 
-  if (!confirmPassword || !password) {
+  if (!confirmPassword) {
     errors.push(CONFIRM_PASSWORD_ERROR_MESSAGE_EMPTY);
   }
 

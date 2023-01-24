@@ -24,7 +24,7 @@ export default async (req, res, next) => {
     errors.push(...packageErrors(emailPath, emailErrors));
   }
 
-  const passwordErrors = getPasswordErrors(email);
+  const passwordErrors = getPasswordErrors(password);
   if (passwordErrors.length > 0) {
     errors.push(...packageErrors(passwordPath, passwordErrors));
   }
@@ -37,7 +37,7 @@ export default async (req, res, next) => {
     errors.push(...packageErrors(confirmPasswordPath, confirmPasswordErrors));
   }
 
-  const tokenErrors = await getTokenErrors(token);
+  const tokenErrors = await getTokenErrors(token, email);
   if (tokenErrors.length > 0) {
     errors.push(...packageErrors(tokenPath, tokenErrors));
   }
