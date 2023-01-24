@@ -1,9 +1,12 @@
-import getConfirmPasswordErrors from "../utils/getConfirmPasswordErrors";
-import getUsernameErrors from "./utils/getUsernameErrors";
-import packageErrors from "../../utils/package-errors";
-import getEmailErrors from "./utils/getEmailErrors";
-import getPasswordErrors from "../utils/getPasswordErrors";
 import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../../../controllers/utils/constants";
+
+import packageErrors from "../../utils/package-errors";
+
+import getPasswordErrors from "../utils/getPasswordErrors";
+import getConfirmPasswordErrors from "../utils/getConfirmPasswordErrors";
+
+import getUsernameErrors from "./utils/getUsernameErrors";
+import getEmailErrors from "./utils/getEmailErrors";
 
 export default async (req, res, next) => {
   const { username, email, password, confirmPassword } = req.body;
