@@ -1,5 +1,3 @@
-import getUsernameErrors from ".";
-
 import User from "../../../../../../models/User";
 
 import {
@@ -8,6 +6,8 @@ import {
   USERNAME_ERROR_MESSAGE_UNAVAILABLE_ADDRESS,
   USERNAME_LENGTH,
 } from "../../../constants";
+
+import getUsernameErrors from ".";
 
 jest.mock("../../../../../../models/User");
 

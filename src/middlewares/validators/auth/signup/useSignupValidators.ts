@@ -6,7 +6,7 @@ import getPasswordErrors from "../utils/get-password-errors";
 import getConfirmPasswordErrors from "../utils/get-confirm-password-errors";
 
 import getUsernameErrors from "./utils/get-username-errors";
-import getEmailErrors from "./utils/getEmailErrors";
+import getEmailErrors from "./utils/get-email-errors";
 
 export default async (req, res, next) => {
   const { username, email, password, confirmPassword } = req.body;
