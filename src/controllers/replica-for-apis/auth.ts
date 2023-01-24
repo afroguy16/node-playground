@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 
 import User from "../../models/User";
 import {
+  ERROR_CODE_SERVER,
   ERROR_CODE_UNPROCESSED_ENTITY,
   SUCCESS_CODE,
   SUCCESS_CODE_CREATED,
@@ -15,6 +16,7 @@ import signup from "../shared/services/EmailService/templates/signupTemplate";
 import {
   EMAIL_ERROR_MESSAGE_INVALID_TYPE,
   SIGNUP_ERROR_MESSAGE_FAILED,
+  TO_MOVE_VARIABLE_HASH_KEY,
 } from "../../middlewares/validators/auth/constants";
 import ResetPasswordToken from "../../models/ResetPasswordToken";
 import resetPassword from "../shared/services/EmailService/templates/resetPassword";
@@ -64,7 +66,7 @@ export const postLogin = async (req, res) => {
       email: req.pendingLoggedInUser.email,
       userId: req.pendingLoggedInUser._id,
     },
-    "this is some long ass ",
+    TO_MOVE_VARIABLE_HASH_KEY,
     { expiresIn: "1h" }
   );
 
@@ -103,39 +105,22 @@ export const postRequestPasswordReset = async (req, res) => {
   }
 };
 
-export const postResetPassword = async (req, res, next) => {
-  const { email, password, confirmPassword, token } = req.body; // TODO - add confirmPassword validation
-  const errors = validationResult(req);
+export const postResetPassword = async (req, res) => {
+  const { email, password } = req.body;
 
-  if (!errors.isEmpty()) {
-    return res.status(ERROR_CODE_UNPROCESSED_ENTITY).render("auth/reset", {
-      pathName: "reset",
-      pageTitle: "Reset Password",
-      error: errors.array()[0].msg,
-      data: { email, password, confirmPassword },
-      token,
-    });
+  try {
+    const user = await User.get({ email });
+
+    if (user) {
+      const salt = await bcyrpt.genSalt(12);
+      const crypted = await bcyrpt.hash(password, salt);
+      await User.update({ _id: user._id, password: crypted });
+    }
+
+    // await ResetPasswordToken.delete(tokenId); - TODO - delete after use
+
+    res.status(SUCCESS_CODE).json({ message: "OK" });
+  } catch (e) {
+    res.status(ERROR_CODE_SERVER).json({ message: "failed" });
   }
-
-  // try {
-  //   const userId = req.session.resetPasswordUser._id;
-  //   const user = await User.getById(userId);
-
-  //   if (user) {
-  //     const salt = await bcyrpt.genSalt(12);
-  //     const crypted = await bcyrpt.hash(password, salt);
-  //     await User.update({ _id: userId, password: crypted });
-  //   }
-  //   const tokenId = req.session.resetPasswordTokenObject;
-  //   await ResetPasswordToken.delete(tokenId);
-
-  //   // clean up session temp variables
-  //   req.session.resetPasswordUser = undefined;
-  //   req.session.resetPasswordTokenObject = undefined;
-
-  //   res.redirect("/login");
-  // } catch (e) {
-  //   const error = { status: ERROR_CODE_SERVER, error: e };
-  //   next(error);
-  // }
 };
