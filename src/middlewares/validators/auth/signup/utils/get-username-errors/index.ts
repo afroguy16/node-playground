@@ -13,9 +13,9 @@ import {
  * Get the compliance errors of a given username against a set of defined validation rules
  *
  * @param {string} username - The username value to test
- * @returns {Array<String>}
+ * @returns {Promise<Array<String>>}
  */
-export default async (username: string) => {
+export default async (username: string): Promise<Array<string>> => {
   const errors: Array<string> = [];
 
   if (!username || !validator.isLength(username, { min: USERNAME_LENGTH })) {

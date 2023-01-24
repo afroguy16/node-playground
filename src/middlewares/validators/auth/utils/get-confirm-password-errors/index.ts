@@ -10,7 +10,7 @@ import {
  * @param {string} password - The password to be tested against
  * @returns {Array<String>}
  */
-export default (confirmPassword, password) => {
+export default (confirmPassword: string, password: string): Array<string> => {
   const errors: Array<string> = [];
 
   if (!confirmPassword) {

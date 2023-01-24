@@ -11,7 +11,7 @@ import {
  * @param {string} password - The password value to test
  * @returns {Array<String>}
  */
-export default (password: string) => {
+export default (password: string): Array<string> => {
   if (!password || !validator.isLength(password, { min: PASSWORD_LENGTH })) {
     return [PASSWORD_ERROR_MESSAGE_LENGTH_TOO_SHORT];
   }
