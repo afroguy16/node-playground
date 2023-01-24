@@ -13,7 +13,7 @@ export default async (email: string) => {
 
   // check if there is a user with this email
   const user = await User.get({ email });
-  if (!user || user.email !== email) {
+  if (!user) {
     errors.push(REQUEST_PASSWORD_RESET_ERROR_MESSAGE_NO_USER_FOUND);
   }
 
