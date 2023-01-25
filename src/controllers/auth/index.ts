@@ -1,4 +1,3 @@
-import { validationResult } from "express-validator";
 import bcyrpt from "bcryptjs";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
@@ -34,9 +33,9 @@ export const postSignup = async (req: Request, res: Response) => {
 
   try {
     const salt = await bcyrpt.genSalt(12);
-    const crypted = await bcyrpt.hash(password, salt);
+    const cryptedPassword = await bcyrpt.hash(password, salt);
 
-    await User.create({ email, password: crypted, username });
+    await User.create({ email, password: cryptedPassword, username });
     res.status(SUCCESS_CODE_CREATED).json({ message: SUCCES_MESSAGE_GENERIC });
 
     EmailService.send({

@@ -1,3 +1,5 @@
+import bcyrpt from "bcryptjs";
+
 import { SIGNUP_ERROR_MESSAGE_FAILED } from "../../middlewares/validators/auth/constants";
 import User from "../../models/User";
 
@@ -10,106 +12,122 @@ import EmailService from "../utils/services/EmailService";
 
 import { postSignup } from ".";
 
+jest.mock("bcryptjs");
 jest.mock("../../models/User");
 jest.mock("../utils/services/EmailService");
 
 // NB: Controller test will pass without complying with any validation because validations are a separate middleware
-describe("Signup Controller", () => {
-  const req: any = {
-    body: {
-      username: "fake username",
-      email: "fake text with zero validation",
-      password: "s",
-    },
-  };
+describe("Auth Controller", () => {
+  describe("Signup Controller", () => {
+    const req: any = {
+      body: {
+        username: "fake username",
+        email: "fake text with zero validation",
+        password: "s",
+      },
+    };
 
-  const res: any = {};
+    const res: any = {};
 
-  beforeEach(() => {
-    res.status = jest.fn().mockReturnThis();
-    res.json = jest.fn();
-  });
+    beforeEach(() => {
+      res.status = jest.fn().mockReturnThis();
+      res.json = jest.fn();
+    });
 
-  afterEach(() => {
-    jest.resetAllMocks();
-  });
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
 
-  it(`should send a success response when body content for one field is blank`, async () => {
-    jest.mocked(User.create).mockResolvedValue({ status: true });
-    jest.mocked(EmailService.send).mockResolvedValue("any fake value");
+    it(`should send an error response if generating salt throws an error`, async () => {
+      const error = new Error("any rejection value");
+      jest.mocked(bcyrpt.genSalt).mockImplementation(() => {
+        throw error;
+      });
 
-    req.email = "fake text with zero validation";
-    req.password = "s";
+      await postSignup(req, res);
 
-    await postSignup(req, res);
+      expect(res.status).toHaveBeenCalledWith(ERROR_CODE_UNPROCESSED_ENTITY);
+      expect(res.json).toHaveBeenCalledWith({
+        message: SIGNUP_ERROR_MESSAGE_FAILED,
+        error,
+      });
+    });
 
-    expect(res.status).toHaveBeenCalledWith(SUCCESS_CODE_CREATED);
-    expect(res.json).toHaveBeenCalledWith({ message: SUCCES_MESSAGE_GENERIC });
-  });
+    it(`should send an error response if generating an hash throws an error`, async () => {
+      const error = new Error("any rejection value");
+      jest.mocked(bcyrpt.hash).mockImplementation(() => {
+        throw error;
+      });
 
-  it(`should send a success response when body content for all fields are blank`, async () => {
-    jest.mocked(User.create).mockResolvedValue({ status: true });
-    jest.mocked(EmailService.send).mockResolvedValue("any fake value");
+      await postSignup(req, res);
 
-    req.username = "";
-    req.email = "";
-    req.password = "";
+      expect(res.status).toHaveBeenCalledWith(ERROR_CODE_UNPROCESSED_ENTITY);
+      expect(res.json).toHaveBeenCalledWith({
+        message: SIGNUP_ERROR_MESSAGE_FAILED,
+        error,
+      });
+    });
 
-    await postSignup(req, res);
+    it(`should send a success response when user was created successfully`, async () => {
+      jest.mocked(User.create).mockResolvedValue({ status: true });
+      jest.mocked(EmailService.send).mockResolvedValue("any fake value");
 
-    expect(res.status).toHaveBeenCalledWith(SUCCESS_CODE_CREATED);
-    expect(res.json).toHaveBeenCalledWith({ message: SUCCES_MESSAGE_GENERIC });
-  });
+      req.username = "fake username";
+      req.email = "fake text with zero validation";
+      req.password = "s";
 
-  it(`should send a success response when all body content are present`, async () => {
-    jest.mocked(User.create).mockResolvedValue({ status: true });
-    jest.mocked(EmailService.send).mockResolvedValue("any fake value");
+      await postSignup(req, res);
 
-    req.username = "fake username";
-    req.email = "fake text with zero validation";
-    req.password = "s";
+      expect(res.status).toHaveBeenCalledWith(SUCCESS_CODE_CREATED);
+      expect(res.json).toHaveBeenCalledWith({
+        message: SUCCES_MESSAGE_GENERIC,
+      });
+    });
 
-    await postSignup(req, res);
+    it(`should send an error when creating has an error but sending an email calls was successful`, async () => {
+      const error = "any rejection value";
 
-    expect(res.status).toHaveBeenCalledWith(SUCCESS_CODE_CREATED);
-    expect(res.json).toHaveBeenCalledWith({ message: SUCCES_MESSAGE_GENERIC });
-  });
+      jest.mocked(User.create).mockRejectedValue(error);
+      jest.mocked(EmailService.send).mockResolvedValue("any fake value");
 
-  it(`should send an error when creating has an error but sending an email calls was successful`, async () => {
-    const error = "any rejection value";
+      req.username = "";
+      req.email = "fake text with zero validation";
+      req.password = "s";
 
-    jest.mocked(User.create).mockRejectedValue(error);
-    jest.mocked(EmailService.send).mockResolvedValue("any fake value");
+      await postSignup(req, res);
 
-    req.username = "";
-    req.email = "fake text with zero validation";
-    req.password = "s";
+      expect(res.status).toHaveBeenCalledWith(ERROR_CODE_UNPROCESSED_ENTITY);
+      expect(res.json).toHaveBeenCalledWith({
+        message: SIGNUP_ERROR_MESSAGE_FAILED,
+        error,
+      });
+    });
 
-    await postSignup(req, res);
+    it(`should send a success response and then console log an error when creating a user was successful but sending an email wasn't`, async () => {
+      (globalThis as any).console = { log: jest.fn() };
 
-    expect(res.status).toHaveBeenCalledWith(ERROR_CODE_UNPROCESSED_ENTITY);
-    expect(res.json).toHaveBeenCalledWith({
-      message: SIGNUP_ERROR_MESSAGE_FAILED,
-      error,
+      const error = "any rejection value";
+
+      jest.mocked(User.create).mockResolvedValue({ status: true });
+      jest.mocked(EmailService.send).mockRejectedValue(error);
+
+      req.username = "fake username";
+      req.email = "fake text with zero validation";
+      req.password = "s";
+
+      await postSignup(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(SUCCESS_CODE_CREATED);
+      expect(res.json).toHaveBeenCalledWith({
+        message: SUCCES_MESSAGE_GENERIC,
+      });
+      expect(console.log).toHaveBeenCalledWith(error);
     });
   });
 
-  it(`should send a success response and then console log an error when creating a user was successful but sending an email wasn't`, async () => {
-    (globalThis as any).console = { log: jest.fn() };
-
-    const error = "any rejection value";
-
-    jest.mocked(User.create).mockResolvedValue({ status: true });
-    jest.mocked(EmailService.send).mockRejectedValue(error);
-
-    req.username = "fake username";
-    req.email = "fake text with zero validation";
-    req.password = "s";
-
-    await postSignup(req, res);
-
-    expect(res.status).toHaveBeenCalledWith(SUCCESS_CODE_CREATED);
-    expect(res.json).toHaveBeenCalledWith({ message: SUCCES_MESSAGE_GENERIC });
-    expect(console.log).toHaveBeenCalledWith(error);
+  describe("Login Controller", () => {
+    it(`should send a success response when body content for one field is blank`, () => {});
+    it(`should send a success response when body content for all fields are blank`, () => {});
+    it(`should send a success response when all body content are present and user was created successfully`, () => {});
   });
 });
