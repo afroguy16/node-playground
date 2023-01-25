@@ -1,3 +1,5 @@
+import { Request, Response, NextFunction } from "express";
+
 import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../../../controllers/utils/constants";
 
 import packageErrors from "../../utils/package-errors";
@@ -8,7 +10,15 @@ import getConfirmPasswordErrors from "../utils/get-confirm-password-errors";
 import getUsernameErrors from "./utils/get-username-errors";
 import getEmailErrors from "./utils/get-email-errors";
 
-export default async (req, res, next) => {
+/**
+ * Validator - validate signup request payload with a set of validation utilities to ensure that it is compliant
+ *
+ * @async
+ * @param {Request} req - The Request object from the Router
+ * @param {Response} res - The Response object that is used to send error to the client if validation fails
+ * @param {NextFunction} next - The next() function that is called so the next route argument (e.g.) controller can be called. This is called when all validations passes
+ */
+export default async (req: Request, res: Response, next: NextFunction) => {
   const { username, email, password, confirmPassword } = req.body;
   const usernamePath = "username";
   const emailPath = "email";

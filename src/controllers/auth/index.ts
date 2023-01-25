@@ -21,8 +21,15 @@ import {
 import EmailService from "../utils/services/EmailService";
 import { OfficialEmailE } from "../utils/services/EmailService/enums";
 import signup from "../utils/services/EmailService/templates/signupTemplate";
+import { Request, Response } from "express";
 
-export const postSignup = async (req, res) => {
+/**
+ * Controller - Receives raw request from the signup routes, encrypt password and create a new user with the User model, then returns a success response if the user creation is successful, but throw an error if it's not or if there are some other errors. Then send an email to the newly created user and log the email to the console if there was an error in sending the email.
+ * @async
+ * @param {Request} req - The Request object from the Router
+ * @param {Response} res - The Response object that is used to send error to the client if validation fails
+ */
+export const postSignup = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
 
   try {

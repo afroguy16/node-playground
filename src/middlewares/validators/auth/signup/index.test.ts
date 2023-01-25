@@ -13,7 +13,7 @@ jest.mock("./utils/get-username-errors");
 jest.mock("./utils/get-email-errors");
 
 describe("Auth Validator - Sign up", () => {
-  const req = {
+  const req: any = {
     body: {
       username: "",
       email: "",
@@ -23,7 +23,7 @@ describe("Auth Validator - Sign up", () => {
   };
   const fakeError = "any fake error";
   const fakeError2 = "any fake error 2";
-  const res = {
+  const res: any = {
     status: jest.fn().mockReturnThis(),
     json: jest.fn(),
   };

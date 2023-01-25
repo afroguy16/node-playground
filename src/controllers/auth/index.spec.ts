@@ -15,6 +15,21 @@ jest.mock("../utils/services/EmailService");
 
 // NB: Controller test will pass without complying with any validation because validations are a separate middleware
 describe("Signup Controller", () => {
+  const req: any = {
+    body: {
+      username: "fake username",
+      email: "fake text with zero validation",
+      password: "s",
+    },
+  };
+
+  const res: any = {};
+
+  beforeEach(() => {
+    res.status = jest.fn().mockReturnThis();
+    res.json = jest.fn();
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -23,18 +38,8 @@ describe("Signup Controller", () => {
     jest.mocked(User.create).mockResolvedValue({ status: true });
     jest.mocked(EmailService.send).mockResolvedValue("any fake value");
 
-    const req = {
-      body: {
-        username: "",
-        email: "fake text with zero validation",
-        password: "s",
-      },
-    };
-
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+    req.email = "fake text with zero validation";
+    req.password = "s";
 
     await postSignup(req, res);
 
@@ -46,18 +51,9 @@ describe("Signup Controller", () => {
     jest.mocked(User.create).mockResolvedValue({ status: true });
     jest.mocked(EmailService.send).mockResolvedValue("any fake value");
 
-    const req = {
-      body: {
-        username: "",
-        email: "",
-        password: "",
-      },
-    };
-
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+    req.username = "";
+    req.email = "";
+    req.password = "";
 
     await postSignup(req, res);
 
@@ -69,18 +65,9 @@ describe("Signup Controller", () => {
     jest.mocked(User.create).mockResolvedValue({ status: true });
     jest.mocked(EmailService.send).mockResolvedValue("any fake value");
 
-    const req = {
-      body: {
-        username: "fake username",
-        email: "fake text with zero validation",
-        password: "s",
-      },
-    };
-
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+    req.username = "fake username";
+    req.email = "fake text with zero validation";
+    req.password = "s";
 
     await postSignup(req, res);
 
@@ -94,18 +81,9 @@ describe("Signup Controller", () => {
     jest.mocked(User.create).mockRejectedValue(error);
     jest.mocked(EmailService.send).mockResolvedValue("any fake value");
 
-    const req = {
-      body: {
-        username: "",
-        email: "fake text with zero validation",
-        password: "s",
-      },
-    };
-
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+    req.username = "";
+    req.email = "fake text with zero validation";
+    req.password = "s";
 
     await postSignup(req, res);
 
@@ -124,18 +102,9 @@ describe("Signup Controller", () => {
     jest.mocked(User.create).mockResolvedValue({ status: true });
     jest.mocked(EmailService.send).mockRejectedValue(error);
 
-    const req = {
-      body: {
-        username: "fake username",
-        email: "fake text with zero validation",
-        password: "s",
-      },
-    };
-
-    const res = {
-      status: jest.fn().mockReturnThis(),
-      json: jest.fn(),
-    };
+    req.username = "fake username";
+    req.email = "fake text with zero validation";
+    req.password = "s";
 
     await postSignup(req, res);
 
