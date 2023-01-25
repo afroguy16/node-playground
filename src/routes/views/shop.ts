@@ -11,7 +11,7 @@ import {
   postAddProductToCart,
   postRemoveProductFromCart,
 } from "../../controllers/views-to-port/shop";
-import isAuth from "../../middlewares/validators/auth/authenticate/authenticators/use-rest-authenticator";
+import isAuth from "../../middlewares/validators/auth/authenticate";
 
 const shopRouter = express.Router();
 

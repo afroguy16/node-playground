@@ -4,7 +4,7 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import { TO_MOVE_VARIABLE_HASH_KEY } from "../../../constants";
 
 /**
- * Get the compliance errors of a given password against a set of defined validation rules
+ * Authenticate Utility - Get and return a valid token from the request header, or return an empty string if there is no valid token in the header
  *
  * @param {Request} req - The Request object from the Router
  * @returns {string}
