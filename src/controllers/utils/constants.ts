@@ -9,3 +9,5 @@ export const SUCCESS_CODE_CREATED = 201;
 
 export const ITEMS_PER_PAGE = 2;
 export const DEFAULT_PAGE_NUMBER = 1;
+
+export const SUCCES_MESSAGE_GENERIC = "OK";

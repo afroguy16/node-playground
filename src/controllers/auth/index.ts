@@ -16,6 +16,7 @@ import {
   ERROR_CODE_UNPROCESSED_ENTITY,
   SUCCESS_CODE,
   SUCCESS_CODE_CREATED,
+  SUCCES_MESSAGE_GENERIC,
 } from "../utils/constants";
 import EmailService from "../utils/services/EmailService";
 import { OfficialEmailE } from "../utils/services/EmailService/enums";
@@ -29,17 +30,15 @@ export const postSignup = async (req, res) => {
     const crypted = await bcyrpt.hash(password, salt);
 
     await User.create({ email, password: crypted, username });
-    res
-      .status(SUCCESS_CODE_CREATED)
-      .json({ message: "User created successfully" });
+    res.status(SUCCESS_CODE_CREATED).json({ message: SUCCES_MESSAGE_GENERIC });
 
-    await EmailService.send({
+    EmailService.send({
       to: email,
       from: OfficialEmailE.SUPPORT,
       template: { ...signup },
-    });
+    }).catch((e) => console.log(e));
   } catch (e) {
-    return res
+    res
       .status(ERROR_CODE_UNPROCESSED_ENTITY)
       .json({ message: SIGNUP_ERROR_MESSAGE_FAILED, error: e });
   }
@@ -86,7 +85,7 @@ export const postRequestPasswordReset = async (req, res) => {
       expiration,
     });
 
-    res.status(SUCCESS_CODE).json({ message: "OK" });
+    res.status(SUCCESS_CODE).json({ message: SUCCES_MESSAGE_GENERIC });
 
     await EmailService.send({
       to: email,
@@ -112,7 +111,7 @@ export const postResetPassword = async (req, res) => {
 
     // await ResetPasswordToken.delete(tokenId); - TODO - delete after use
 
-    res.status(SUCCESS_CODE).json({ message: "OK" });
+    res.status(SUCCESS_CODE).json({ message: SUCCES_MESSAGE_GENERIC });
   } catch (e) {
     res.status(ERROR_CODE_SERVER).json({ message: "failed" });
   }
