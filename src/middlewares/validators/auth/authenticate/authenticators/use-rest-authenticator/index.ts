@@ -3,10 +3,10 @@ import { IS_AUTH_ERROR_MESSAGE_UNAUTHORIZED } from "../../../constants";
 import getAuthenticatedUserId from "../../utils/get-authenticated-user-id";
 
 export default (req, res, next) => {
-  const payload = getAuthenticatedUserId(req);
+  const userId = getAuthenticatedUserId(req);
 
-  if (payload?.userId) {
-    req.userId = payload.userId;
+  if (userId) {
+    req.userId = userId;
     next();
   } else {
     res

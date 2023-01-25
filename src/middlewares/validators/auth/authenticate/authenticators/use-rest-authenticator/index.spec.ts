@@ -7,7 +7,7 @@ jest.mock("../../utils/get-authenticated-user-id");
 
 describe("Use Rest Authenticator Middleware", () => {
   it("should send an error response if no valid user is found", () => {
-    jest.mocked(getAuthenticatedUserId).mockReturnValue(null);
+    jest.mocked(getAuthenticatedUserId).mockReturnValue("");
 
     const req = {};
     const res = {
@@ -25,7 +25,7 @@ describe("Use Rest Authenticator Middleware", () => {
 
   it("should save the user id in the res locals userId key and call the next function if use is found", () => {
     const fakeUserId = "anyRandomStringWillWorkAsFakeId";
-    jest.mocked(getAuthenticatedUserId).mockReturnValue({ userId: fakeUserId });
+    jest.mocked(getAuthenticatedUserId).mockReturnValue(fakeUserId);
 
     const req = {};
     const res = {};
