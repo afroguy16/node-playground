@@ -6,7 +6,7 @@ import {
   postResetPassword,
   postSignup,
 } from "../controllers/auth";
-import useLoginValidators from "../middlewares/validators/auth/login/useLoginValidators";
+import useLoginValidators from "../middlewares/validators/auth/login";
 import useSignupValidators from "../middlewares/validators/auth/signup";
 import useRequestPasswordResetValidators from "../middlewares/validators/auth/update-password/requestPasswordReset/useRequestPasswordResetValidators";
 import useResetPasswordValidators from "../middlewares/validators/auth/update-password/resetPassword/useResetPasswordValidators";

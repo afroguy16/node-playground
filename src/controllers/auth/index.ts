@@ -51,26 +51,21 @@ export const postSignup = async (req: Request, res: Response) => {
   }
 };
 
-export const postLogin = async (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res
-      .status(ERROR_CODE_UNPROCESSED_ENTITY)
-      .json({ message: SIGNUP_ERROR_MESSAGE_FAILED, error: errors.array() });
-  }
+export const postLogin = async (req: Request, res: Response) => {
+  const { email } = req.body;
+  const modifiedRequest = req as Request & { userId: string | undefined };
 
   const token = jwt.sign(
     {
-      email: req.pendingLoggedInUser.email,
-      userId: req.pendingLoggedInUser._id,
+      email,
+      userId: modifiedRequest.userId,
     },
     TO_MOVE_VARIABLE_HASH_KEY,
     { expiresIn: "1h" }
   );
 
   try {
-    res.status(SUCCESS_CODE).json({ message: "Auth was successful", token });
+    res.status(SUCCESS_CODE).json({ message: SUCCES_MESSAGE_GENERIC, token });
   } catch (e) {
     return res
       .status(ERROR_CODE_UNPROCESSED_ENTITY)
