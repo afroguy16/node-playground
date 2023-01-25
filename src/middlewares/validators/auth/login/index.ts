@@ -1,18 +1,16 @@
 import validator from "validator";
 import { NextFunction, Request, Response } from "express";
+import bcyrpt from "bcryptjs";
 
 import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../../../controllers/utils/constants";
 import User from "../../../../models/User";
 import { UserAttributes } from "../../../../models/User/interfaces";
 
 import packageErrors from "../../utils/package-errors";
-
 import { LOGIN_ERROR_MESSAGE_INVALID_CREDENTIALS } from "../constants";
 
-import isMatchedUserPassword from "./custom-validators/isMatchedUserPassword";
-
 /**
- * Validator - validates login request payload with a set of validation utilities to ensure that it is compliant
+ * Validator - validates login request payload with a set of validation rules to ensure that it is compliant
  *
  * @async
  * @param {Request} req - The Request object from the Router
@@ -46,7 +44,7 @@ export default async (req: Request, res: Response, next: NextFunction) => {
   if (
     !password ||
     !user.password ||
-    !(await isMatchedUserPassword(password, user.password))
+    !(await bcyrpt.compare(password, user.password!))
   ) {
     errors.push(
       ...packageErrors(path, [LOGIN_ERROR_MESSAGE_INVALID_CREDENTIALS])

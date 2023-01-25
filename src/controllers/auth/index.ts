@@ -24,10 +24,10 @@ import signup from "../utils/services/EmailService/templates/signupTemplate";
 import { Request, Response } from "express";
 
 /**
- * Controller - Receives raw request from the signup routes, encrypt password and create a new user with the User model, then returns a success response if the user creation is successful, but throw an error if it's not or if there are some other errors. Then send an email to the newly created user and log the email to the console if there was an error in sending the email.
+ * Controller - Receives raw request from the signup route, encrypt password and create a new user with the User model, then returns a success response if the user creation is successful, but throw an error if it's not or if there are some other errors. Then send an email to the newly created user and log the email to the console if there was an error in sending the email.
  * @async
  * @param {Request} req - The Request object from the Router
- * @param {Response} res - The Response object that is used to send error to the client if validation fails
+ * @param {Response} res - The Response object that is used to send a success payload or error to the client if validation fails
  */
 export const postSignup = async (req: Request, res: Response) => {
   const { username, email, password } = req.body;
@@ -51,6 +51,12 @@ export const postSignup = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * Controller - Receives raw request from the login route, sign and send a token to the caller, but throw an error if it's not or if there are some other errors.
+ * @async
+ * @param {Request} req - The Request object from the Router
+ * @param {Response} res - The Response object that is used to send a success payload or error to the client if validation fails
+ */
 export const postLogin = async (req: Request, res: Response) => {
   const { email } = req.body;
   const modifiedRequest = req as Request & { userId: string | undefined };
