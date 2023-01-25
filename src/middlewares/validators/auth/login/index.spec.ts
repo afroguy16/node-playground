@@ -96,13 +96,11 @@ describe("Auth Validator - Login", () => {
   it(`it should throw an error if the email and password is valid, and a user is found with a password that doesn't match`, async () => {
     const fakeId = "fakeId";
 
-    User.get = jest
-      .fn()
-      .mockResolvedValue({
-        _id: fakeId,
-        email: "fake@email.com",
-        password: "fakePassword",
-      }); // encryption is mocked to return false, so the fake password data doesn't have to match
+    User.get = jest.fn().mockResolvedValue({
+      _id: fakeId,
+      email: "fake@email.com",
+      password: "fakePassword",
+    }); // encryption is mocked to return false, so the fake password data doesn't have to match
     bcyrpt.compare = jest.fn().mockResolvedValue(true);
 
     req.body.email = "abc@anyrealemailformat.com";

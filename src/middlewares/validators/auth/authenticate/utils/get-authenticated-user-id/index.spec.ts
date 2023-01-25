@@ -29,16 +29,16 @@ describe("Get Authenticated UserId Utility", () => {
     expect(isAuth(req)).toBe(null);
   });
 
-  it("should return a payload of containing the userID if token is decoded", () => {
+  it("should return a userID if token is decoded", () => {
     const req = {
       get: () => "Bearer anyValue",
     };
 
-    const expected = { userId: "randomId" };
+    const mock = jest
+      .mocked(verify)
+      .mockImplementation(() => ({ userId: "randomId" }));
 
-    const mock = jest.mocked(verify).mockImplementation(() => expected);
-
-    expect(isAuth(req)).toStrictEqual(expected);
+    expect(isAuth(req)).toStrictEqual("randomId");
 
     mock.mockRestore();
   });
