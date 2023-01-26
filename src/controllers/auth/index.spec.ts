@@ -1,23 +1,27 @@
 import bcyrpt from "bcryptjs";
 
-import { SIGNUP_ERROR_MESSAGE_FAILED } from "../../middlewares/validators/auth/constants";
+import {
+  LOGIN_ERROR_MESSAGE_FAILED,
+  SIGNUP_ERROR_MESSAGE_FAILED,
+} from "../../middlewares/validators/auth/constants";
 import User from "../../models/User";
 
 import {
   ERROR_CODE_UNPROCESSED_ENTITY,
+  SUCCESS_CODE,
   SUCCESS_CODE_CREATED,
   SUCCES_MESSAGE_GENERIC,
 } from "../utils/constants";
 import EmailService from "../utils/services/EmailService";
 
-import { postSignup } from ".";
+import { postLogin, postSignup } from ".";
 
 jest.mock("bcryptjs");
 jest.mock("../../models/User");
 jest.mock("../utils/services/EmailService");
 
 // NB: Controller test will pass without complying with any validation because validations are a separate middleware
-describe("Auth Controller", () => {
+describe("Auth Controllers", () => {
   describe("Signup Controller", () => {
     const req: any = {
       body: {
@@ -126,8 +130,38 @@ describe("Auth Controller", () => {
   });
 
   describe("Login Controller", () => {
-    it(`should send a success response when body content for one field is blank`, () => {});
-    it(`should send a success response when body content for all fields are blank`, () => {});
-    it(`should send a success response when all body content are present and user was created successfully`, () => {});
+    const req: any = {
+      body: {},
+    };
+
+    const res: any = {};
+
+    beforeEach(() => {
+      res.status = jest.fn().mockReturnThis();
+      res.json = jest.fn();
+    });
+
+    afterEach(() => {
+      jest.resetAllMocks();
+    });
+
+    it(`should send an error response if there is no userId in the modified request body`, async () => {
+      await postLogin(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(ERROR_CODE_UNPROCESSED_ENTITY);
+      expect(res.json).toHaveBeenCalledWith({
+        message: LOGIN_ERROR_MESSAGE_FAILED,
+      });
+    });
+
+    it(`should send a success response if there is a userId in the modified request body`, async () => {
+      req.userId = "s";
+      await postLogin(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(SUCCESS_CODE);
+      expect(res.json).toHaveBeenCalledWith({
+        message: SUCCES_MESSAGE_GENERIC,
+      });
+    });
   });
 });

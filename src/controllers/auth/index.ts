@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 
 import User from "../../models/User";
 import {
+  LOGIN_ERROR_MESSAGE_FAILED,
   SIGNUP_ERROR_MESSAGE_FAILED,
   TO_MOVE_VARIABLE_HASH_KEY,
 } from "../../middlewares/validators/auth/constants";
@@ -23,7 +24,7 @@ import signup from "../utils/services/EmailService/templates/signupTemplate";
 import { Request, Response } from "express";
 
 /**
- * Controller - Receives raw request from the signup route, encrypt password and create a new user with the User model, then returns a success response if the user creation is successful, but throw an error if it's not or if there are some other errors. Then send an email to the newly created user and log the email to the console if there was an error in sending the email.
+ * Auth Controller - Receives raw request from the signup route, encrypt password and create a new user with the User model, then returns a success response if the user creation is successful, but throw an error if it's not or if there are some other errors. Then send an email to the newly created user and log the email to the console if there was an error in sending the email.
  * @async
  * @param {Request} req - The Request object from the Router
  * @param {Response} res - The Response object that is used to send a success payload or error to the client if validation fails
@@ -51,7 +52,7 @@ export const postSignup = async (req: Request, res: Response) => {
 };
 
 /**
- * Controller - Receives raw request from the login route, sign and send a token to the caller, but throw an error if it's not or if there are some other errors.
+ * Auth Controller - Receives raw request from the login route, sign and send a token to the caller, but throw an error if it's not or if there are some other errors.
  * @async
  * @param {Request} req - The Request object from the Router
  * @param {Response} res - The Response object that is used to send a success payload or error to the client if validation fails
@@ -60,21 +61,25 @@ export const postLogin = async (req: Request, res: Response) => {
   const { email } = req.body;
   const modifiedRequest = req as Request & { userId: string | undefined };
 
-  const token = jwt.sign(
-    {
-      email,
-      userId: modifiedRequest.userId,
-    },
-    TO_MOVE_VARIABLE_HASH_KEY,
-    { expiresIn: "1h" }
-  );
-
   try {
-    res.status(SUCCESS_CODE).json({ message: SUCCES_MESSAGE_GENERIC, token });
+    if (!modifiedRequest.userId) {
+      throw new Error();
+    }
+
+    const token = jwt.sign(
+      {
+        email,
+        userId: modifiedRequest.userId,
+      },
+      TO_MOVE_VARIABLE_HASH_KEY,
+      { expiresIn: "1h" }
+    );
+
+    res.status(SUCCESS_CODE).json({ message: SUCCES_MESSAGE_GENERIC });
   } catch (e) {
     return res
       .status(ERROR_CODE_UNPROCESSED_ENTITY)
-      .json({ message: SIGNUP_ERROR_MESSAGE_FAILED, error: e });
+      .json({ message: LOGIN_ERROR_MESSAGE_FAILED });
   }
 };
 
