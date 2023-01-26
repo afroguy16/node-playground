@@ -5,7 +5,6 @@ import {
   SIGNUP_ERROR_MESSAGE_FAILED,
 } from "../../middlewares/validators/auth/constants";
 import User from "../../models/User";
-
 import {
   ERROR_CODE_UNPROCESSED_ENTITY,
   SUCCESS_CODE,

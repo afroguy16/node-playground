@@ -85,10 +85,10 @@ app.use("/api", shopApiRouter);
 app.use(get404);
 
 app.use((error, req, res, next) => {
-  console.log(error);
+  console.log(error); // log the error instead of adding it to the payload sent to the client because it could reveal internal system errors which is a security risk
   return res
     .status(ERROR_CODE_SERVER)
-    .json({ message: "Something went wrong", error });
+    .json({ message: "Something went wrong" });
 });
 
 (async () => {
