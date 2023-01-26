@@ -1,5 +1,5 @@
-import ResetPasswordToken from "../../../../models/ResetPasswordToken";
-import { RESET_PASSWORD_TOKEN_BAD } from "../constants";
+import ResetPasswordToken from "../../../../../models/ResetPasswordToken";
+import { RESET_PASSWORD_TOKEN_BAD } from "../../constants";
 
 export default async (token: string, email: string) => {
   if (!token) {
