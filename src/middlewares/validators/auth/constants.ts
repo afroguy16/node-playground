@@ -22,6 +22,7 @@ export const SIGNUP_ERROR_MESSAGE_FAILED = "Signup failed";
 export const LOGIN_ERROR_MESSAGE_FAILED = "Login failed";
 export const LOGIN_ERROR_MESSAGE_INVALID_CREDENTIALS = "Invalid credentials";
 
+export const REQUEST_PASSWORD_RESET_ERROR = "Request reset password failed";
 export const REQUEST_PASSWORD_RESET_ERROR_MESSAGE_NO_USER_FOUND =
   "No user found";
 

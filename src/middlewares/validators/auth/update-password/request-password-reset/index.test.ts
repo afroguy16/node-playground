@@ -70,13 +70,11 @@ describe("Auth Validator - Request password reset", () => {
 
   it(`should return a success message when a valid email is provided and a user was found`, async () => {
     req.body.email = "abc@fake.email.com";
-    jest
-      .mocked(User.get)
-      .mockResolvedValue({
-        _id: "fakeId",
-        email: "fake@email.com",
-        username: "fakeuserName",
-      });
+    jest.mocked(User.get).mockResolvedValue({
+      _id: "fakeId",
+      email: "fake@email.com",
+      username: "fakeuserName",
+    });
     await requestPasswordReset(req, res, next);
 
     expect(next).toHaveBeenCalled();

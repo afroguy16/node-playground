@@ -2,9 +2,11 @@ import bcyrpt from "bcryptjs";
 
 import {
   LOGIN_ERROR_MESSAGE_FAILED,
+  REQUEST_PASSWORD_RESET_ERROR,
   SIGNUP_ERROR_MESSAGE_FAILED,
 } from "../../middlewares/validators/auth/constants";
 import User from "../../models/User";
+import ResetPasswordToken from "../../models/ResetPasswordToken";
 import {
   ERROR_CODE_UNPROCESSED_ENTITY,
   SUCCESS_CODE,
@@ -13,11 +15,12 @@ import {
 } from "../utils/constants";
 import EmailService from "../utils/services/EmailService";
 
-import { postLogin, postSignup } from ".";
+import { postLogin, postRequestPasswordReset, postSignup } from ".";
 
 jest.mock("bcryptjs");
 jest.mock("../../models/User");
 jest.mock("../utils/services/EmailService");
+jest.mock("../../models/ResetPasswordToken");
 
 // NB: Controller test will pass without complying with any validation because validations are a separate middleware
 describe("Auth Controllers", () => {
@@ -161,6 +164,67 @@ describe("Auth Controllers", () => {
       expect(res.json).toHaveBeenCalledWith({
         message: SUCCES_MESSAGE_GENERIC,
       });
+    });
+  });
+
+  describe("Request Password Reset Controller", () => {
+    const req: any = {
+      body: {
+        email: "fake@email.com",
+      },
+    };
+
+    const res: any = {};
+
+    beforeEach(() => {
+      res.status = jest.fn().mockReturnThis();
+      res.json = jest.fn();
+    });
+
+    afterEach(jest.resetAllMocks);
+
+    it("should send an error if create token fail", async () => {
+      jest.mocked(ResetPasswordToken.create).mockRejectedValue("fakeError");
+      await postRequestPasswordReset(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(ERROR_CODE_UNPROCESSED_ENTITY);
+      expect(res.json).toHaveBeenCalledWith([
+        { message: REQUEST_PASSWORD_RESET_ERROR },
+      ]);
+    });
+
+    it("should send a success response if create token succeed and then console.log an error if send email fail", async () => {
+      const fakeError = "fake error2";
+
+      (globalThis as any).console = { log: jest.fn() };
+      jest
+        .mocked(ResetPasswordToken.create)
+        .mockResolvedValue({ status: true });
+      jest.mocked(EmailService.send).mockRejectedValue(fakeError);
+
+      await postRequestPasswordReset(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(SUCCESS_CODE_CREATED);
+      expect(res.json).toHaveBeenCalledWith({
+        message: SUCCES_MESSAGE_GENERIC,
+      });
+      expect(console.log).toHaveBeenCalledWith(fakeError);
+    });
+
+    it("should send a success response if create token succeed and not console.log an error if send email succeed", async () => {
+      (globalThis as any).console = { log: jest.fn() };
+      jest
+        .mocked(ResetPasswordToken.create)
+        .mockResolvedValue({ status: true });
+      jest.mocked(EmailService.send).mockResolvedValue("fake error");
+
+      await postRequestPasswordReset(req, res);
+
+      expect(res.status).toHaveBeenCalledWith(SUCCESS_CODE_CREATED);
+      expect(res.json).toHaveBeenCalledWith({
+        message: SUCCES_MESSAGE_GENERIC,
+      });
+      expect(console.log).not.toHaveBeenCalled();
     });
   });
 });

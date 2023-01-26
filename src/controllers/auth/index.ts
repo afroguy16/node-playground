@@ -1,10 +1,12 @@
 import bcyrpt from "bcryptjs";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
+import { Request, Response } from "express";
 
 import User from "../../models/User";
 import {
   LOGIN_ERROR_MESSAGE_FAILED,
+  REQUEST_PASSWORD_RESET_ERROR,
   SIGNUP_ERROR_MESSAGE_FAILED,
   TO_MOVE_VARIABLE_HASH_KEY,
 } from "../../middlewares/validators/auth/constants";
@@ -21,7 +23,6 @@ import {
 import EmailService from "../utils/services/EmailService";
 import { OfficialEmailE } from "../utils/services/EmailService/enums";
 import signup from "../utils/services/EmailService/templates/signupTemplate";
-import { Request, Response } from "express";
 
 /**
  * Auth Controller - Receives raw request from the signup route, encrypt password and create a new user with the User model, then returns a success response if the user creation is successful, but throw an error if it's not or if there are some other errors. Then send an email to the newly created user and log the email to the console if there was an error in sending the email.
@@ -66,7 +67,7 @@ export const postLogin = async (req: Request, res: Response) => {
       throw new Error();
     }
 
-    const token = jwt.sign(
+    jwt.sign(
       {
         email,
         userId: modifiedRequest.userId,
@@ -83,7 +84,13 @@ export const postLogin = async (req: Request, res: Response) => {
   }
 };
 
-export const postRequestPasswordReset = async (req, res) => {
+/**
+ * Auth Controller - Receives raw request from the request password route, then generates random token with an expiry date, then send it to the user email
+ * @async
+ * @param {Request} req - The Request object from the Router
+ * @param {Response} res - The Response object that is used to send a success payload or error to the client if validation fails
+ */
+export const postRequestPasswordReset = async (req: Request, res: Response) => {
   const { email } = req.body;
 
   try {
@@ -97,15 +104,20 @@ export const postRequestPasswordReset = async (req, res) => {
       expiration,
     });
 
-    res.status(SUCCESS_CODE).json({ message: SUCCES_MESSAGE_GENERIC });
+    res.status(SUCCESS_CODE_CREATED).json({ message: SUCCES_MESSAGE_GENERIC });
 
     await EmailService.send({
       to: email,
       from: OfficialEmailE.SUPPORT,
       template: resetPassword(token),
+    }).catch((e) => {
+      console.log(e); // TODO - send to logging system
     });
   } catch (e) {
-    console.log(e);
+    console.log(e); // TODO - send to logging system
+    return res
+      .status(ERROR_CODE_UNPROCESSED_ENTITY)
+      .json([{ message: REQUEST_PASSWORD_RESET_ERROR }]);
   }
 };
 
