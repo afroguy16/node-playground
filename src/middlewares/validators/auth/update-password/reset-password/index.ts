@@ -40,14 +40,12 @@ export default async (req: Request, res: Response, next: NextFunction) => {
     const user = await User.get({ email });
 
     if (!user) {
-      return res
-        .status(ERROR_CODE_UNPROCESSED_ENTITY)
-        .json([
-          {
-            path: emailPath,
-            message: REQUEST_PASSWORD_RESET_ERROR_MESSAGE_NO_USER_FOUND,
-          },
-        ]);
+      return res.status(ERROR_CODE_UNPROCESSED_ENTITY).json([
+        {
+          path: emailPath,
+          message: REQUEST_PASSWORD_RESET_ERROR_MESSAGE_NO_USER_FOUND,
+        },
+      ]);
     }
 
     const passwordErrors = getPasswordErrors(password);

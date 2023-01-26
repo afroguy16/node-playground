@@ -1,8 +1,4 @@
-import {
-  ERROR_CODE_UNPROCESSED_ENTITY,
-  SUCCESS_CODE_CREATED,
-  SUCCES_MESSAGE_GENERIC,
-} from "../../../../../controllers/utils/constants";
+import { ERROR_CODE_UNPROCESSED_ENTITY } from "../../../../../controllers/utils/constants";
 import User from "../../../../../models/User";
 
 import {
